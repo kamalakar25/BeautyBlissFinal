@@ -23,11 +23,10 @@ const BookingPage = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isComplaintModalOpen, setIsComplaintModalOpen] = useState(false);
   const [complaint, setComplaint] = useState('');
-
   const [newFavoriteEmployee, setNewFavoriteEmployee] = useState('');
   const [manPower, setManPower] = useState([]);
-
   const [bookedSlots, setBookedSlots] = useState([]);
+  const [parlorTimings, setParlorTimings] = useState({ fromTime: '', toTime: '' });
 
   // Fetch bookings
   useEffect(() => {
@@ -52,7 +51,7 @@ const BookingPage = () => {
             bookingTime: booking.time,
             status: booking.paymentStatus,
             parlorName: booking.parlorName,
-            parlorEmail: booking.parlorEmail || '', // May be missing
+            parlorEmail: booking.parlorEmail || '',
             totalAmount: booking.total_amount,
             PaidAmount: booking.amount,
             RemainingAmount: booking.total_amount - booking.amount,
@@ -92,6 +91,23 @@ const BookingPage = () => {
     } catch (error) {
       console.error('Error fetching parlor email:', error);
       return '';
+    }
+  };
+
+  // Fetch parlor timings
+  const fetchParlorTimings = async (parlorEmail) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/api/admin/parlor/${parlorEmail}`);
+      const { fromTime, toTime } = response.data.availableTime || {};
+      if (fromTime && toTime) {
+        setParlorTimings({ fromTime, toTime });
+      } else {
+        setRescheduleError('Parlor timings not available.');
+        setAvailableSlots([]);
+      }
+    } catch (error) {
+      setRescheduleError('Failed to fetch parlor timings.');
+      setAvailableSlots([]);
     }
   };
 
@@ -144,6 +160,7 @@ const BookingPage = () => {
       const selectedBooking = bookings.find((b) => b._id === selectedBookingId);
       if (selectedBooking?.parlorEmail) {
         fetchManPower(selectedBooking.parlorEmail);
+        fetchParlorTimings(selectedBooking.parlorEmail);
         setNewFavoriteEmployee(selectedBooking.favoriteEmployee || '');
       }
     }
@@ -229,30 +246,20 @@ const BookingPage = () => {
     setUpiError('');
   };
 
-  // const openRescheduleModal = (bookingId) => {
-  //   setSelectedBookingId(bookingId);
-  //   setNewDate("");
-  //   setNewTime("");
-  //   setAvailableSlots([]);
-  //   setRescheduleError("");
-  //   setIsRescheduleModalOpen(true);
-  //   fetchAvailableSlots(bookingId);
-  // };
-
   const openRescheduleModal = (bookingId) => {
     setSelectedBookingId(bookingId);
     const selectedBooking = bookings.find((b) => b._id === bookingId);
-    setNewDate(selectedBooking?.bookingDate || '');
+    const duration = selectedBooking
+      ? 60 + (selectedBooking.relatedServices?.split(', ').length - 1) * 30
+      : 60;
+    setNewDate(selectedBooking?.bookingDate.split('T')[0] || '');
     setNewTime('');
     setAvailableSlots([]);
     setRescheduleError('');
+    setNewFavoriteEmployee(selectedBooking?.favoriteEmployee || '');
     setIsRescheduleModalOpen(true);
-    if (
-      selectedBooking?.bookingDate &&
-      selectedBooking?.parlorName &&
-      selectedBooking?.serviceName
-    ) {
-      fetchAvailableSlots(bookingId);
+    if (selectedBooking?.bookingDate && selectedBooking?.parlorEmail) {
+      fetchAvailableSlots(bookingId, selectedBooking.bookingDate.split('T')[0], selectedBooking.favoriteEmployee, duration);
     }
   };
 
@@ -263,6 +270,7 @@ const BookingPage = () => {
     setNewTime('');
     setAvailableSlots([]);
     setRescheduleError('');
+    setNewFavoriteEmployee('');
   };
 
   const openComplaintModal = (bookingId) => {
@@ -295,7 +303,7 @@ const BookingPage = () => {
     return upiRegex.test(upi);
   };
 
-  // Parse 12-hour time format to minutes
+  // Parse 12-hour time format to minutes (kept for compatibility)
   const parseTimeToMinutes = (timeStr) => {
     const [time, period] = timeStr.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
@@ -304,6 +312,7 @@ const BookingPage = () => {
     return hours * 60 + minutes;
   };
 
+  // Generate time slots in HH:mm-HH:mm format
   const generateTimeSlots = (startTime, endTime, interval = 60) => {
     const slots = [];
     const start = parseTime(startTime);
@@ -311,7 +320,8 @@ const BookingPage = () => {
 
     for (let time = start; time < end; time += interval) {
       const slotStart = formatTime(time);
-      slots.push(slotStart);
+      const slotEnd = formatTime(time + interval);
+      slots.push(`${slotStart}-${slotEnd}`);
     }
     return slots;
   };
@@ -324,9 +334,7 @@ const BookingPage = () => {
   const formatTime = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;
-    return `${hours.toString().padStart(2, '0')}:${mins
-      .toString()
-      .padStart(2, '0')}`;
+    return `${hours.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}`;
   };
 
   const timeToMinutes = (time) => {
@@ -335,11 +343,11 @@ const BookingPage = () => {
   };
 
   const isSlotAvailable = (slot, duration, bookedSlots) => {
-    const slotStart = timeToMinutes(slot);
+    const slotStart = timeToMinutes(slot.split('-')[0]);
     const slotEnd = slotStart + duration;
 
     for (const booked of bookedSlots) {
-      const bookedStart = timeToMinutes(booked.time);
+      const bookedStart = timeToMinutes(booked.time.split('-')[0]);
       const bookedEnd = bookedStart + (booked.duration || 60);
 
       if (!(slotEnd <= bookedStart || slotStart >= bookedEnd)) {
@@ -373,14 +381,39 @@ const BookingPage = () => {
       const currentHours = currentTime.getHours();
       const currentMinutes = currentTime.getMinutes();
       const currentTimeInMinutes = currentHours * 60 + currentMinutes;
-      const slotStart = timeToMinutes(slot);
+      const slotStart = timeToMinutes(slot.split('-')[0]);
       return slotStart <= currentTimeInMinutes;
     }
     return false;
   };
 
-  // Update fetchAvailableSlots
-  const fetchAvailableSlots = async (bookingId) => {
+  // Fetch booked slots
+  const fetchBookedSlots = async (employeeName, date) => {
+    const email = localStorage.getItem('email');
+    try {
+      const response = await axios.get(`${BASE_URL}/api/users/customer/bookings/${email}`);
+      const filteredBookings = response.data
+        .flatMap((user) => user.bookings)
+        .filter(
+          (booking) =>
+            booking.favoriteEmployee === employeeName &&
+            booking.date &&
+            typeof booking.date === 'string' &&
+            booking.date.split('T')[0] === date
+        )
+        .map((booking) => ({
+          time: booking.time,
+          duration: booking.duration || 60,
+        }));
+      setBookedSlots(filteredBookings);
+    } catch (error) {
+      console.error('Error fetching booked slots:', error);
+      setBookedSlots([]);
+    }
+  };
+
+  // Updated fetchAvailableSlots to match BookSlot.js
+  const fetchAvailableSlots = async (bookingId, date, favoriteEmployee, duration) => {
     const selectedBooking = bookings.find((b) => b._id === bookingId);
     if (!selectedBooking) {
       setRescheduleError('Booking not found.');
@@ -388,18 +421,11 @@ const BookingPage = () => {
       return;
     }
 
-    if (!newDate) {
+    if (!date || !favoriteEmployee) {
       setAvailableSlots([]);
       return;
     }
 
-    if (!selectedBooking.parlorName || !selectedBooking.serviceName) {
-      setRescheduleError('Missing parlor or service information.');
-      setAvailableSlots([]);
-      return;
-    }
-
-    // Fetch parlorEmail if not in booking
     let parlorEmail = selectedBooking.parlorEmail;
     if (!parlorEmail) {
       parlorEmail = await fetchParlorEmail(selectedBooking.parlorName);
@@ -410,63 +436,61 @@ const BookingPage = () => {
       }
     }
 
-    const params = {
-      parlorEmail,
-      service: selectedBooking.serviceName,
-      date: new Date(newDate).toISOString().split('T')[0], // Normalize to YYYY-MM-DD
-      favoriteEmployee: selectedBooking.favoriteEmployee || '',
-      duration: selectedBooking.duration || 60,
-    };
-
-    console.log('Fetching slots with:', params);
-
     try {
-      const response = await axios.get(`${BASE_URL}/api/slots/available`, {
-        params,
-      });
-      let slots = response.data.slots || [];
-
-      // Filter out past times if the selected date is today
-      const today = new Date();
-      const selectedDate = new Date(newDate);
-      today.setHours(0, 0, 0, 0);
-      selectedDate.setHours(0, 0, 0, 0);
-
-      if (today.getTime() === selectedDate.getTime()) {
-        const currentTime = new Date();
-        const currentHours = currentTime.getHours();
-        const currentMinutes = currentTime.getMinutes();
-        const currentTimeInMinutes = currentHours * 60 + currentMinutes;
-
-        slots = slots.filter((slot) => {
-          const slotTimeInMinutes = parseTimeToMinutes(slot);
-          return slotTimeInMinutes > currentTimeInMinutes;
-        });
+      // Ensure parlor timings are available
+      if (!parlorTimings.fromTime || !parlorTimings.toTime) {
+        await fetchParlorTimings(parlorEmail);
       }
 
-      setAvailableSlots(slots);
+      // Generate slots
+      const slots = generateTimeSlots(parlorTimings.fromTime, parlorTimings.toTime, 60);
 
-      setRescheduleError('');
+      // Fetch booked slots
+      await fetchBookedSlots(favoriteEmployee, date);
+
+      // Filter available slots
+      const available = slots.filter((slot) => isSlotAvailable(slot, duration, bookedSlots));
+      setAvailableSlots(available);
+
+      if (available.length === 0) {
+        setRescheduleError('No available slots for the selected date and employee.');
+      } else {
+        setRescheduleError('');
+      }
     } catch (error) {
-      console.error(
-        'Error fetching slots:',
-        error.response?.data || error.message
-      );
-      setRescheduleError(
-        error.response?.data?.message ||
-          'Failed to fetch available slots. Please try again.'
-      );
+      console.error('Error fetching slots:', error);
+      setRescheduleError('Failed to fetch available slots. Please try again.');
       setAvailableSlots([]);
     }
   };
 
-  // Handle date change
+  // Handle date and employee change
   const handleDateChange = (e) => {
     const date = e.target.value;
     setNewDate(date);
     setNewTime('');
-    if (date && selectedBookingId) {
-      fetchAvailableSlots(selectedBookingId);
+    if (date && selectedBookingId && newFavoriteEmployee) {
+      const selectedBooking = bookings.find((b) => b._id === selectedBookingId);
+      const duration = selectedBooking
+        ? 60 + (selectedBooking.relatedServices?.split(', ').length - 1) * 30
+        : 60;
+      fetchAvailableSlots(selectedBookingId, date, newFavoriteEmployee, duration);
+    } else {
+      setAvailableSlots([]);
+    }
+  };
+
+  // Handle employee change
+  const handleEmployeeChange = (e) => {
+    const employee = e.target.value;
+    setNewFavoriteEmployee(employee);
+    setNewTime('');
+    if (newDate && selectedBookingId && employee) {
+      const selectedBooking = bookings.find((b) => b._id === selectedBookingId);
+      const duration = selectedBooking
+        ? 60 + (selectedBooking.relatedServices?.split(', ').length - 1) * 30
+        : 60;
+      fetchAvailableSlots(selectedBookingId, newDate, employee, duration);
     } else {
       setAvailableSlots([]);
     }
@@ -480,8 +504,8 @@ const BookingPage = () => {
   };
 
   const handleRescheduleBooking = async () => {
-    if (!selectedBookingId || !newDate || !newTime) {
-      setRescheduleError('Please select a date and time.');
+    if (!selectedBookingId || !newDate || !newTime || !newFavoriteEmployee) {
+      setRescheduleError('Please select a date, time, and employee.');
       return;
     }
 
@@ -511,6 +535,7 @@ const BookingPage = () => {
                   ...booking,
                   bookingDate: newDate,
                   bookingTime: newTime,
+                  favoriteEmployee: newFavoriteEmployee,
                 }
               : booking
           )
@@ -723,10 +748,12 @@ const BookingPage = () => {
     setFilterStatus('all');
   };
 
-  // Render reschedule modal (aligned with BookSlot.js styling)
+  // Render reschedule modal
   const renderRescheduleModal = () => {
     const selectedBooking = bookings.find((b) => b._id === selectedBookingId);
-    const duration = selectedBooking?.duration || 60; // Define duration
+    const duration = selectedBooking
+      ? 60 + (selectedBooking.relatedServices?.split(', ').length - 1) * 30
+      : 60;
 
     return (
       <div
@@ -769,10 +796,7 @@ const BookingPage = () => {
           </h3>
           <select
             value={newFavoriteEmployee}
-            onChange={(e) => {
-              setNewFavoriteEmployee(e.target.value);
-              setNewTime(''); // Reset time when employee changes
-            }}
+            onChange={handleEmployeeChange}
             disabled={!manPower.length}
             style={{
               width: '100%',
@@ -1056,9 +1080,7 @@ const BookingPage = () => {
             overflow-x: auto;
             background: #ffffff;
             border-radius: 15px;
-            box
-
--shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
             padding: 1rem;
             margin-top: 1rem;
             animation: fadeIn 0.8s ease-out;
