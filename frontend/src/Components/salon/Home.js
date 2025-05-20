@@ -320,7 +320,7 @@ const Home = () => {
     <div
       style={{
         backgroundColor: "#ffffff",
-        minHeight: "100vh",
+        minHeight: "80vh",
         color: "rgb(244,245,247)",
       }}
     >
