@@ -64,7 +64,7 @@ const ForgotPassword = () => {
       alert(response.data.message); // Notify user that OTP was sent
       setIsOtpSent(true);
     } catch (error) {
-      console.error('Error sending OTP:', error);
+      // console.error('Error sending OTP:', error);
       alert(error.response?.data?.message || 'Failed to send OTP');
     } finally {
       setIsLoading(false);
@@ -94,7 +94,7 @@ const ForgotPassword = () => {
         setErrors((prev) => ({ ...prev, otp: 'Invalid OTP' }));
       }
     } catch (error) {
-      console.error('Error verifying OTP:', error);
+      // console.error('Error verifying OTP:', error);
       alert(error.response?.data?.message || 'Failed to verify OTP');
       setErrors((prev) => ({ ...prev, otp: error.response?.data?.message || 'Server error' }));
     } finally {
@@ -149,7 +149,7 @@ const ForgotPassword = () => {
       alert(response.data.message); // Show success message
       navigate('/login'); // Redirect to login page
     } catch (error) {
-      console.error('Error updating password:', error);
+      // console.error('Error updating password:', error);
       alert(error.response?.data?.message || 'Failed to update password');
     } finally {
       setIsLoading(false);

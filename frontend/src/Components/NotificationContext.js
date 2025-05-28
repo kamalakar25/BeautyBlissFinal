@@ -13,21 +13,21 @@ export const NotificationProvider = ({ children }) => {
   const fetchNotificationCount = useCallback(async (retryCount = 3) => {
     const email = localStorage.getItem('email');
     if (!email) {
-      console.log('NotificationContext: No email found, skipping fetch');
+      // console.log('NotificationContext: No email found, skipping fetch');
       setNotificationCount(0);
       setError('No email found in localStorage');
       return;
     }
 
     try {
-      console.log('NotificationContext: Fetching notification count for', email);
+      // console.log('NotificationContext: Fetching notification count for', email);
       const response = await axios.get(`${BASE_URL}/api/notifications/notification-count/${email}`);
       const { unreadCount } = response.data;
       setNotificationCount(unreadCount || 0);
       setError(null);
-      console.log('NotificationContext: Notification count:', unreadCount);
+      // console.log('NotificationContext: Notification count:', unreadCount);
     } catch (error) {
-      console.error('NotificationContext: Error fetching notification count:', error.message);
+      // console.error('NotificationContext: Error fetching notification count:', error.message);
       if (error.response) {
         // Handle specific HTTP status codes
         if (error.response.status === 404) {
@@ -39,7 +39,7 @@ export const NotificationProvider = ({ children }) => {
         }
       } else if (error.request && retryCount > 0) {
         // Retry on network errors
-        console.log(`NotificationContext: Retrying... Attempts left: ${retryCount}`);
+        // console.log(`NotificationContext: Retrying... Attempts left: ${retryCount}`);
         setTimeout(() => fetchNotificationCount(retryCount - 1), 1000);
         return;
       } else {
@@ -53,22 +53,22 @@ export const NotificationProvider = ({ children }) => {
   const fetchNotifications = useCallback(async () => {
     const email = localStorage.getItem('email');
     if (!email) {
-      console.log('NotificationContext: No email found, skipping fetch');
+      // console.log('NotificationContext: No email found, skipping fetch');
       setNotifications([]);
       setError('No email found in localStorage');
       return;
     }
 
     try {
-      console.log('NotificationContext: Fetching notifications for', email);
+      // console.log('NotificationContext: Fetching notifications for', email);
       const response = await axios.get(`${BASE_URL}/api/notifications/notifications/${email}`);
       const notifications = response.data.notifications || [];
       setNotifications(notifications);
       setNotificationCount(notifications.filter(n => !n.isRead).length);
       setError(null);
-      console.log('NotificationContext: Fetched notifications:', notifications);
+      // console.log('NotificationContext: Fetched notifications:', notifications);
     } catch (error) {
-      console.error('NotificationContext: Error fetching notifications:', error.message);
+      // console.error('NotificationContext: Error fetching notifications:', error.message);
       if (error.response) {
         if (error.response.status === 404) {
           setError('Notifications endpoint not found. Check backend configuration.');

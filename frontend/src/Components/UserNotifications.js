@@ -15,16 +15,16 @@ const UserNotifications = () => {
   useEffect(() => {
     const fetchNotifications = async () => {
       const email = localStorage.getItem('email');
-      console.log('UserNotifications: Fetching notifications for email:', email);
+      // console.log('UserNotifications: Fetching notifications for email:', email);
       try {
         const res = await axios.get(`${BASE_URL}/api/notifications/notifications/${email}`);
         const userNotifications = res.data
           .filter((notif) => notif.recipientType === 'User')
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        console.log('UserNotifications: Fetched notifications:', userNotifications);
+        // console.log('UserNotifications: Fetched notifications:', userNotifications);
         setNotifications(userNotifications);
       } catch (error) {
-        console.error('UserNotifications: Failed to fetch notifications:', error);
+        // console.error('UserNotifications: Failed to fetch notifications:', error);
       }
     };
 
@@ -32,7 +32,7 @@ const UserNotifications = () => {
     fetchNotificationCount();
 
     const intervalId = setInterval(() => {
-      console.log('UserNotifications: Periodic fetch of notification count');
+      // console.log('UserNotifications: Periodic fetch of notification count');
       fetchNotificationCount();
     }, 10000);
 
@@ -48,18 +48,18 @@ const UserNotifications = () => {
   }, [fetchNotificationCount]);
 
   const handleNotificationClick = async (notification) => {
-    console.log('UserNotifications: Clicking notification, ID:', notification._id, 'isRead:', notification.isRead);
+    // console.log('UserNotifications: Clicking notification, ID:', notification._id, 'isRead:', notification.isRead);
     setSelectedNotification(notification);
     setIsModalOpen(true);
 
     if (!notification.isRead) {
       try {
-        console.log('UserNotifications: Marking notification as read, ID:', notification._id);
+        // console.log('UserNotifications: Marking notification as read, ID:', notification._id);
         const response = await axios.post(`${BASE_URL}/api/notifications/mark-notification-read`, {
           email: localStorage.getItem('email'),
           notificationId: notification._id,
         });
-        console.log('UserNotifications: Mark notification response:', response.data);
+        // console.log('UserNotifications: Mark notification response:', response.data);
 
         setNotifications((prev) =>
           prev.map((notif) =>
@@ -68,9 +68,9 @@ const UserNotifications = () => {
         );
 
         setNotificationCount(response.data.unreadCount);
-        console.log('UserNotifications: Updated notification count to', response.data.unreadCount);
+        // console.log('UserNotifications: Updated notification count to', response.data.unreadCount);
       } catch (error) {
-        console.error('UserNotifications: Failed to mark notification as read:', error);
+        // console.error('UserNotifications: Failed to mark notification as read:', error);
       }
     } else {
       console.log('UserNotifications: Notification already read, no count update');
@@ -93,12 +93,12 @@ const UserNotifications = () => {
       const date = new Date(createdAt);
       return date.toLocaleString();
     } catch (e) {
-      console.error('Invalid date format:', createdAt);
+      // console.error('Invalid date format:', createdAt);
       return 'N/A';
     }
   };
 
-  console.log('UserNotifications: Rendering with notificationCount =', notificationCount);
+  // console.log('UserNotifications: Rendering with notificationCount =', notificationCount);
 
   return (
     <div

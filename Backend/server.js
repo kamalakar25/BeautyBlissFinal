@@ -31,6 +31,7 @@ app.use('/api/terms' , Terms);
 app.use('/api/notifications', notificationRoutes);
 
 app.use('/api/slots', Slot);
+app.use('/api/coupons', require('./routes/CouponRoutes'));
 
 // Serve static files
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));

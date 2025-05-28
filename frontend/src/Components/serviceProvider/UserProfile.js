@@ -1,4 +1,3 @@
-// src/components/UserProfile.js
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import {
@@ -11,9 +10,52 @@ import {
   IconButton,
   MenuItem,
   InputAdornment,
+  Grow,
 } from '@mui/material';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { styled } from '@mui/system';
+
+const BASE_URL = process.env.REACT_APP_API_URL;
+
+// Styled component for the coupon
+const CouponContainer = styled(Box)(({ theme }) => ({
+  marginTop: '20px',
+  padding: '20px',
+  background: 'linear-gradient(135deg, #ff6f61, #ffb88c)',
+  borderRadius: '12px',
+  textAlign: 'center',
+  color: '#fff',
+  fontWeight: 'bold',
+  fontSize: '1.2rem',
+  boxShadow: '0px 8px 20px rgba(0,0,0,0.2)',
+  position: 'relative',
+  overflow: 'hidden',
+  animation: 'couponPop 0.5s ease-in-out',
+  '@keyframes couponPop': {
+    '0%': {
+      transform: 'scale(0.8)',
+      opacity: 0,
+    },
+    '100%': {
+      transform: 'scale(1)',
+      opacity: 1,
+    },
+  },
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1rem',
+    padding: '15px',
+  },
+}));
+
+const CouponCode = styled(Typography)(({ theme }) => ({
+  fontSize: '1.5rem',
+  letterSpacing: '2px',
+  marginTop: '10px',
+  [theme.breakpoints.down('sm')]: {
+    fontSize: '1.2rem',
+  },
+}));
 
 const UserProfile = () => {
   const userEmail = localStorage.getItem('email');
@@ -23,17 +65,27 @@ const UserProfile = () => {
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [coupon, setCoupon] = useState(null);
+  const [loyaltyPoints, setLoyaltyPoints] = useState(0);
 
   useEffect(() => {
     if (userEmail) {
       axios
-        .get(`http://localhost:5000/api/users/userProfile/${encodeURIComponent(userEmail)}`)
+        .get(`${BASE_URL}/api/users/userProfile/${encodeURIComponent(userEmail)}`)
         .then((res) => {
           setUser(res.data);
           setFormData({ ...res.data, password: '', confirmPassword: '' });
+          setLoyaltyPoints(res.data.loyaltyPoints || 0);
+          // Set existing coupon if available
+          if (res.data.couponCode && res.data.couponCode !== 'NONE') {
+            setCoupon({ code: res.data.couponCode, discount: '10%' });
+          }else {
+            setCoupon(null);
+          }
         })
         .catch((err) => {
-          console.error('Failed to fetch user:', err);
+          // console.error('Failed to fetch user:', err);
+          alert('Failed to load profile. Please try again.');
         });
     }
   }, [userEmail]);
@@ -147,7 +199,6 @@ const UserProfile = () => {
       return;
     }
 
-    // Prepare update data, exclude password and confirmPassword if empty
     const updateData = { ...formData };
     if (!updateData.password) {
       delete updateData.password;
@@ -155,17 +206,54 @@ const UserProfile = () => {
     delete updateData.confirmPassword;
 
     axios
-      .put(`http://localhost:5000/api/users/updateProfile/${encodeURIComponent(userEmail)}`, updateData)
+      .put(`${BASE_URL}/api/users/updateProfile/${encodeURIComponent(userEmail)}`, updateData)
       .then((res) => {
         setUser(res.data.user);
+        setLoyaltyPoints(res.data.user.loyaltyPoints || 0);
         alert('Profile updated successfully!');
         setFormData((prev) => ({ ...prev, password: '', confirmPassword: '' }));
         setErrors({});
         setEditMode(false);
       })
       .catch((err) => {
-        console.error('Failed to update profile:', err);
         alert(err.response?.data?.message || 'Update failed');
+      });
+  };
+
+  const handleRedeem = () => {
+    // Check if user has enough points
+    if (loyaltyPoints < 100) {
+      alert('You need at least 100 loyalty points to redeem a coupon.');
+      return;
+    }
+
+    // Check if an existing coupon is present
+    if (user.couponCode !== 'NONE') {
+      alert('You already have an active coupon. Please use it before redeeming a new one.');
+      return;
+    }
+
+    // Generate a random coupon code
+    const couponCode = `DISC${Math.random().toString(36).substr(2, 8).toUpperCase()}`;
+    setCoupon({ code: couponCode, discount: '10%' });
+
+    // Deduct 100 loyalty points and update backend
+    const newLoyaltyPoints = loyaltyPoints - 100;
+    axios
+      .put(`${BASE_URL}/api/users/updateProfile/${userEmail}`, {
+        ...formData,
+        loyaltyPoints: newLoyaltyPoints,
+        couponCode: couponCode,
+      })
+      .then((res) => {
+        setUser(res.data.user);
+        setLoyaltyPoints(newLoyaltyPoints);
+        alert('Coupon redeemed successfully! 100 loyalty points deducted.');
+      })
+      .catch((err) => {
+        // console.error('Failed to update loyalty points:', err);
+        alert(err.response?.data?.message || 'Failed to redeem coupon.');
+        setCoupon(null); // Revert coupon if update fails
       });
   };
 
@@ -186,7 +274,7 @@ const UserProfile = () => {
     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
       <Card
         sx={{
-          width: '90%',
+          width: { xs: '95%', sm: '90%' },
           maxWidth: 600,
           boxShadow: '0px 10px 30px rgba(0,0,0,0.3)',
           borderRadius: 4,
@@ -210,15 +298,17 @@ const UserProfile = () => {
             { label: 'Date of Birth', key: 'dob', isDateInput: true },
             { label: 'Designation', key: 'designation', disabled: true },
             { label: 'Joined At', key: 'createdAt', disabled: true, isDate: true },
+            { label: 'Loyalty Points', key: 'loyaltyPoints', disabled: true },
             { label: 'Password', key: 'password', isPassword: true },
             ...(editMode
               ? [{ label: 'Confirm Password', key: 'confirmPassword', isPassword: true, isConfirmPassword: true }]
               : []),
           ].map((item) => (
+            <Box key={item.key} sx={{ mt: 2 }}>
             <Box
-              key={item.key}
+              
               sx={{
-                mt: 2,
+          
                 display: { xs: 'block', md: 'flex' },
                 alignItems: 'center',
                 justifyContent: 'space-between',
@@ -313,21 +403,31 @@ const UserProfile = () => {
                 <Typography sx={{ flex: 1, textAlign: { md: 'left' } }}>
                   {item.isPassword
                     ? '********'
+                    : item.key === 'loyaltyPoints'
+                    ? loyaltyPoints
                     : item.isDate
                     ? formatDate(user[item.key])
                     : user[item.key] || 'Not specified'}
                 </Typography>
               )}
             </Box>
+            {item.key === 'loyaltyPoints' && (
+      <Box sx={{ mt: 1, textAlign: { xs: 'center', md: 'left' } }}>
+        <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+          For every 100 points, you can redeem them and use the coupon code to avail a 10% discount.
+        </Typography>
+      </Box>
+    )}
+    </Box>
           ))}
 
-          <Box sx={{ mt: 4 }}>
+          <Box sx={{ mt: 4, display: 'flex', gap: 2, justifyContent: 'center', flexWrap: 'wrap' }}>
             {editMode ? (
               <Button
                 variant="contained"
                 color="success"
                 onClick={handleSave}
-                sx={{ px: 4, borderRadius: 3 }}
+                sx={{ px: 4, borderRadius: 3, minWidth: { xs: '100px', sm: '120px' } }}
                 disabled={Object.values(errors).some((error) => error)}
               >
                 Save
@@ -337,12 +437,30 @@ const UserProfile = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleEdit}
-                sx={{ px: 4, borderRadius: 3 }}
+                sx={{ px: 4, borderRadius: 3, minWidth: { xs: '100px', sm: '120px' } }}
               >
                 Edit
               </Button>
             )}
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleRedeem}
+              sx={{ px: 4, borderRadius: 3, minWidth: { xs: '100px', sm: '120px' } }}
+              disabled={loyaltyPoints < 100 || coupon !== null} // Disable if insufficient points or active coupon exists
+            >
+              Redeem
+            </Button>
           </Box>
+
+          {coupon && (
+            <Grow in={true} timeout={500}>
+              <CouponContainer>
+                <Typography>Congratulations! You've received a {coupon.discount} discount!</Typography>
+                <CouponCode>Coupon Code: {coupon.code}</CouponCode>
+              </CouponContainer>
+            </Grow>
+          )}
         </CardContent>
       </Card>
     </Box>

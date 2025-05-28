@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const bookingSchema = new mongoose.Schema({
   userComplaint: { type: String },
   spComplaint: { type: String },
-  confirmed: { type: String, default: 'Pending' },
+  confirmed: { type: String, default: "Pending" },
   pin: { type: String },
   parlorEmail: { type: String, required: true },
   parlorName: { type: String, required: true },
@@ -22,8 +22,8 @@ const bookingSchema = new mongoose.Schema({
   relatedServices: [{ type: String }],
   paymentStatus: {
     type: String,
-    enum: ['PENDING', 'PAID', 'FAILED', 'CANCELLED'],
-    default: 'PENDING',
+    enum: ["PENDING", "PAID", "FAILED", "CANCELLED"],
+    default: "PENDING",
   },
   transactionId: { type: String },
   orderId: { type: String },
@@ -33,9 +33,11 @@ const bookingSchema = new mongoose.Schema({
   upiId: { type: String },
   refundStatus: {
     type: String,
-    enum: ['PENDING', 'APPROVED', 'REJECTED', 'NONE'],
-    default: 'NONE',
+    enum: ["PENDING", "APPROVED", "REJECTED", "NONE"],
+    default: "NONE",
   },
+  couponCode: { type: String },
+  discountAmount: { type: Number, default: 0 },
 });
 
 const enquirySchema = new mongoose.Schema({
@@ -49,17 +51,21 @@ const enquirySchema = new mongoose.Schema({
 
 const userSchema = new mongoose.Schema(
   {
+    couponCode: { type: String, default: "NONE" },
+    loyaltyPoints: { type: Number, default: 0 },
     otp: { type: Number },
     otpTimestamp: { type: Date },
     login: { type: Boolean, default: false },
     name: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true },
-    gender: { type: String, enum: ['Male', 'Female', 'Other'], required: true },
+    gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
     phone: { type: String, required: true, unique: true },
     dob: { type: Date, required: true },
     designation: { type: String, required: true },
     password: { type: String, required: true },
     bookings: [bookingSchema],
+    emergencyContact: { type: String, required: true },
+    allergies: { type: String, required: true },
     enquiries: [enquirySchema],
   },
   {

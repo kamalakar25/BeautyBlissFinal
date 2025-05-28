@@ -107,7 +107,7 @@ const BookingPage = () => {
           `${BASE_URL}/api/users/sp/bookings/${email}`
         );
         const data = await response.json();
-        console.log("Fetched bookings:", data);
+        // console.log("Fetched bookings:", data);
         setBookings(data);
 
         // Set default min and max dates for graph
@@ -123,7 +123,7 @@ const BookingPage = () => {
           }
         }
       } catch (err) {
-        console.error("Failed to fetch bookings:", err);
+        // console.error("Failed to fetch bookings:", err);
       } finally {
         setIsLoading(false);
       }
@@ -219,7 +219,7 @@ const BookingPage = () => {
 
   // Handle refund action
   const openRefundModal = (booking) => {
-    console.log("Selected booking for refund:", booking);
+    // console.log("Selected booking for refund:", booking);
     setSelectedBooking(booking);
     setIsRefundModalOpen(true);
   };
@@ -263,7 +263,7 @@ const BookingPage = () => {
         alert("Failed to process refund action");
       }
     } catch (error) {
-      console.error("Error processing refund action:", error);
+      // console.error("Error processing refund action:", error);
       alert("Error processing refund action");
     }
   };
@@ -278,7 +278,7 @@ const BookingPage = () => {
       }
       return "N/A";
     } catch (e) {
-      console.error("Invalid date format:", date);
+      // console.error("Invalid date format:", date);
       return "N/A";
     }
   };
@@ -654,7 +654,7 @@ const BookingPage = () => {
                 />
                 <FilterToggleButton
                   onClick={handleToggleFilters}
-                  style={{ borderRadius: "20px" }}
+                  style={{ borderRadius: "20px", marginTop: "40px" }}
                 >
                   <FilterListIcon />
                 </FilterToggleButton>
@@ -682,7 +682,7 @@ const BookingPage = () => {
                   flexDirection: { xs: "column", sm: "row" },
                   flexWrap: { sm: "wrap" },
                   justifyContent: "center",
-                  alignItems: "center",
+                  alignItems: "end",
                   gap: { xs: 2, sm: 3 },
                   width: "100%",
                 }}
@@ -695,6 +695,7 @@ const BookingPage = () => {
                   onChange={handleSearchChange}
                   sx={{
                     p: "10px",
+                    mt: "0px",
                     borderRadius: "8px",
                     border: "2px solid #201548",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -703,7 +704,6 @@ const BookingPage = () => {
                     width: { xs: "100%", sm: "200px" },
                     maxWidth: "200px",
                     color: "#0e0f0f",
-                    mt: { xs: 0, sm: "20px" },
                     textAlign: "center",
                     display: { xs: "none", lg: "block" },
                     transition: "all 0.3s ease",

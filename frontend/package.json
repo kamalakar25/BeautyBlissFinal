@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "^3.2.1",
+    "@date-io/date-fns": "^2.16.0",
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.0",
     "@googlemaps/js-api-loader": "^1.16.8",
@@ -63,5 +63,8 @@
   "main": "index.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "eslint-webpack-plugin": "^5.0.1"
+  }
 }

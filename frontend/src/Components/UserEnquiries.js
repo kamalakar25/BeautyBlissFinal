@@ -38,7 +38,7 @@ const UserEnquiries = () => {
         setEnquiries(response.data);
         setFilteredEnquiries(response.data);
       } catch (error) {
-        console.error("Error fetching enquiries:", error);
+        // console.error("Error fetching enquiries:", error);
         alert("Failed to fetch enquiries. Please ensure you are logged in.");
       }
     };
@@ -145,7 +145,7 @@ const UserEnquiries = () => {
       setSelectedEnquiry(null);
       alert("Support message sent successfully!");
     } catch (error) {
-      console.error("Error sending support message:", error);
+      // console.error("Error sending support message:", error);
       alert("Failed to send support message");
     }
   };

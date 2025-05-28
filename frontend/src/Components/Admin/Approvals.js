@@ -19,7 +19,7 @@ const Approvals = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.error('Error fetching providers:', err);
+        // console.error('Error fetching providers:', err);
         setLoading(false);
       });
   }, []);
@@ -35,7 +35,7 @@ const Approvals = () => {
           setLoadingStates((prev) => ({ ...prev, [id]: false })); // Clear loading state
         })
         .catch((err) => {
-          console.error('Error approving provider:', err);
+          // console.error('Error approving provider:', err);
           setLoadingStates((prev) => ({ ...prev, [id]: false })); // Clear loading state on error
         });
     }

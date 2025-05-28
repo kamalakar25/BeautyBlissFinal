@@ -42,7 +42,7 @@ router.get("/get/all/service-providers", async (req, res) => {
     // console.log("Fetched shops:", shops.map((shop) => shop._id.toString()));
     res.status(200).json(shops);
   } catch (error) {
-    console.error("Error fetching service providers:", error);
+    // console.error("Error fetching service providers:", error);
     res.status(500).json({ message: "Error fetching service providers" });
   }
 });
@@ -50,10 +50,10 @@ router.get("/get/all/service-providers", async (req, res) => {
 // Update priority of a service provider
 
 router.put("/update-priority/:id", async (req, res) => {
-  console.log("Update priority request:", {
-    id: req.params.id,
-    priority: req.body.priority,
-  });
+  // console.log("Update priority request:", {
+  //   id: req.params.id,
+  //   priority: req.body.priority,
+  // });
   try {
     const { priority } = req.body;
     if (priority === undefined || isNaN(priority) || priority < 0) {
@@ -68,13 +68,13 @@ router.put("/update-priority/:id", async (req, res) => {
       { new: true }
     );
     if (!shop) {
-      console.log(`Shop not found for ID: ${req.params.id}`);
+      // console.log(`Shop not found for ID: ${req.params.id}`);
       return res.status(404).json({ message: "Shop not found" });
     }
-    console.log("Shop updated:", shop);
+    // console.log("Shop updated:", shop);
     res.status(200).json({ message: "Priority updated successfully", shop });
   } catch (error) {
-    console.error("Error updating priority:", error);
+    // console.error("Error updating priority:", error);
     res.status(500).json({ message: "Server error while updating priority" });
   }
 });

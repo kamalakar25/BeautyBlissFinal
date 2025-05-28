@@ -194,7 +194,7 @@ const UserDetails = () => {
           }
           return true;
         } catch (error) {
-          console.warn(`Invalid date for user ${user._id}:`, user.createdAt);
+          // console.warn(`Invalid date for user ${user._id}:`, user.createdAt);
           return false;
         }
       });
@@ -211,7 +211,7 @@ const UserDetails = () => {
         setShowModal(false);
         setUserToDelete(null);
       } catch (error) {
-        console.error("Error deleting user:", error);
+        // console.error("Error deleting user:", error);
       }
     }
   };
@@ -242,7 +242,7 @@ const UserDetails = () => {
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
     } catch (error) {
-      console.warn(`Invalid date: ${dateString}`);
+      // console.warn(`Invalid date: ${dateString}`);
       return "Invalid Date";
     }
   };

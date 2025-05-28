@@ -14,11 +14,11 @@ const SpNotifications = () => {
   const fetchNotifications = async (retryCount = 3) => {
     const email = localStorage.getItem('email');
     if (!email) {
-      console.error('SpNotifications: No email found in localStorage');
+      // console.error('SpNotifications: No email found in localStorage');
       setError('Please log in to view notifications');
       return;
     }
-    console.log('SpNotifications: Fetching notifications for email:', email);
+    // console.log('SpNotifications: Fetching notifications for email:', email);
     try {
       const res = await axios.get(
         `${BASE_URL}/api/notifications/notifications/${email}`
@@ -26,23 +26,23 @@ const SpNotifications = () => {
       const spNotifications = res.data
         .filter((notif) => notif.recipientType === 'ServiceProvider')
         .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      console.log('SpNotifications: Fetched notifications:', spNotifications);
+      // console.log('SpNotifications: Fetched notifications:', spNotifications);
       setNotifications(spNotifications);
       setNotificationCount(spNotifications.filter((n) => !n.isRead).length);
       setError(null);
     } catch (error) {
-      console.error(
-        'SpNotifications: Failed to fetch notifications:',
-        error.message
-      );
+      // console.error(
+      //   'SpNotifications: Failed to fetch notifications:',
+      //   error.message
+      // );
       if (error.response?.status === 404) {
         setError(
           'Notification endpoint not found. Please check backend configuration.'
         );
       } else if (error.request && retryCount > 0) {
-        console.log(
-          `SpNotifications: Retrying fetch... Attempts left: ${retryCount}`
-        );
+        // console.log(
+        //   `SpNotifications: Retrying fetch... Attempts left: ${retryCount}`
+        // );
         setTimeout(() => fetchNotifications(retryCount - 1), 1000);
         return;
       } else {
@@ -54,25 +54,25 @@ const SpNotifications = () => {
   const fetchNotificationCount = async () => {
     const email = localStorage.getItem('email');
     if (!email) {
-      console.error('SpNotifications: No email found in localStorage');
+      // console.error('SpNotifications: No email found in localStorage');
       setNotificationCount(0);
       return;
     }
-    console.log(
-      'SpNotifications: Fetching notification count for email:',
-      email
-    );
+    // console.log(
+    //   'SpNotifications: Fetching notification count for email:',
+    //   email
+    // );
     try {
       const res = await axios.get(
         `${BASE_URL}/api/notifications/notification-count/${email}`
       );
       setNotificationCount(res.data.unreadCount || 0);
-      console.log('SpNotifications: Notification count:', res.data.unreadCount);
+      // console.log('SpNotifications: Notification count:', res.data.unreadCount);
     } catch (error) {
-      console.error(
-        'SpNotifications: Failed to fetch notification count:',
-        error.message
-      );
+      // console.error(
+      //   'SpNotifications: Failed to fetch notification count:',
+      //   error.message
+      // );
       if (error.response?.status === 404) {
         setError(
           'Notification count endpoint not found. Please check backend configuration.'
@@ -89,7 +89,7 @@ const SpNotifications = () => {
     fetchNotificationCount();
 
     const intervalId = setInterval(() => {
-      console.log('SpNotifications: Periodic fetch of notifications and count');
+      // console.log('SpNotifications: Periodic fetch of notifications and count');
       fetchNotifications();
       fetchNotificationCount();
     }, 10000);
@@ -106,21 +106,21 @@ const SpNotifications = () => {
   }, []);
 
   const handleNotificationClick = async (notification) => {
-    console.log(
-      'SpNotifications: Clicking notification, ID:',
-      notification._id,
-      'isRead:',
-      notification.isRead
-    );
+    // console.log(
+    //   'SpNotifications: Clicking notification, ID:',
+    //   notification._id,
+    //   'isRead:',
+    //   notification.isRead
+    // );
     setSelectedNotification(notification);
     setIsModalOpen(true);
 
     if (!notification.isRead) {
       try {
-        console.log(
-          'SpNotifications: Marking notification as read, ID:',
-          notification._id
-        );
+        // console.log(
+        //   'SpNotifications: Marking notification as read, ID:',
+        //   notification._id
+        // );
         const response = await axios.post(
           `${BASE_URL}/api/notifications/mark-notification-read`,
           {
@@ -128,10 +128,10 @@ const SpNotifications = () => {
             notificationId: notification._id,
           }
         );
-        console.log(
-          'SpNotifications: Mark notification response:',
-          response.data
-        );
+        // console.log(
+        //   'SpNotifications: Mark notification response:',
+        //   response.data
+        // );
 
         setNotifications((prev) =>
           prev.map((notif) =>
@@ -140,15 +140,15 @@ const SpNotifications = () => {
         );
 
         setNotificationCount(response.data.unreadCount || 0);
-        console.log(
-          'SpNotifications: Updated notification count to',
-          response.data.unreadCount
-        );
+        // console.log(
+        //   'SpNotifications: Updated notification count to',
+        //   response.data.unreadCount
+        // );
       } catch (error) {
-        console.error(
-          'SpNotifications: Failed to mark notification as read:',
-          error.message
-        );
+        // console.error(
+        //   'SpNotifications: Failed to mark notification as read:',
+        //   error.message
+        // );
         if (error.response?.status === 404) {
           setError(
             'Mark notification endpoint not found. Please check backend configuration.'
@@ -158,9 +158,9 @@ const SpNotifications = () => {
         }
       }
     } else {
-      console.log(
-        'SpNotifications: Notification already read, no count update'
-      );
+      // console.log(
+      //   'SpNotifications: Notification already read, no count update'
+      // );
     }
   };
 
@@ -169,17 +169,17 @@ const SpNotifications = () => {
       notification.type !== 'Booking' ||
       notification.title.includes('Confirmed')
     ) {
-      console.log(
-        'SpNotifications: Skipping confirmation, already confirmed or not a booking'
-      );
+      // console.log(
+      //   'SpNotifications: Skipping confirmation, already confirmed or not a booking'
+      // );
       return;
     }
 
     try {
-      console.log(
-        'SpNotifications: Confirming booking, booking ID:',
-        notification.bookingId
-      );
+      // console.log(
+      //   'SpNotifications: Confirming booking, booking ID:',
+      //   notification.bookingId
+      // );
       const response = await axios.post(
         `${BASE_URL}/api/notifications/sp/mark-booking-confirmed`,
         {
@@ -187,7 +187,7 @@ const SpNotifications = () => {
           bookingId: notification.bookingId,
         }
       );
-      console.log('SpNotifications: Confirm booking response:', response.data);
+      // console.log('SpNotifications: Confirm booking response:', response.data);
 
       setNotifications((prev) =>
         prev.map((notif) =>
@@ -218,15 +218,15 @@ const SpNotifications = () => {
       );
 
       setNotificationCount(response.data.unreadCount || 0);
-      console.log(
-        'SpNotifications: Updated notification count to',
-        response.data.unreadCount
-      );
+      // console.log(
+      //   'SpNotifications: Updated notification count to',
+      //   response.data.unreadCount
+      // );
     } catch (error) {
-      console.error(
-        'SpNotifications: Failed to confirm booking:',
-        error.message
-      );
+      // console.error(
+      //   'SpNotifications: Failed to confirm booking:',
+      //   error.message
+      // );
       if (error.response?.status === 404) {
         setError(
           'Booking confirmation endpoint not found. Please check backend configuration.'
@@ -253,15 +253,15 @@ const SpNotifications = () => {
       const date = new Date(createdAt);
       return date.toLocaleString();
     } catch (e) {
-      console.error('SpNotifications: Invalid date format:', createdAt);
+      // console.error('SpNotifications: Invalid date format:', createdAt);
       return 'N/A';
     }
   };
 
-  console.log(
-    'SpNotifications: Rendering with notificationCount =',
-    notificationCount
-  );
+  // console.log(
+  //   'SpNotifications: Rendering with notificationCount =',
+  //   notificationCount
+  // );
 
   return (
     <div

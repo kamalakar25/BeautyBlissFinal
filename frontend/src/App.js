@@ -44,10 +44,9 @@ import Footer from './Components/salon/Footer';
 import AdminFaqs from './Components/Admin/AdminFaqs';
 import SpNotifications from './Components/SpNotifications';
 import SpHome from './Components/serviceProvider/SpHome';
+import LeadCaptureForm from './Components/salon/LeadCaptureForm';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
-
-console.log("BASE_URL", BASE_URL);
 
 
 
@@ -66,7 +65,7 @@ function App() {
       <div style={{ marginTop: "50px" }}>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<><Home /> <Faqs /> <Footer /> </>} />
+          <Route path="/" element={<><Home /> <LeadCaptureForm /> <Faqs /> <Footer /> </>} />
           <Route path="/salon" element={<Salon />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<Login />} />

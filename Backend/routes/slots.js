@@ -112,7 +112,7 @@ router.get("/available", async (req, res) => {
 
     res.json({ slots: availableSlots });
   } catch (error) {
-    console.error("Error fetching slots:", error);
+    // console.error("Error fetching slots:", error);
     res.status(500).json({ message: "Server error" });
   }
 });

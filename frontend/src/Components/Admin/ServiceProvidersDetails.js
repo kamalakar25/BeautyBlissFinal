@@ -177,11 +177,11 @@ const ServiceProviderDetails = () => {
   useEffect(() => {
     const fetchServiceProviders = async () => {
       try {
-        console.log("Fetching from:", `${BASE_URL}/api/main/admin/get/all/service-providers`);
+        // console.log("Fetching from:", `${BASE_URL}/api/main/admin/get/all/service-providers`);
         const response = await axios.get(
           `${BASE_URL}/api/main/admin/get/all/service-providers`
         );
-        console.log("API response:", response.data);
+        // console.log("API response:", response.data);
 
         if (!Array.isArray(response.data) || response.data.length === 0) {
           setError("No service providers found in the database.");
@@ -204,11 +204,11 @@ const ServiceProviderDetails = () => {
           priority: provider.priority !== undefined ? parseInt(provider.priority) : 0,
         }));
 
-        console.log("Normalized providers:", normalizedProviders);
+        // console.log("Normalized providers:", normalizedProviders);
         setServiceProviders(normalizedProviders.reverse());
         setFilteredProviders(normalizedProviders);
       } catch (error) {
-        console.error("Fetch error:", error);
+        // console.error("Fetch error:", error);
         setError(
           error.response
             ? `Failed to load service providers: ${error.response.data.message || error.message}`
@@ -267,7 +267,7 @@ const ServiceProviderDetails = () => {
       });
     }
 
-    console.log("Filtered providers:", filtered);
+    // console.log("Filtered providers:", filtered);
     setFilteredProviders(filtered);
     setCurrentPage(1);
   }, [searchQuery, startDateFilter, endDateFilter, serviceProviders]);
@@ -281,7 +281,7 @@ const ServiceProviderDetails = () => {
           { priority: newPriority },
           { headers: { "Content-Type": "application/json" } }
         );
-        console.log("Priority update response:", response.data);
+        // console.log("Priority update response:", response.data);
         // Refetch service providers to ensure UI is in sync with backend
         const fetchResponse = await axios.get(
           `${BASE_URL}/api/main/admin/get/all/service-providers`
@@ -302,13 +302,13 @@ const ServiceProviderDetails = () => {
         setFilteredProviders(normalizedProviders);
         alert("Priority updated successfully.");
       } catch (error) {
-        console.error("Priority update error:", {
-          status: error.response?.status,
-          data: error.response?.data,
-          message: error.message,
-          providerId,
-          newPriority,
-        });
+        // console.error("Priority update error:", {
+        //   status: error.response?.status,
+        //   data: error.response?.data,
+        //   message: error.message,
+        //   providerId,
+        //   newPriority,
+        // });
         setError(
           error.response?.data?.message
             ? `Failed to update priority: ${error.response.data.message}`
@@ -386,7 +386,7 @@ const ServiceProviderDetails = () => {
         setProviderToDelete(null);
         alert("Service provider deleted successfully.");
       } catch (error) {
-        console.error("Delete error:", error);
+        // console.error("Delete error:", error);
         setError(
           error.response
             ? `Failed to delete service provider: ${error.response.data.message}`

@@ -47,7 +47,7 @@ const Home = () => {
     },
     {
       image:
-        "https://play-lh.googleusercontent.com/fo4ebNWvkgfRIbTUJf2BHKuq3Ba2NvmuAkE_qzoAnbYflzPGQOnKeQsTnxi_koyIOA",
+        "https://media.istockphoto.com/id/1927028123/photo/beauty-photo-of-woman-with-clean-and-healthy-skin-showing-her-face.jpg?s=612x612&w=0&k=20&c=zP6RKP_gP1bKgO9lt3hGcRkEzQKXo96ixL5WixseUJ4=",
       title: "Luxury Beauty Rituals",
       description:
         "Reveal your inner glow with our luxurious beauty therapies and expert care.",
@@ -306,7 +306,7 @@ const Home = () => {
         setSelectedProvider("");
       }
     } catch (error) {
-      console.error("Error submitting enquiry:", error);
+      // console.error("Error submitting enquiry:", error);
       alert("Failed to submit enquiry. Please try again.");
     }
   };
@@ -320,7 +320,7 @@ const Home = () => {
     <div
       style={{
         backgroundColor: "#ffffff",
-        minHeight: "80vh",
+        minHeight: "100vh",
         color: "rgb(244,245,247)",
       }}
     >

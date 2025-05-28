@@ -53,13 +53,10 @@ const PaymentCallback = () => {
   useEffect(() => {
     const fetchTerms = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/terms/terms");
-        // Remove duplicates based on the 'term' property
+        const response = await axios.get(`${BASE_URL}/api/terms/terms`);
         const uniqueTerms = Array.from(
           new Set(response.data.map((item) => item.term))
-        ).map((term) =>
-          response.data.find((item) => item.term === term)
-        );
+        ).map((term) => response.data.find((item) => item.term === term));
         setTerms(uniqueTerms);
       } catch (error) {
         setError("Failed to fetch terms and conditions.");
@@ -72,7 +69,9 @@ const PaymentCallback = () => {
   useEffect(() => {
     const attemptVerification = async () => {
       if (!orderId) {
-        setError("No order ID provided. Please try initiating the payment again.");
+        setError(
+          "No order ID provided. Please try initiating the payment again."
+        );
         setLoading(false);
         return;
       }
@@ -90,7 +89,9 @@ const PaymentCallback = () => {
         setPaymentStatus(statusData);
         setLoading(false);
         if (statusData.paymentStatus === "FAILED") {
-          setError(`Payment failed: ${statusData.failureReason || "Unknown reason"}`);
+          setError(
+            `Payment failed: ${statusData.failureReason || "Unknown reason"}`
+          );
         }
       } catch (err) {
         const errorMessage = err.response?.data?.error || err.message;
@@ -104,7 +105,9 @@ const PaymentCallback = () => {
     } else {
       setLoading(false);
       if (paymentStatus.paymentStatus === "FAILED") {
-        setError(`Payment failed: ${paymentStatus.failureReason || "Unknown reason"}`);
+        setError(
+          `Payment failed: ${paymentStatus.failureReason || "Unknown reason"}`
+        );
       }
     }
   }, [orderId, retryCount, paymentStatus]);
@@ -122,7 +125,9 @@ const PaymentCallback = () => {
       setPaymentStatus(statusData);
       setLoading(false);
       if (statusData.paymentStatus === "FAILED") {
-        setError(`Payment failed: ${statusData.failureReason || "Unknown reason"}`);
+        setError(
+          `Payment failed: ${statusData.failureReason || "Unknown reason"}`
+        );
       }
     } catch (err) {
       const errorMessage = err.response?.data?.error || err.message;
@@ -140,7 +145,7 @@ const PaymentCallback = () => {
 
     const pageWidth = doc.internal.pageSize.width;
     const margin = 15;
-    const lineSpacing = 8;
+    const lineSpacing = 6;
     let yPosition = margin;
 
     const drawRoundedRect = (x, y, width, height, radius) => {
@@ -261,11 +266,38 @@ const PaymentCallback = () => {
       });
     }
 
+    if (paymentStatus?.couponCode) {
+      doc.text(
+        `Coupon: ${paymentStatus.couponCode} (-${(
+          paymentStatus.discountAmount || 0
+        )})`,
+        margin + 5,
+        yPosition
+      );
+      yPosition += 8;
+    }
+
     doc.setFont("helvetica", "bold");
     doc.text(
-      `Total: ${paymentStatus?.currency || "INR"} ${
-        paymentStatus?.total_amount || "N/A"
-      }`,
+      `Total: ${paymentStatus?.currency || "INR"} ${(
+        paymentStatus?.total_amount || 0
+      )}`,
+      pageWidth - margin - 50,
+      yPosition
+    );
+    yPosition += 8;
+    doc.text(
+      `Discount: ${paymentStatus?.currency || "INR"} ${(
+        paymentStatus?.discountAmount || 0
+      )}`,
+      pageWidth - margin - 50,
+      yPosition
+    );
+    yPosition += 8;
+    doc.text(
+      `Final Amount: ${paymentStatus?.currency || "INR"} ${(
+        paymentStatus?.amount || 0
+      )}`,
       pageWidth - margin - 50,
       yPosition
     );
@@ -288,9 +320,9 @@ const PaymentCallback = () => {
     const paymentDetails = [
       {
         label: "Amount Paid",
-        value: `${paymentStatus?.currency || "INR"} ${
-          paymentStatus?.amount || "N/A"
-        }`,
+        value: `${paymentStatus?.currency || "INR"} ${(
+          paymentStatus?.amount || 0
+        )}`,
       },
       { label: "Payment Method", value: paymentStatus?.Payment_Mode || "N/A" },
       { label: "Transaction ID", value: paymentStatus?.transactionId || "N/A" },
@@ -302,6 +334,19 @@ const PaymentCallback = () => {
           : "N/A",
       },
     ];
+
+    if (paymentStatus?.couponCode) {
+      paymentDetails.push({
+        label: "Coupon Code",
+        value: paymentStatus.couponCode || "N/A",
+      });
+      paymentDetails.push({
+        label: "Discount",
+        value: `${paymentStatus?.currency || "INR"} ${(
+          paymentStatus?.discountAmount || 0
+        )}`,
+      });
+    }
 
     if (paymentStatus?.paymentStatus === "FAILED") {
       paymentDetails.push({
@@ -344,7 +389,10 @@ const PaymentCallback = () => {
     if (terms.length > 0) {
       terms.forEach((term, index) => {
         const formattedTerm = `${index + 1}. ${term.term}`;
-        const wrappedText = doc.splitTextToSize(formattedTerm, pageWidth - 2 * (margin + 10));
+        const wrappedText = doc.splitTextToSize(
+          formattedTerm,
+          pageWidth - 2 * (margin + 10)
+        );
         wrappedText.forEach((line) => {
           doc.text(line, margin + 5, yPosition);
           yPosition += lineSpacing - 2;
@@ -500,7 +548,10 @@ const PaymentCallback = () => {
                 py: 1,
                 fontSize: { xs: "0.8rem", sm: "0.9rem" },
                 fontWeight: 500,
-                "&:hover": { bgcolor: theme.primary, borderColor: theme.accent },
+                "&:hover": {
+                  bgcolor: theme.primary,
+                  borderColor: theme.accent,
+                },
               }}
             >
               Back to Home
@@ -563,7 +614,7 @@ const PaymentCallback = () => {
                 p: { xs: 2, sm: 3 },
                 borderRadius: 3,
                 bgcolor: theme.transparent,
-                backdropFilter: "blur(5px)", // Adds a frosted glass effect
+                backdropFilter: "blur(5px)",
                 border: `1px solid rgba(255, 255, 255, 0.3)`,
                 boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
               }}
@@ -623,12 +674,25 @@ const PaymentCallback = () => {
                 <Typography sx={{ color: theme.textSecondary }}>
                   <strong>Total Amount:</strong>{" "}
                   {paymentStatus.currency || "INR"}{" "}
-                  {paymentStatus.total_amount || "N/A"}
+                  {(paymentStatus.total_amount || 0)}
                 </Typography>
+                {paymentStatus.couponCode && (
+                  <>
+                    <Typography sx={{ color: theme.textSecondary }}>
+                      <strong>Coupon Code:</strong>{" "}
+                      {paymentStatus.couponCode || "N/A"}
+                    </Typography>
+                    <Typography sx={{ color: theme.textSecondary }}>
+                      <strong>Discount:</strong>{" "}
+                      {paymentStatus.currency || "INR"}{" "}
+                      {(paymentStatus.discountAmount || 0)}
+                    </Typography>
+                  </>
+                )}
                 <Typography sx={{ color: theme.textSecondary }}>
                   <strong>Amount Paid:</strong>{" "}
                   {paymentStatus.currency || "INR"}{" "}
-                  {paymentStatus.amount || "N/A"}
+                  {(paymentStatus.amount || 0)}
                 </Typography>
                 <Typography sx={{ color: theme.textSecondary }}>
                   <strong>Payment Method:</strong>{" "}
@@ -745,7 +809,10 @@ const PaymentCallback = () => {
                 py: 1,
                 fontSize: { xs: "0.8rem", sm: "0.9rem" },
                 fontWeight: 500,
-                "&:hover": { bgcolor: theme.primary, borderColor: theme.accent },
+                "&:hover": {
+                  bgcolor: theme.primary,
+                  borderColor: theme.accent,
+                },
               }}
             >
               Back to Home

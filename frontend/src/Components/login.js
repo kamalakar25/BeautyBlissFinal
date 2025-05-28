@@ -195,6 +195,7 @@ const Login = () => {
         localStorage.setItem('token', data.token);
         localStorage.setItem('email', identifier);
         localStorage.setItem('userRole', selectedRole);
+        localStorage.setItem('userId', data._id);
 
         if (selectedRole === 'User') {
           navigate('/');

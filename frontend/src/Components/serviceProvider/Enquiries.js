@@ -36,10 +36,10 @@ const Enquiries = () => {
         const response = await axios.get(`${API_BASE_URL}/api/users/enquiries/${parlorEmail}`);
         setEnquiries(response.data);
         setFilteredEnquiries(response.data);
-        console.log("Enquiries fetched:", response.data);
+        // console.log("Enquiries fetched:", response.data);
         
       } catch (error) {
-        console.error("Error fetching enquiries:", error.response?.data || error.message);
+        // console.error("Error fetching enquiries:", error.response?.data || error.message);
         alert("Failed to load enquiries. Please try again later.");
       }
     };
@@ -158,7 +158,7 @@ const Enquiries = () => {
 
       alert("Reply sent successfully!");
     } catch (error) {
-      console.error("Error sending reply:", error.response?.data || error.message);
+      // console.error("Error sending reply:", error.response?.data || error.message);
       alert("Failed to send reply. Please try again.");
     }
   };
@@ -174,7 +174,7 @@ const Enquiries = () => {
         setEnquiries(updatedEnquiries);
         setFilteredEnquiries(updatedEnquiries);
       } catch (error) {
-        console.error("Error deleting enquiry:", error.response?.data || error.message);
+        // console.error("Error deleting enquiry:", error.response?.data || error.message);
         alert("Failed to delete enquiry. Please try again.");
       }
     }
