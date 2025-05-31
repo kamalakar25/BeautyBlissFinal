@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Button, Typography, useMediaQuery, Zoom } from '@mui/material';
 import { motion, useAnimation } from 'framer-motion';
 import bannerImage from '../Assets/beauty1.png';
-import BeforeMakeup from '../Assets/before.jpg';
-import AfterMakeup from '../Assets/after.jpg';
+import BeforeMakeup from "../Assets/before.jpeg";
+import AfterMakeup from "../Assets/after.jpeg";
 import BookOnlineIcon from '@mui/icons-material/BookOnline';
 
 const BookNowButton = () => {
@@ -144,8 +144,8 @@ const BannerSplitHover = () => {
       overflowX: 'hidden', 
       width: '100%', 
       maxWidth: '100vw', 
-      backgroundColor: '#ffffff',
-      backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(245, 243, 255, 0.8) 0%, rgba(255,255,255,1) 50%)'
+      backgroundColor: '#f8cad7',
+      // backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(245, 243, 255, 0.8) 0%, rgba(255,255,255,1) 50%)'
     }}>
       {/* Banner Section */}
       <Box
@@ -440,7 +440,7 @@ const BannerSplitHover = () => {
                      bottom: -12,
                      left: '15%',
                      width: '70%',
-                     height: '4px',
+                     height: '2px',
                      background: `linear-gradient(90deg, transparent, #201548, transparent)`,
                      borderRadius: '2px',
                      opacity: 0.7,
@@ -452,6 +452,7 @@ const BannerSplitHover = () => {
 
           <Box
             sx={{
+              
               position: 'relative',
               width: '90%',
               maxWidth: '900px',

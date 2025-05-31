@@ -65,7 +65,7 @@ function App() {
       <div style={{ marginTop: "50px" }}>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<><Home /> <LeadCaptureForm /> <Faqs /> <Footer /> </>} />
+          <Route path="/" element={<Home />} />
           <Route path="/salon" element={<Salon />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<Login />} />

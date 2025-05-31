@@ -8,8 +8,8 @@ import MarkEmailReadIcon from "@mui/icons-material/MarkEmailRead";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ReplyIcon from "@mui/icons-material/Reply";
 import { motion } from "framer-motion";
-import axios from "axios"; // Import Axios
-import "./Enquiries.css"; // Import your CSS file for styling
+import axios from "axios";
+import "./Enquiries.css";
 
 const Enquiries = () => {
   const [enquiries, setEnquiries] = useState([]);
@@ -24,22 +24,16 @@ const Enquiries = () => {
   const [showReplyModal, setShowReplyModal] = useState(false);
   const itemsPerPage = 5;
 
-
-  // Base URL for API (adjust if your backend is hosted elsewhere)
   const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
 
-  // Fetch enquiries from backend using Axios
   useEffect(() => {
     const fetchEnquiries = async () => {
-        const parlorEmail =localStorage.getItem("email");
+      const parlorEmail = localStorage.getItem("email");
       try {
         const response = await axios.get(`${API_BASE_URL}/api/users/enquiries/${parlorEmail}`);
         setEnquiries(response.data);
         setFilteredEnquiries(response.data);
-        // console.log("Enquiries fetched:", response.data);
-        
       } catch (error) {
-        // console.error("Error fetching enquiries:", error.response?.data || error.message);
         alert("Failed to load enquiries. Please try again later.");
       }
     };
@@ -47,7 +41,6 @@ const Enquiries = () => {
     fetchEnquiries();
   }, []);
 
-  // Filter enquiries based on search, status, and date
   useEffect(() => {
     let filtered = enquiries;
 
@@ -112,11 +105,13 @@ const Enquiries = () => {
     switch (status) {
       case "new":
         return (
-          <span className="badge bg-danger px-3 py-2 rounded-pill">New</span>
+          <span className="badge px-3 py-2 rounded-pill" style={{ backgroundColor: "#fb646b", color: "#fff" }}>
+            New
+          </span>
         );
       case "approved":
         return (
-          <span className="badge bg-warning px-3 py-2 rounded-pill">
+          <span className="badge px-3 py-2 rounded-pill" style={{ backgroundColor: "#FF80DD", color: "#2D2828" }}>
             Approved
           </span>
         );
@@ -135,15 +130,12 @@ const Enquiries = () => {
   };
 
   const handleSendReply = async () => {
-
-    
     try {
       await axios.put(`${API_BASE_URL}/api/users/enquiries/${selectedEnquiry.id}`, {
         status: "approved",
         spMessage: replyText,
       });
 
-      // Update local state
       const updatedEnquiries = enquiries.map((enq) =>
         enq.id === selectedEnquiry.id
           ? { ...enq, status: "approved" }
@@ -158,15 +150,12 @@ const Enquiries = () => {
 
       alert("Reply sent successfully!");
     } catch (error) {
-      // console.error("Error sending reply:", error.response?.data || error.message);
       alert("Failed to send reply. Please try again.");
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this enquiry?")) {
-        
-        
       try {
         await axios.delete(`${API_BASE_URL}/api/users/enquiries/${id}`);
 
@@ -174,7 +163,6 @@ const Enquiries = () => {
         setEnquiries(updatedEnquiries);
         setFilteredEnquiries(updatedEnquiries);
       } catch (error) {
-        // console.error("Error deleting enquiry:", error.response?.data || error.message);
         alert("Failed to delete enquiry. Please try again.");
       }
     }
@@ -199,7 +187,6 @@ const Enquiries = () => {
     }
   };
 
-  
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
@@ -215,71 +202,81 @@ const Enquiries = () => {
   return (
     <div
       style={{
-        backgroundColor: "#ffffff",
+        backgroundColor: "#F8CAD7",
         minHeight: "100vh",
-        color: "#0e0f0f",
+        color: "#2D2828",
       }}
     >
       {/* Header Section */}
       <div
         className="container-fluid py-4 mb-4"
         style={{
-          backgroundColor: "#201548",
-          borderBottom: "5px solid rgba(255, 255, 255, 0.1)",
+          borderBottom: `5px solid ${"#FFEBF1"}`,
         }}
       >
         <div className="container">
           <div className="row align-items-center">
             <div className="col-md-6 text-center text-md-start">
-              <h1 className="fw-bold text-white mb-0">Service Enquiries</h1>
-              <p className="text-white-50 mt-2 mb-0">
+              <h1 className="fw-bold" style={{ color: "rgb(244, 61, 70)" }}>
+                Service Enquiries
+              </h1>
+              <p className="mt-2 mb-0" style={{ color: "#2D2828" }}>
                 Manage and respond to customer enquiries
               </p>
             </div>
             <div className="col-md-6 d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
               <div className="d-flex gap-4">
-                <Badge
-                  badgeContent={
-                    filteredEnquiries.filter((e) => e.status === "new").length
-                  }
-                  color="error"
-                >
-                  <button
-                    className={`btn ${
-                      statusFilter === "new"
-                        ? "btn-danger"
-                        : "btn-outline-light"
-                    }`}
-                    onClick={() =>
-                      setStatusFilter(statusFilter === "new" ? "all" : "new")
-                    }
-                  >
-                    New
-                  </button>
-                </Badge>
-                <Badge
-                  badgeContent={
-                    filteredEnquiries.filter((e) => e.status === "approved")
-                      .length
-                  }
-                  color="warning"
-                >
-                  <button
-                    className={`btn ${
-                      statusFilter === "approved"
-                        ? "btn-warning"
-                        : "btn-outline-light"
-                    }`}
-                    onClick={() =>
-                      setStatusFilter(
-                        statusFilter === "approved" ? "all" : "approved"
-                      )
-                    }
-                  >
-                    Approved
-                  </button>
-                </Badge>
-              </div>
+  <Badge
+    badgeContent={
+      filteredEnquiries.filter((e) => e.status === "new").length
+    }
+    color="error"
+  >
+    <button
+      className={`btn ${
+        statusFilter === "new"
+          ? "btn-custom"
+          : "btn-outline-custom"
+      }`}
+      onClick={() =>
+        setStatusFilter(statusFilter === "new" ? "all" : "new")
+      }
+      style={{
+        backgroundColor: statusFilter === "new" ? "#fb646b" : "transparent",
+        color: statusFilter === "new" ? "#fff" : "#fb646b",
+        borderColor: "#fb646b",
+      }}
+    >
+      New
+    </button>
+  </Badge>
+  <Badge
+    badgeContent={
+      filteredEnquiries.filter((e) => e.status === "approved").length
+    }
+    color="warning"
+  >
+    <button
+      className={`btn ${
+        statusFilter === "approved"
+          ? "btn-custom"
+          : "btn-outline-custom"
+      }`}
+      onClick={() =>
+        setStatusFilter(
+          statusFilter === "approved" ? "all" : "approved"
+        )
+      }
+      style={{
+        backgroundColor: statusFilter === "approved" ? "#fb646b" : "transparent",
+        color: statusFilter === "approved" ? "#fff" : "#fb646b",
+        borderColor: "#fb646b",
+      }}
+    >
+      Approved
+    </button>
+  </Badge>
+</div>
             </div>
           </div>
         </div>
@@ -291,31 +288,34 @@ const Enquiries = () => {
         <div className="row mb-4">
           <div className="col-md-6 mb-3 mb-md-0">
             <div className="input-group">
-              <span className="input-group-text bg-white border-end-0">
-                <SearchIcon style={{ color: "#201548" }} />
+              <span className="input-group-text" style={{ backgroundColor: "#FFEBF1", borderColor: "#FB646B" }}>
+                <SearchIcon style={{ color: "#fb646b" }} />
               </span>
               <input
                 type="text"
-                className="form-control border-start-0"
+                className="form-control"
                 placeholder="Search by name, email, enquiry..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                style={{ borderColor: "#FB646B", color: "#2D2828" }}
               />
             </div>
           </div>
           <div className="col-md-6 d-flex justify-content-md-end">
             <div className="d-flex gap-2">
               <button
-                className="btn btn-outline-secondary d-flex align-items-center"
+                className="btn btn-outline-custom d-flex align-items-center"
                 onClick={() => setShowFilters(!showFilters)}
+                style={{ borderColor: "#fb646b", color: "#fb646b" }}
               >
                 <FilterListIcon className="me-1" />
                 {showFilters ? "Hide Filters" : "Show Filters"}
               </button>
               {(searchQuery || statusFilter !== "all" || dateFilter) && (
                 <button
-                  className="btn btn-outline-danger"
+                  className="btn btn-outline-custom"
                   onClick={clearAllFilters}
+                  style={{ borderColor: "#fb646b", color: "#fb646b" }}
                 >
                   Clear Filters
                 </button>
@@ -334,20 +334,26 @@ const Enquiries = () => {
             transition={{ duration: 0.3 }}
           >
             <div className="col-md-4 mb-3 mb-md-0">
-              <label className="form-label">Filter by Date</label>
+              <label className="form-label" style={{ color: "#2D2828" }}>
+                Filter by Date
+              </label>
               <input
                 type="date"
                 className="form-control"
                 value={dateFilter}
                 onChange={(e) => setDateFilter(e.target.value)}
+                style={{ borderColor: "#FB646B", color: "#2D2828" }}
               />
             </div>
             <div className="col-md-4 mb-3 mb-md-0">
-              <label className="form-label">Filter by Status</label>
+              <label className="form-label" style={{ color: "#2D2828" }}>
+                Filter by Status
+              </label>
               <select
                 className="form-select"
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
+                style={{ borderColor: "#FB646B", color: "#2D2828" }}
               >
                 <option value="all">All Statuses</option>
                 <option value="new">New</option>
@@ -369,14 +375,15 @@ const Enquiries = () => {
                     style={{ opacity: 0.5 }}
                   />
                 </div>
-                <h4 className="text-muted">No enquiries found</h4>
-                <p className="text-muted">
+                <h4 style={{ color: "#2D2828" }}>No enquiries found</h4>
+                <p style={{ color: "#2D2828" }}>
                   Try adjusting your search or filter criteria
                 </p>
                 {(searchQuery || statusFilter !== "all" || dateFilter) && (
                   <button
-                    className="btn btn-outline-primary mt-2"
+                    className="btn btn-custom"
                     onClick={clearAllFilters}
+                    style={{ backgroundColor: "#fb646b", color: "#fff" }}
                   >
                     Clear All Filters
                   </button>
@@ -384,72 +391,79 @@ const Enquiries = () => {
               </div>
             ) : (
               <div className="table-responsive">
-               <table className="table table-hover border">
-  <thead className="table-light">
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">Customer</th>
-      <th scope="col">Enquiry</th>
-      <th scope="col">Date</th>
-      <th scope="col">Status</th>
-      <th scope="col" className="text-end">
-        Actions
-      </th>
-    </tr>
-  </thead>
-  <tbody>
-    {paginatedEnquiries.map((enquiry) => (
-      <tr key={enquiry.id}>
-        <td className="align-middle">{enquiry.id}</td>
-        <td className="align-middle">
-          <div className="d-flex flex-column">
-            <span className="fw-semibold">{enquiry.customerName}</span>
-            <small className="text-muted">{enquiry.customerEmail}</small>
-            <small className="text-muted">{enquiry.customerPhone}</small>
-          </div>
-        </td>
-        <td className="align-middle">
-          <div
-            className="d-flex flex-column"
-            style={{
-              maxWidth: "200px", // Adjust width as needed
-              whiteSpace: "normal", // Allow text to wrap
-              wordBreak: "break-word", // Break long words
-              overflow: "hidden", // Hide overflow
-              textOverflow: "ellipsis", // Optional: Add ellipsis for overflow
-            }}
-          >
-            <span>{enquiry.message}</span>
-          </div>
-        </td>
-        <td className="align-middle">{formatDate(enquiry.dateSubmitted)}</td>
-        <td className="align-middle">{getStatusBadge(enquiry.status)}</td>
-        <td className="align-middle text-end">
-          <div className="btn-group">
-            {enquiry.status === "new" && (
-              <Tooltip title="Reply">
-                <button
-                  className="btn btn-sm btn-outline-primary"
-                  onClick={() => handleReply(enquiry)}
-                >
-                  <ReplyIcon fontSize="small" />
-                </button>
-              </Tooltip>
-            )}
-            <Tooltip title="Delete">
-              <button
-                className="btn btn-sm btn-outline-danger"
-                onClick={() => handleDelete(enquiry.id)}
-              >
-                <DeleteIcon fontSize="small" />
-              </button>
-            </Tooltip>
-          </div>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
+                <table className="table table-hover border">
+                  <thead style={{ backgroundColor: "#f1f5f9" }}>
+                    <tr>
+                      <th scope="col">ID</th>
+                      <th scope="col">Customer</th>
+                      <th scope="col">Enquiry</th>
+                      <th scope="col">Date</th>
+                      <th scope="col">Status</th>
+                      <th scope="col" className="text-end">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {paginatedEnquiries.map((enquiry) => (
+                      <tr key={enquiry.id} style={{ backgroundColor: "#FFEBF1" }}>
+                        <td className="align-middle">{enquiry.id}</td>
+                        <td className="align-middle">
+                          <div className="d-flex flex-column">
+                            <span className="fw-semibold" style={{ color: "#2D2828" }}>
+                              {enquiry.customerName}
+                            </span>
+                            <small style={{ color: "#2D2828" }}>{enquiry.customerEmail}</small>
+                            <small style={{ color: "#2D2828" }}>{enquiry.customerPhone}</small>
+                          </div>
+                        </td>
+                        <td className="align-middle">
+                          <div
+                            className="d-flex flex-column"
+                            style={{
+                              maxWidth: "200px",
+                              whiteSpace: "normal",
+                              wordBreak: "break-word",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              color: "#2D2828",
+                            }}
+                          >
+                            <span>{enquiry.message}</span>
+                          </div>
+                        </td>
+                        <td className="align-middle" style={{ color: "#2D2828" }}>
+                          {formatDate(enquiry.dateSubmitted)}
+                        </td>
+                        <td className="align-middle">{getStatusBadge(enquiry.status)}</td>
+                        <td className="align-middle text-end">
+                          <div className="btn-group">
+                            {enquiry.status === "new" && (
+                              <Tooltip title="Reply">
+                                <button
+                                  className="btn btn-sm btn-outline-custom"
+                                  onClick={() => handleReply(enquiry)}
+                                  style={{ borderColor: "#fb646b", color: "#fb646b" }}
+                                >
+                                  <ReplyIcon fontSize="small" />
+                                </button>
+                              </Tooltip>
+                            )}
+                            <Tooltip title="Delete">
+                              <button
+                                className="btn btn-sm btn-outline-custom"
+                                onClick={() => handleDelete(enquiry.id)}
+                                style={{ borderColor: "#fb646b", color: "#fb646b" }}
+                              >
+                                <DeleteIcon fontSize="small" />
+                              </button>
+                            </Tooltip>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
           </div>
@@ -464,16 +478,26 @@ const Enquiries = () => {
                   onClick={handlePreviousPage}
                   disabled={currentPage === 1}
                   className="pagination-btn"
+                  style={{
+                    backgroundColor: currentPage === 1 ? "#e5e7eb" : "#fb646b",
+                    color: "#fff",
+                    borderColor: "#fb646b",
+                  }}
                 >
                   Previous
                 </button>
-                <span className="pagination-info mx-3">
+                <span className="pagination-info mx-3" style={{ color: "#2D2828" }}>
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
                   className="pagination-btn"
+                  style={{
+                    backgroundColor: currentPage === totalPages ? "#e5e7eb" : "#fb646b",
+                    color: "#fff",
+                    borderColor: "#fb646b",
+                  }}
                 >
                   Next
                 </button>
@@ -493,53 +517,53 @@ const Enquiries = () => {
           }}
         >
           <motion.div
-            className="bg-white rounded-4 shadow-lg p-4 mx-3"
+            className="rounded-4 shadow-lg p-4 mx-3"
             style={{
               maxWidth: "600px",
               width: "100%",
               maxHeight: "90vh",
               overflowY: "auto",
+              backgroundColor: "#FFEBF1",
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
             <div className="d-flex justify-content-between align-items-center mb-4">
-              <h3 className="m-0" style={{ color: "#201548" }}>
+              <h3 className="m-0" style={{ color: "#F710B9" }}>
                 Reply to Enquiry
               </h3>
               <button
                 className="btn border-0"
                 onClick={() => setShowReplyModal(false)}
-                style={{ color: "#201548" }}
+                style={{ color: "#fb646b" }}
               >
                 <i className="bi bi-x-lg"></i>
               </button>
             </div>
 
             <div className="mb-4">
-              <h5>Customer Information</h5>
-              <p className="mb-1">
+              <h5 style={{ color: "#2D2828" }}>Customer Information</h5>
+              <p className="mb-1" style={{ color: "#2D2828" }}>
                 <strong>Name:</strong> {selectedEnquiry.customerName}
               </p>
-              <p className="mb-1">
+              <p className="mb-1" style={{ color: "#2D2828" }}>
                 <strong>Email:</strong> {selectedEnquiry.customerEmail}
               </p>
-              
-              <p className="mb-1">
+              <p className="mb-1" style={{ color: "#2D2828" }}>
                 <strong>Phone:</strong> {selectedEnquiry.customerPhone}
               </p>
             </div>
 
             <div className="mb-4">
-              <h5>Original Message</h5>
-              <div className="p-3 bg-light rounded mb-3">
+              <h5 style={{ color: "#2D2828" }}>Original Message</h5>
+              <div className="p-3 rounded mb-3" style={{ backgroundColor: "#f1f5f9", color: "#2D2828" }}>
                 {selectedEnquiry.message}
               </div>
             </div>
 
             <div className="mb-4">
-              <label htmlFor="replyMessage" className="form-label fw-semibold">
+              <label htmlFor="replyMessage" className="form-label fw-semibold" style={{ color: "#2D2828" }}>
                 Your Reply
               </label>
               <textarea
@@ -549,21 +573,23 @@ const Enquiries = () => {
                 placeholder="Type your response here..."
                 value={replyText}
                 onChange={(e) => setReplyText(e.target.value)}
+                style={{ borderColor: "#FB646B", color: "#2D2828" }}
               ></textarea>
             </div>
 
             <div className="d-flex gap-3 justify-content-end">
               <button
-                className="btn btn-outline-secondary"
+                className="btn btn-outline-custom"
                 onClick={() => setShowReplyModal(false)}
+                style={{ borderColor: "#fb646b", color: "#fb646b" }}
               >
                 Cancel
               </button>
               <button
                 className="btn"
                 style={{
-                  backgroundColor: "#201548",
-                  color: "white",
+                  backgroundColor: "#D946EF",
+                  color: "#fff",
                 }}
                 onClick={handleSendReply}
                 disabled={!replyText.trim()}
@@ -574,8 +600,6 @@ const Enquiries = () => {
           </motion.div>
         </div>
       )}
-
-    
     </div>
   );
 };

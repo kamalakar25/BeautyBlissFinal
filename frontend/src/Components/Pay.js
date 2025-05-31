@@ -1,23 +1,27 @@
-import CloseIcon from "@mui/icons-material/Close";
+import CloseIcon from '@mui/icons-material/Close';
 import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   FormControlLabel,
   IconButton,
   Modal,
   Radio,
   RadioGroup,
+  Step,
+  StepLabel,
+  Stepper,
   TextField,
   Typography,
-  CircularProgress,
-} from "@mui/material";
-import axios from "axios";
-import { motion } from "framer-motion";
-import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+} from '@mui/material';
+import axios from 'axios';
+import { motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import image from './Assets/bro.png';
 
-const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
 const Pay = () => {
   const location = useLocation();
@@ -33,20 +37,21 @@ const Pay = () => {
     favoriteEmployee,
   } = location.state || {};
 
-  const [paymentAmountOption, setPaymentAmountOption] = useState("");
+  const [paymentAmountOption, setPaymentAmountOption] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [openModal, setOpenModal] = useState(false);
   const [terms, setTerms] = useState([]);
-  const [coupon, setCoupon] = useState(null); // { code, discount } or null
-  const [couponCode, setCouponCode] = useState(""); // User-entered coupon code
-  const [couponError, setCouponError] = useState("");
+  const [coupon, setCoupon] = useState(null);
+  const [couponCode, setCouponCode] = useState('');
+  const [couponError, setCouponError] = useState('');
   const [applyCoupon, setApplyCoupon] = useState(false);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(totalAmount || 0);
-  const [loading, setLoading] = useState(false); // Loading state for payment processing
+  const [loading, setLoading] = useState(false);
 
-  // Validate booking details on mount
+  const steps = ['Booking Slot', 'Billing', 'Confirmation'];
+
   useEffect(() => {
     if (
       !totalAmount ||
@@ -59,9 +64,9 @@ const Pay = () => {
       !parlor?.name
     ) {
       setError(
-        "Missing booking details. Please start the booking process again."
+        'Missing booking details. Please start the booking process again.'
       );
-      setTimeout(() => navigate("/bookslot"), 3000);
+      setTimeout(() => navigate('/bookslot'), 3000);
     }
   }, [
     totalAmount,
@@ -74,33 +79,27 @@ const Pay = () => {
     navigate,
   ]);
 
-  // Fetch terms and first-user coupon status
   useEffect(() => {
     const fetchTermsAndCoupon = async () => {
       try {
-        // Fetch terms
         const termsResponse = await axios.get(`${BASE_URL}/api/terms/terms`);
         const uniqueTerms = Array.from(
           new Set(termsResponse.data.map((item) => item.term))
         ).map((term) => termsResponse.data.find((item) => item.term === term));
         setTerms(uniqueTerms);
 
-        // Fetch first-user coupon status
-        const userId = localStorage.getItem("userId");
-        const token = localStorage.getItem("token");
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
         if (!userId || !token) {
-          // console.warn("Pay: Missing userId or token in localStorage");
-          setError("Please log in to check coupon eligibility.");
+          setError('Please log in to check coupon eligibility.');
           return;
         }
 
         if (!/^[0-9a-fA-F]{24}$/.test(userId)) {
-          // console.warn("Pay: Invalid userId format:", userId);
-          setError("Invalid user ID. Please login again.");
+          setError('Invalid user ID. Please login again.');
           return;
         }
 
-        // console.log("Pay: Fetching coupon status for userId:", userId);
         const couponResponse = await axios.post(
           `${BASE_URL}/api/coupons/status`,
           { userId },
@@ -110,16 +109,11 @@ const Pay = () => {
             },
           }
         );
-        // console.log("Pay: Coupon status response:", couponResponse.data);
 
         if (
           couponResponse.data.couponClaimed &&
           couponResponse.data.coupon?.code
         ) {
-          // console.log(
-          //   "Pay: Validating first-user coupon:",
-          //   couponResponse.data.coupon.code
-          // );
           const validateResponse = await axios.post(
             `${BASE_URL}/api/coupons/validate`,
             { userId, couponCode: couponResponse.data.coupon.code },
@@ -129,39 +123,23 @@ const Pay = () => {
               },
             }
           );
-          // console.log(
-          //   "Pay: Coupon validation response:",
-          //   validateResponse.data
-          // );
 
           if (validateResponse.data.valid) {
             setCoupon({
               code: couponResponse.data.coupon.code,
               discount: validateResponse.data.discount,
             });
-            setCouponCode(couponResponse.data.coupon.code); // Pre-fill coupon code
+            setCouponCode(couponResponse.data.coupon.code);
             setApplyCoupon(true);
           } else {
-            // console.warn(
-            //   "Pay: First-user coupon is invalid or expired:",
-            //   validateResponse.data.message
-            // );
             setCoupon(null);
             setApplyCoupon(false);
           }
         } else {
-          // console.log(
-          //   "Pay: No first-user coupon claimed or coupon code missing"
-          // );
           setCoupon(null);
           setApplyCoupon(false);
         }
       } catch (error) {
-        // console.error(
-        //   "Pay: Failed to fetch terms or coupon:",
-        //   error.message,
-        //   error.response?.data
-        // );
         setTerms([]);
         setCoupon(null);
         setApplyCoupon(false);
@@ -170,56 +148,42 @@ const Pay = () => {
     fetchTermsAndCoupon();
   }, []);
 
-  // Redeem a coupon if none is assigned
   const redeemCoupon = async () => {
     try {
-      const userEmail = localStorage.getItem("email");
+      const userEmail = localStorage.getItem('email');
       if (!userEmail) {
-        setCouponError("Please log in to redeem a coupon.");
+        setCouponError('Please log in to redeem a coupon.');
         return;
       }
       const newCouponCode = `DISC${Math.random()
         .toString(36)
         .substring(2, 8)
         .toUpperCase()}`;
-      // console.log(
-      //   "Pay: Redeeming coupon for email:",
-      //   userEmail,
-      //   "with code:",
-      //   newCouponCode
-      // );
       const response = await axios.post(`${BASE_URL}/api/users/redeem-coupon`, {
         email: userEmail,
         couponCode: newCouponCode,
       });
-      // console.log("Pay: Coupon redemption response:", response.data);
       setCoupon({
         code: response.data.coupon.code,
         discount: response.data.coupon.discount,
       });
       setCouponCode(response.data.coupon.code);
       setApplyCoupon(true);
-      setCouponError("");
+      setCouponError('');
     } catch (error) {
-      // console.error(
-      //   "Pay: Coupon redemption failed:",
-      //   error.message,
-      //   error.response?.data
-      // );
       setCouponError(
-        error.response?.data?.message || "Failed to redeem coupon"
+        error.response?.data?.message || 'Failed to redeem coupon'
       );
     }
   };
 
-  // Validate user-entered coupon
   const validateCoupon = async (code) => {
     try {
-      const userEmail = localStorage.getItem("email");
+      const userEmail = localStorage.getItem('email');
       if (!userEmail) {
-        setCouponError("Please log in to validate coupon.");
+        setCouponError('Please log in to validate coupon.');
       }
-      
+
       const response = await axios.post(
         `${BASE_URL}/api/users/validate-coupon`,
         {
@@ -230,27 +194,22 @@ const Pay = () => {
 
       if (response.data.valid) {
         setCoupon({ code, discount: response.data.discount || 0.1 });
-        setCouponError("");
+        setCouponError('');
         setApplyCoupon(true);
       } else {
         setCoupon(null);
         setCouponError(
-          response.data.message || "Invalid or expired coupon code"
+          response.data.message || 'Invalid or expired coupon code'
         );
         setApplyCoupon(false);
       }
     } catch (error) {
-      // console.error(
-      //   "Pay: Coupon validation failed:",
-      //   error.message,
-      //   error.response?.data
-      // );
       setCoupon(null);
       const errorMessage =
-        error.response?.data?.message || "Failed to validate coupon";
+        error.response?.data?.message || 'Failed to validate coupon';
       setCouponError(errorMessage);
       setApplyCoupon(false);
-      if (errorMessage === "No coupon assigned to this user") {
+      if (errorMessage === 'No coupon assigned to this user') {
         setCouponError(
           `${errorMessage}. Would you like to redeem a new coupon?`
         );
@@ -258,7 +217,6 @@ const Pay = () => {
     }
   };
 
-  // Handle coupon code input change
   const handleCouponChange = (e) => {
     const { value } = e.target;
     setCouponCode(value);
@@ -270,7 +228,6 @@ const Pay = () => {
     }
   };
 
-  // Calculate final amount based on coupon
   useEffect(() => {
     if (applyCoupon && coupon && totalAmount) {
       const discount = totalAmount * coupon.discount;
@@ -284,31 +241,29 @@ const Pay = () => {
 
   const handlePaymentAmountChange = (e) => {
     setPaymentAmountOption(e.target.value);
-    setError("");
+    setError('');
   };
 
   const handleApplyCoupon = () => {
     if (!coupon) {
-      setError("No valid coupon available to apply.");
+      setError('No valid coupon available to apply.');
       return;
     }
-     if (applyCoupon) {
-    // Removing coupon: clear coupon code, reset states
-    setCouponCode("");
-    setCoupon(null);
-    setApplyCoupon(false);
-    setCouponError("");
-  } else {
-    // Applying coupon
-    setApplyCoupon(true);
-  }
-    
-    setError("");
+    if (applyCoupon) {
+      setCouponCode('');
+      setCoupon(null);
+      setApplyCoupon(false);
+      setCouponError('');
+    } else {
+      setApplyCoupon(true);
+    }
+
+    setError('');
   };
 
   const calculatePaymentAmount = () => {
     if (!finalAmount || finalAmount <= 0) return 0;
-    return paymentAmountOption === "25%" ? finalAmount * 0.25 : finalAmount;
+    return paymentAmountOption === '25%' ? finalAmount * 0.25 : finalAmount;
   };
 
   const createNotifications = async (
@@ -326,37 +281,35 @@ const Pay = () => {
           bookingId,
         }
       );
-      // console.log("Pay: Notifications created successfully");
     } catch (error) {
-      // console.error("Pay: Failed to create notifications:", error.message);
       setError(
-        "Failed to create booking notifications. Booking is still confirmed."
+        'Failed to create booking notifications. Booking is still confirmed.'
       );
     }
   };
 
   const handleConfirm = async () => {
     if (!paymentAmountOption) {
-      setError("Please select a payment amount (25% or Full).");
+      setError('Please select a payment amount (25% or Full).');
       return;
     }
 
     if (!finalAmount || finalAmount <= 0) {
-      setError("Invalid total amount. Please try again.");
+      setError('Invalid total amount. Please try again.');
       return;
     }
 
     if (!window.Razorpay) {
-      setError("Razorpay SDK not loaded. Please refresh the page.");
+      setError('Razorpay SDK not loaded. Please refresh the page.');
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
     try {
-      const userEmail = localStorage.getItem("email");
+      const userEmail = localStorage.getItem('email');
       if (!userEmail) {
-        setError("User email not found. Please log in again.");
-        setLoading(false); // Stop loading on error
+        setError('User email not found. Please log in again.');
+        setLoading(false);
         return;
       }
 
@@ -376,7 +329,6 @@ const Pay = () => {
         discountAmount: applyCoupon && coupon ? discountAmount : 0,
       };
 
-      // console.log("Pay: Creating order with bookingData:", bookingData);
       const response = await axios.post(
         `${BASE_URL}/api/razorpay/order`,
         bookingData
@@ -384,20 +336,19 @@ const Pay = () => {
       const { order, bookingId } = response.data;
 
       if (!order || !bookingId) {
-        throw new Error("Failed to create order or booking");
+        throw new Error('Failed to create order or booking');
       }
 
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY || "rzp_test_UlCC6Rw2IJrhyh",
+        key: process.env.REACT_APP_RAZORPAY_KEY || 'rzp_test_UlCC6Rw2IJrhyh',
         amount: order.amount,
         currency: order.currency,
-        name: "Parlor Booking",
+        name: 'Parlor Booking',
         description: `Payment for booking ${bookingId}`,
         order_id: order.id,
         handler: async function (response) {
           const pin = Math.floor(Math.random() * 90000) + 10000;
           try {
-            // console.log("Pay: Validating payment with response:", response);
             const validationResponse = await axios.post(
               `${BASE_URL}/api/razorpay/order/validate`,
               {
@@ -407,40 +358,20 @@ const Pay = () => {
                 razorpay_signature: response.razorpay_signature,
                 userEmail,
                 bookingId,
-                paymentType: paymentAmountOption === "25%" ? "initial" : "full",
+                paymentType: paymentAmountOption === '25%' ? 'initial' : 'full',
                 couponCode: applyCoupon && coupon ? coupon.code : null,
               }
             );
-            // console.log(
-            //   "Pay: Payment validation response:",
-            //   validationResponse.data
-            // );
 
-            // Update coupon in backend after successful payment
             if (applyCoupon && coupon && coupon.code) {
               try {
-                // console.log(
-                //   "Pay: Updating coupon status for email:",
-                //   userEmail,
-                //   "with code:",
-                //   coupon.code
-                // );
-                await axios.put(
-                  `${BASE_URL}/api/users/update/coupon`,
-                  {
-                    couponCode: coupon.code,
-                    email: userEmail,
-                  }
-                );
-                // console.log("Pay: Coupon updated successfully");
+                await axios.put(`${BASE_URL}/api/users/update/coupon`, {
+                  couponCode: coupon.code,
+                  email: userEmail,
+                });
               } catch (couponError) {
-                // console.error(
-                //   "Pay: Failed to update coupon:",
-                //   couponError.message,
-                //   couponError.response?.data
-                // );
                 setError(
-                  "Payment successful, but failed to update coupon status. Please contact support."
+                  'Payment successful, but failed to update coupon status. Please contact support.'
                 );
               }
             }
@@ -449,35 +380,33 @@ const Pay = () => {
               bookingId,
               userEmail,
               parlor.email,
-              "PAID"
+              'PAID'
             );
 
-            // Delay navigation slightly to ensure loading state is visible
             setTimeout(() => {
-              setLoading(false); // Stop loading before navigation
+              setLoading(false);
               navigate(
                 `/payment/callback?order_id=${response.razorpay_order_id}`,
                 {
                   state: {
                     ...location.state,
                     bookingId,
-                    paymentStatus: "PAID",
+                    paymentStatus: 'PAID',
                     transactionId: response.razorpay_payment_id,
                     orderId: response.razorpay_order_id,
                     currency: order.currency,
                     amount: bookingData.amount,
                     total_amount: bookingData.total_amount,
                     Payment_Mode:
-                      validationResponse.data.paymentMethod || "UNKNOWN",
+                      validationResponse.data.paymentMethod || 'UNKNOWN',
                     createdAt: new Date().toISOString(),
                     couponCode: applyCoupon && coupon ? coupon.code : null,
                     discountAmount: applyCoupon && coupon ? discountAmount : 0,
                   },
                 }
               );
-            }, 500); // Small delay for UX
+            }, 500);
           } catch (err) {
-            // console.error("Pay: Payment verification failed:", err.message);
             setError(
               `Payment verification failed: ${
                 err.response?.data?.error || err.message
@@ -487,24 +416,24 @@ const Pay = () => {
               bookingId,
               userEmail,
               parlor.email,
-              "FAILED"
+              'FAILED'
             );
-            setLoading(false); // Stop loading on error
+            setLoading(false);
             navigate(
               `/payment/callback?order_id=${response.razorpay_order_id}`,
               {
                 state: {
                   ...location.state,
                   bookingId,
-                  paymentStatus: "FAILED",
+                  paymentStatus: 'FAILED',
                   transactionId: response.razorpay_payment_id,
                   orderId: response.razorpay_order_id,
                   failureReason:
-                    err.response?.data?.reason || "Validation failed",
+                    err.response?.data?.reason || 'Validation failed',
                   currency: order.currency,
                   amount: bookingData.amount,
                   total_amount: bookingData.total_amount,
-                  Payment_Mode: "UNKNOWN",
+                  Payment_Mode: 'UNKNOWN',
                   createdAt: new Date().toISOString(),
                   couponCode: applyCoupon && coupon ? coupon.code : null,
                   discountAmount: applyCoupon && coupon ? discountAmount : 0,
@@ -516,29 +445,34 @@ const Pay = () => {
         prefill: {
           name,
           email: userEmail,
-          contact: "9234567890",
+          contact: '9234567890',
         },
         notes: {
           bookingId,
           userEmail,
           couponCode: applyCoupon && coupon ? coupon.code : null,
         },
-        theme: { color: "#4a3f8c" },
+        theme: { color: '#f06292' },
+        modal: {
+          ondismiss: function () {
+            setLoading(false);
+            setError('Payment was canceled by the user.');
+          },
+        },
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.on("payment.failed", async function (response) {
-        const failureReason = response.error.description || "Payment failed";
-        // console.error("Pay: Payment failed:", response.error);
+      rzp.on('payment.failed', async function (response) {
+        const failureReason = response.error.description || 'Payment failed';
         setError(`Payment failed: ${failureReason}`);
         try {
           await axios.post(`${BASE_URL}/api/razorpay/order/validate`, {
             razorpay_order_id: response.error.metadata.order_id,
             razorpay_payment_id: response.error.metadata.payment_id,
-            razorpay_signature: "",
+            razorpay_signature: '',
             userEmail,
             bookingId,
-            paymentType: paymentAmountOption === "25%" ? "initial" : "full",
+            paymentType: paymentAmountOption === '25%' ? 'initial' : 'full',
             failureReason,
             couponCode: applyCoupon && coupon ? coupon.code : null,
           });
@@ -546,26 +480,26 @@ const Pay = () => {
             bookingId,
             userEmail,
             parlor.email,
-            "FAILED"
+            'FAILED'
           );
         } catch (err) {
-          // console.error("Pay: Failed to validate failed payment:", err.message);
+          // Handle any errors during failure validation
         }
-        setLoading(false); // Stop loading on failure
+        setLoading(false);
         navigate(
           `/payment/callback?order_id=${response.error.metadata.order_id}`,
           {
             state: {
               ...location.state,
               bookingId,
-              paymentStatus: "FAILED",
+              paymentStatus: 'FAILED',
               transactionId: response.error.metadata.payment_id,
               orderId: response.error.metadata.order_id,
               failureReason,
               currency: order.currency,
               amount: bookingData.amount,
               total_amount: bookingData.total_amount,
-              Payment_Mode: "UNKNOWN",
+              Payment_Mode: 'UNKNOWN',
               createdAt: new Date().toISOString(),
               couponCode: applyCoupon && coupon ? coupon.code : null,
               discountAmount: applyCoupon && coupon ? discountAmount : 0,
@@ -576,12 +510,11 @@ const Pay = () => {
       rzp.open();
 
       setShowSuccess(true);
-      setError("");
+      setError('');
     } catch (err) {
-      // console.error("Pay: Error processing request:", err.message);
       const errorMessage = err.response?.data?.error || err.message;
       setError(`Error processing request: ${errorMessage}`);
-      setLoading(false); // Stop loading on error
+      setLoading(false);
     }
   };
 
@@ -591,318 +524,515 @@ const Pay = () => {
   return (
     <Box
       sx={{
-        p: 4,
-        maxWidth: 1000,
-        mx: "auto",
-        backgroundColor: "#ffffff",
-        borderRadius: 4,
-        boxShadow: "0 8px 16px rgba(0, 0, 0, 0.1)",
-        transition: "all 0.3s ease",
-        "&:hover": { boxShadow: "0 10px 20px rgba(0, 0, 0, 0.15)" },
-        display: "flex",
-        flexDirection: "column",
+        p: { xs: 2, sm: 4 },
+        width: '100%',
+        backgroundColor: '#f8bbd0',
+        display: 'flex',
+        flexDirection: 'column',
         gap: 3,
-        marginTop: "120px",
-        position: "relative", // For positioning loading overlay
+        minHeight: '100vh',
+        position: 'relative',
+        boxSizing: 'border-box',
       }}
     >
       {/* Loading Overlay */}
       {loading && (
         <Box
           sx={{
-            position: "absolute",
+            position: 'fixed', // Fixed to cover the entire viewport
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: "rgba(255, 255, 255, 0.8)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            borderRadius: 4,
+            backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white background
+            display: 'flex',
+            alignItems: 'center', // Center vertically
+            justifyContent: 'center', // Center horizontally
+            zIndex: 2000, // Ensure it overlays everything
+            flexDirection: 'column', // Stack elements vertically
+            gap: 3, // Increased spacing between elements
           }}
         >
-          <CircularProgress sx={{ color: "#4a3f8c" }} />
-          <Typography sx={{ ml: 2, color: "#4a3f8c" }}>
-            Processing Payment...
+          {/* Beauty Bliss Title */}
+          <Typography
+            sx={{
+              color: '#f06292', // Pink text
+              fontSize: '2.5rem', // Larger font size for the title
+              fontWeight: 700, // Extra bold
+              fontFamily: "'Montserrat', sans-serif",
+              textAlign: 'center',
+            }}
+          >
+            Beauty Bliss
+          </Typography>
+
+          {/* Loading Spinner */}
+          <CircularProgress
+            sx={{
+              color: '#f06292', // Pink spinner
+              width: '50px !important', // Match the size in the image
+              height: '50px !important',
+              thickness: 5, // Thicker spinner to match the image
+            }}
+          />
+
+          {/* Hold On Message */}
+          <Typography
+            sx={{
+              color: '#f06292', // Pink text
+              fontSize: '1.2rem', // Slightly smaller than the title
+              fontWeight: 500, // Medium weight
+              fontFamily: "'Montserrat', sans-serif",
+              textAlign: 'center',
+              maxWidth: '300px', // Limit width for better readability
+            }}
+          >
+            Hold on, your payment will complete soon
           </Typography>
         </Box>
       )}
 
-      <h2
-        className="fw-bold mb-4 animate_animated animate_fadeInDown"
-        style={{
-          animationDuration: "0.8s",
-          fontSize: "2rem",
-          letterSpacing: "1.2px",
-          fontWeight: 600,
-          color: "#6683a8",
-          textShadow: "0 1px 2px rgba(0, 0, 0, 0.1)",
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        Payment for Booking
-      </h2>
+      {/* Title */}
+      <Box sx={{ textAlign: 'center', mb: 2 }}>
+        <h2
+          className='fw-bold animate_animated animate_fadeInDown'
+          style={{
+            animationDuration: '0.8s',
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+            letterSpacing: '1.2px',
+            fontWeight: 600,
+            color: '#000000',
+            fontFamily: "'Montserrat', sans-serif",
+          }}
+        >
+          Payment for Booking
+        </h2>
+      </Box>
+
+      {/* Main Content */}
       <Box
         sx={{
-          display: "flex",
-          justifyContent: "space-between",
+          display: 'flex',
+          flexDirection: { xs: 'column', sm: 'row' },
           gap: 3,
-          flexWrap: "wrap",
+          flexWrap: 'wrap',
+          maxWidth: '1200px',
+          mx: 'auto',
+          width: '100%',
         }}
       >
-        {/* Booking Summary Section */}
+        {/* Left Column: Progress Navigation, Booking Summary, and Payment Options */}
         <Box
           sx={{
             flex: 1,
-            minWidth: "48%",
-            p: 4,
-            borderRadius: 2,
-            backgroundColor: "#f9f9f9",
-            color: "#333333",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            transition: "transform 0.3s ease",
-            "&:hover": { transform: "scale(1.05)" },
-            border: "1px solid #4a3f8c",
+            minWidth: { xs: '100%', sm: '50%' },
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 3,
+            p: { xs: 2, sm: 4 },
+            boxSizing: 'border-box',
           }}
         >
-          <Typography
-            variant="h6"
-            sx={{
-              color: "#4a3f8c",
-              mb: 2,
-              textDecoration: "underline",
-            }}
-          >
-            Booking Summary
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Parlor:</strong> {parlor?.name || "N/A"}
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Service:</strong> {service || "N/A"}
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Date:</strong> {date || "N/A"}
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Time:</strong> {time || "N/A"}
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Employee:</strong> {favoriteEmployee || "N/A"}
-          </Typography>
-          <Typography sx={{ mb: 1, color: "#333333" }}>
-            <strong>Total Amount:</strong> ₹{totalAmount || "0.00"}
-          </Typography>
-          {applyCoupon && coupon && (
-            <>
-              <Typography sx={{ mb: 1, color: "#333333" }}>
-                <strong>Coupon Applied:</strong> {coupon.code} (
-                {(coupon.discount * 100).toFixed(0)}% off)
-              </Typography>
-              <Typography sx={{ mb: 1, color: "#333333" }}>
-                <strong>Discount:</strong> ₹{discountAmount.toFixed(2)}
-              </Typography>
-              <Typography sx={{ mb: 1, color: "#333333" }}>
-                <strong>Final Amount:</strong> ₹{finalAmount}
-              </Typography>
-            </>
-          )}
-        </Box>
-
-        {/* Select Payment Amount Section */}
-        <Box
-          sx={{
-            flex: 1,
-            minWidth: "48%",
-            p: 4,
-            borderRadius: 2,
-            backgroundColor: "white",
-            color: "black",
-            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-            transition: "transform 0.3s ease",
-            "&:hover": { transform: "scale(1.05)" },
-            border: "1px solid #4a3f8c",
-          }}
-        >
-          <Typography
-            variant="h6"
-            sx={{
-              color: "#4a3f8c",
-              mb: 2,
-              textDecoration: "underline",
-            }}
-          >
-            Select Payment Amount
-          </Typography>
-          <RadioGroup
-            value={paymentAmountOption}
-            onChange={handlePaymentAmountChange}
-            disabled={loading} // Disable radio buttons during loading
-          >
-            <FormControlLabel
-              style={{ color: "black" }}
-              value="25%"
-              control={<Radio />}
-              label={`Pay 25% Now (₹${(finalAmount * 0.25).toFixed(
-                2
-              )}) + Cash on Delivery`}
-              disabled={loading}
-            />
-            <FormControlLabel
-              style={{ color: "black" }}
-              value="full"
-              control={<Radio />}
-              label={`Pay Full Amount (₹${finalAmount})`}
-              disabled={loading}
-            />
-          </RadioGroup>
-
-          <Box sx={{ mt: 2 }}>
-            <TextField
-              fullWidth
-              label="Coupon Code"
-              name="couponCode"
-              value={couponCode}
-              onChange={handleCouponChange}
+          {/* Progress Navigation (Horizontal, Aligned Left) */}
+          <Box sx={{ mb: 2, maxWidth: '400px', alignSelf: 'flex-start' }}>
+            <Stepper
+              activeStep={1}
+              alternativeLabel
               sx={{
-                "& .MuiOutlinedInput-root": {
-                  borderRadius: 2,
-                  "&:hover fieldset": { borderColor: "#4a3f8c" },
-                  "&.Mui-focused fieldset": { borderColor: "#4a3f8c" },
-                  backgroundColor: "#ffffff",
-                },
-                "& .MuiInputLabel-root.Mui-focused": { color: "#4a3f8c" },
-                "& .MuiInputBase-input": {
-                  fontSize: "0.9rem",
-                  color: "#0e0f0f",
+                '& .MuiStepLabel-label': {
+                  fontFamily: "'Montserrat', sans-serif",
+                  fontSize: { xs: '0.8rem', sm: '1rem' },
                 },
               }}
-              error={!!couponError}
-              helperText={couponError}
-              disabled={loading} // Disable coupon input during loading
-            />
+            >
+              {steps.map((label, index) => (
+                <Step key={label}>
+                  <StepLabel
+                    sx={{
+                      '& .MuiStepLabel-label': {
+                        color: index <= 1 ? '#f06292' : '#999',
+                        fontWeight: index <= 1 ? 600 : 400,
+                      },
+                      '& .MuiStepIcon-root': {
+                        color: index <= 1 ? '#f06292' : '#ccc',
+                        '&.Mui-completed': {
+                          color: '#f06292',
+                        },
+                        '&.Mui-active': {
+                          color: '#f06292',
+                        },
+                      },
+                      '& .MuiStepIcon-text': {
+                        fill: '#ffffff',
+                      },
+                    }}
+                  >
+                    {label}
+                  </StepLabel>
+                </Step>
+              ))}
+            </Stepper>
           </Box>
 
-          {coupon && (
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="outlined"
-                onClick={handleApplyCoupon}
-                sx={{
-                  color: "#4a3f8c",
-                  borderColor: "#4a3f8c",
-                  "&:hover": { backgroundColor: "rgba(74, 63, 140, 0.5)" },
-                }}
-                disabled={loading} // Disable button during loading
-              >
-                {applyCoupon
-                  ? "Remove Coupon"
-                  : `Apply Coupon (${coupon.code})`}
-              </Button>
-            </Box>
-          )}
-
-          {couponError.includes("Would you like to redeem a new coupon?") && (
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="contained"
-                onClick={redeemCoupon}
-                sx={{
-                  backgroundColor: "#4a3f8c",
-                  color: "#ffffff",
-                  "&:hover": { backgroundColor: "#6683a8" },
-                }}
-                disabled={loading} // Disable button during loading
-              >
-                Redeem New Coupon
-              </Button>
-            </Box>
-          )}
-
-          {paymentAmountOption && (
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
+          {/* Booking Summary */}
+          <Box>
+            <Typography
+              variant='h6'
+              sx={{
+                color: '#000000',
+                mb: 2,
+                fontWeight: 600,
+                fontSize: { xs: '1.2rem', sm: '1.5rem' },
+              }}
+            >
+              Booking Summary
+            </Typography>
+            <Box
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: '1fr 2fr',
+                gap: 1,
+                p: 2,
+                borderRadius: 2,
+              }}
             >
               <Typography
                 sx={{
-                  mt: 2,
-                  color: "#4a3f8c",
-                  fontWeight: 500,
-                  fontSize: "0.9rem",
-                  textDecoration: "underline",
-                  cursor: "pointer",
-                  "&:hover": { color: "#6683a8" },
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
                 }}
-                onClick={handleOpenModal}
               >
-                View Terms and Conditions
+                Parlor:
               </Typography>
-            </motion.div>
-          )}
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                {parlor?.name || 'N/A'}
+              </Typography>
 
-          {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
-              {error}
-            </Alert>
-          )}
+              <Typography
+                sx={{
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                Service:
+              </Typography>
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                {service || 'N/A'}
+              </Typography>
 
-          {couponError &&
-            !couponError.includes("Would you like to redeem a new coupon?") && (
-              <Alert severity="error" sx={{ mt: 2 }}>
-                {couponError}
-              </Alert>
-            )}
+              <Typography
+                sx={{
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                Date:
+              </Typography>
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                {date || 'N/A'}
+              </Typography>
 
-          {showSuccess && (
-            <Alert severity="success" sx={{ mt: 2 }}>
-              Payment option selected successfully!
-            </Alert>
-          )}
+              <Typography
+                sx={{
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                Time:
+              </Typography>
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                {time || 'N/A'}
+              </Typography>
 
-          <motion.button
-            onClick={handleConfirm}
-            style={{
-              background: "rgba(74, 63, 140, 0.1)",
-              color: "#4a3f8c",
-              padding: "0.6rem 1rem",
-              borderRadius: "8px",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              border: "1px solid rgba(74, 63, 140, 0.3)",
-              fontSize: "1rem",
-              fontWeight: 500,
-              width: "fit-content",
-              marginTop: "20px",
-              cursor: loading ? "not-allowed" : "pointer",
-              transition: "background-color 0.3s ease, border-color 0.3s ease",
-              opacity: loading ? 0.6 : 1, // Dim button when loading
-            }}
-            whileHover={{
-              background: loading
-                ? "rgba(74, 63, 140, 0.1)"
-                : "rgba(74, 63, 140, 0.2)",
-              borderColor: "#4a3f8c",
-            }}
-            transition={{ duration: 0.3 }}
-            disabled={loading} // Disable button during loading
-          >
-            Confirm Payment
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="#4a3f8c"
-              style={{ marginLeft: "8px" }}
+              <Typography
+                sx={{
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                Employee:
+              </Typography>
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                {favoriteEmployee || 'N/A'}
+              </Typography>
+
+              <Typography
+                sx={{
+                  color: '#000000',
+                  fontSize: '0.9rem',
+                  fontWeight: 'bold',
+                }}
+              >
+                Total Amount:
+              </Typography>
+              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                ₹{totalAmount || '0.00'}
+              </Typography>
+
+              {applyCoupon && coupon && (
+                <>
+                  <Typography
+                    sx={{
+                      color: '#000000',
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Coupon Applied:
+                  </Typography>
+                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                    {coupon.code} ({(coupon.discount * 100).toFixed(0)}% off)
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: '#000000',
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Discount:
+                  </Typography>
+                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                    ₹{discountAmount.toFixed(2)}
+                  </Typography>
+
+                  <Typography
+                    sx={{
+                      color: '#000000',
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Final Amount:
+                  </Typography>
+                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                    ₹{finalAmount.toFixed(2)}
+                  </Typography>
+                </>
+              )}
+
+              {paymentAmountOption && (
+                <>
+                  <Typography
+                    sx={{
+                      color: '#000000',
+                      fontSize: '0.9rem',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    Payment Amount:
+                  </Typography>
+                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                    ₹{calculatePaymentAmount().toFixed(2)}
+                    {paymentAmountOption === '25%' &&
+                      ' (25% Now + Cash on Delivery)'}
+                  </Typography>
+                </>
+              )}
+            </Box>
+          </Box>
+
+          {/* Select Payment Amount */}
+          <Box>
+            <Typography
+              variant='h6'
+              sx={{
+                color: '#000000',
+                mb: 2,
+                fontWeight: 600,
+                fontSize: { xs: '1.2rem', sm: '1.5rem' },
+              }}
             >
-              <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" />
-            </svg>
-          </motion.button>
+              Select Payment Amount
+            </Typography>
+            <Box sx={{ maxWidth: '400px' }}>
+              <RadioGroup
+                value={paymentAmountOption}
+                onChange={handlePaymentAmountChange}
+                disabled={loading}
+                sx={{ mb: 2 }}
+              >
+                <FormControlLabel
+                  style={{ color: '#000000' }}
+                  value='25%'
+                  control={<Radio />}
+                  label={`Pay 25% Now (₹${(finalAmount * 0.25).toFixed(
+                    2
+                  )}) + Cash on Delivery`}
+                  disabled={loading}
+                />
+                <FormControlLabel
+                  style={{ color: '#000000' }}
+                  value='full'
+                  control={<Radio />}
+                  label={`Pay Full Amount (₹${finalAmount})`}
+                  disabled={loading}
+                />
+              </RadioGroup>
+
+              <Box sx={{ mb: 2 }}>
+                <TextField
+                  fullWidth
+                  label='Coupon Code'
+                  name='couponCode'
+                  value={couponCode}
+                  onChange={handleCouponChange}
+                  sx={{
+                    maxWidth: '400px',
+                    '& .MuiOutlinedInput-root': {
+                      '&:hover fieldset': { borderColor: '#f06292' },
+                      '&.Mui-focused fieldset': { borderColor: '#f06292' },
+                      backgroundColor: '#ffffff',
+                    },
+                    '& .MuiInputLabel-root.Mui-focused': { color: '#f06292' },
+                    '& .MuiInputBase-input': {
+                      fontSize: '0.9rem',
+                      color: '#000000',
+                    },
+                  }}
+                  error={!!couponError}
+                  helperText={couponError}
+                  disabled={loading}
+                />
+              </Box>
+
+              {coupon && (
+                <Box sx={{ mb: 2 }}>
+                  <Button
+                    variant='outlined'
+                    onClick={handleApplyCoupon}
+                    sx={{
+                      color: '#000000',
+                      borderColor: '#000000',
+                      '&:hover': { borderColor: '#f06292', color: '#f06292' },
+                      width: 'fit-content',
+                    }}
+                    disabled={loading}
+                  >
+                    {applyCoupon
+                      ? 'Remove Coupon'
+                      : `Apply Coupon (${coupon.code})`}
+                  </Button>
+                </Box>
+              )}
+
+              {couponError.includes(
+                'Would you like to redeem a new coupon?'
+              ) && (
+                <Box sx={{ mb: 2 }}>
+                  <Button
+                    variant='contained'
+                    onClick={redeemCoupon}
+                    sx={{
+                      backgroundColor: '#f06292',
+                      color: '#ffffff',
+                      '&:hover': { backgroundColor: '#ec407a' },
+                      width: 'fit-content',
+                    }}
+                    disabled={loading}
+                  >
+                    Redeem New Coupon
+                  </Button>
+                </Box>
+              )}
+
+              {paymentAmountOption && (
+                <Typography
+                  sx={{
+                    mb: 2,
+                    color: '#000000',
+                    fontSize: '0.9rem',
+                    cursor: 'pointer',
+                    '&:hover': { color: '#f06292' },
+                  }}
+                  onClick={handleOpenModal}
+                >
+                  By Clicking 'Confirm Payment' I agree to the company's term of
+                  services
+                </Typography>
+              )}
+
+              {error && (
+                <Alert severity='error' sx={{ mb: 2, maxWidth: '400px' }}>
+                  {error}
+                </Alert>
+              )}
+
+              {couponError &&
+                !couponError.includes(
+                  'Would you like to redeem a new coupon?'
+                ) && (
+                  <Alert severity='error' sx={{ mb: 2, maxWidth: '400px' }}>
+                    {couponError}
+                  </Alert>
+                )}
+
+              {showSuccess && (
+                <Alert severity='success' sx={{ mb: 2, maxWidth: '400px' }}>
+                  Payment option selected successfully!
+                </Alert>
+              )}
+
+              <Box
+                sx={{ display: 'flex', gap: 2, justifyContent: 'flex-start' }}
+              >
+                <Button
+                  variant='outlined'
+                  onClick={() => navigate(-1)}
+                  sx={{
+                    color: '#000000',
+                    borderColor: '#000000',
+                    '&:hover': { borderColor: '#f06292', color: '#f06292' },
+                    padding: '8px 16px',
+                  }}
+                  disabled={loading}
+                >
+                  Back
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={handleConfirm}
+                  sx={{
+                    backgroundColor: '#f06292',
+                    color: '#ffffff',
+                    '&:hover': { backgroundColor: '#ec407a' },
+                    padding: '8px 16px',
+                  }}
+                  disabled={loading}
+                >
+                  {/* Confirm Payment: ₹{finalAmount.toFixed(2)} */}
+                  Confirm Payment
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+
+        {/* Right Column: Image */}
+        <Box
+          sx={{
+            flex: 1,
+            minWidth: { xs: '100%', sm: '45%' },
+            p: { xs: 2, sm: 4 },
+            display: { xs: 'none', sm: 'flex' },
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <img
+            src={image}
+            alt='Parlor Booking'
+            style={{
+              maxWidth: '100%',
+              height: 'auto',
+            }}
+          />
         </Box>
       </Box>
 
@@ -910,11 +1040,11 @@ const Pay = () => {
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby="terms-modal-title"
+        aria-labelledby='terms-modal-title'
         sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
         }}
       >
         <motion.div
@@ -925,40 +1055,40 @@ const Pay = () => {
         >
           <Box
             sx={{
-              bgcolor: "#ffffff",
-              borderRadius: 4,
-              boxShadow: "0 8px 16px rgba(0, 0, 0, 0.2)",
+              bgcolor: '#ffffff',
               p: 4,
               maxWidth: 500,
-              width: "90%",
-              position: "relative",
+              width: '90%',
+              position: 'relative',
               fontFamily: "'Montserrat', sans-serif",
+              boxShadow: 3,
+              borderRadius: 2,
             }}
           >
             <IconButton
               onClick={handleCloseModal}
               sx={{
-                position: "absolute",
+                position: 'absolute',
                 top: 8,
                 right: 8,
-                color: "#4a3f8c",
+                color: '#f06292',
               }}
             >
               <CloseIcon />
             </IconButton>
             <Typography
-              id="terms-modal-title"
-              variant="h6"
+              id='terms-modal-title'
+              variant='h6'
               sx={{
-                color: "#4a3f8c",
+                color: '#000000',
                 mb: 3,
                 fontWeight: 600,
-                textAlign: "center",
+                textAlign: 'center',
               }}
             >
               Terms & Conditions
             </Typography>
-            <Box sx={{ color: "#333333", fontSize: "0.9rem" }}>
+            <Box sx={{ color: '#333333', fontSize: '0.9rem' }}>
               <Typography sx={{ mb: 2 }}>
                 By proceeding with the payment, you agree to the following
                 terms:
@@ -966,7 +1096,7 @@ const Pay = () => {
               {terms.length > 0 ? (
                 <ul>
                   {terms.map((term, index) => (
-                    <li key={index} style={{ marginBottom: "10px" }}>
+                    <li key={index} style={{ marginBottom: '10px' }}>
                       {term.description || term.term}
                     </li>
                   ))}
@@ -981,15 +1111,14 @@ const Pay = () => {
               onClick={handleCloseModal}
               sx={{
                 mt: 3,
-                bgcolor: "#4a3f8c",
-                color: "#ffffff",
-                borderRadius: 4,
+                bgcolor: '#f06292',
+                color: '#ffffff',
                 px: 4,
                 py: 1,
                 fontWeight: 500,
-                "&:hover": { bgcolor: "#6683a8" },
-                display: "block",
-                mx: "auto",
+                '&:hover': { bgcolor: '#ec407a' },
+                display: 'block',
+                mx: 'auto',
               }}
             >
               Close
@@ -1004,21 +1133,7 @@ const Pay = () => {
             font-family: 'Montserrat', sans-serif;
             font-weight: 600;
             font-size: 2rem;
-            color: #333333;
-            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-            position: relative;
-            margin-bottom: 1.5rem;
-          }
-          h2.text-primary::after {
-            content: '';
-            position: absolute;
-            bottom: -6px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 3px;
-            background: #4a3f8c;
-            borderRadius: 2px;
+            color: #000000;
           }
         `}
       </style>

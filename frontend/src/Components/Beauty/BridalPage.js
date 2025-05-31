@@ -90,7 +90,7 @@ export default function ServicesPage() {
         px: 2,
         py: 6,
         boxSizing: 'border-box',
-        background: '#ffffff', // Updated background color
+        backgroundColor: '#f8cad7', // Updated background color
       }}
     >
       <Typography
@@ -112,7 +112,7 @@ export default function ServicesPage() {
             transform: 'translateX(-50%)',
             width: '80px',
             height: '3px',
-            background: '#201548', // Updated underline color
+            // background: '#201548', // Updated underline color
           }
         }}
       >
@@ -142,7 +142,7 @@ export default function ServicesPage() {
               justifyContent: 'space-between',
               gap: 4,
               boxShadow: '0 10px 30px rgba(0,0,0,0.05)', // Added shadow for depth
-              border: '1px solid #201548', // Subtle border
+              border: '1px solid#fb646b', // Subtle border
             }}
           >
             <Box
@@ -161,7 +161,7 @@ export default function ServicesPage() {
                 variant="h3"
                 sx={{
                   fontFamily: 'Playfair Display, serif',
-                  color: '#201548', // Updated text color
+                  color: '#fb646b', // Updated text color
                   fontWeight: 'bold',
                   mb: 2,
                   lineHeight: 1.2,
@@ -213,7 +213,7 @@ export default function ServicesPage() {
                 startIcon={<SettingsIcon />}
                 onClick={() => handleServiceClick(section.title)}
                 sx={{
-                  background: '#201548', // Updated button color
+                  background: '#fb646b', // Updated button color
                   color: '#ffffff', // White text color for contrast
                   fontSize: {
                     xs: '0.7rem',
@@ -232,9 +232,9 @@ export default function ServicesPage() {
                   position: 'relative',
                   overflow: 'hidden',
                   minWidth: 'auto',
-                  border: '1px solid #201548', // Border to match button color
+                  border: '#e0555d', // Border to match button color
                   '&:hover': {
-                    background: '#17103a', // Darker shade for hover
+                    background: '#e0555d', // Darker shade for hover
                     transform: 'translateY(-2px)', // Slight lift effect
                     boxShadow: '0 6px 16px rgba(32, 21, 72, 0.6)', // Enhanced shadow on hover
                   },
@@ -273,7 +273,7 @@ export default function ServicesPage() {
                   width: '100%',
                   height: '100%',
                   transform: 'rotate(-6deg)',
-                  backgroundColor: '#201548', // Updated shadow color
+                  backgroundColor: '#fb646b', // Updated shadow color
                   borderRadius: '12px', // Rounded corners
                   zIndex: 0,
                 }}

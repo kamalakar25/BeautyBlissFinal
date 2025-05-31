@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <footer
       className="py-5"
-      style={{ background: "#f8f9fa", borderTop: "5px solid #201548" }}
+      style={{ background: "#FFEBF1", borderTop: "5px solid rgb(103 131 170)" }}
     >
       <div className="container">
         <div className="row g-4">
@@ -18,18 +18,31 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-              style={{ color: "#201548", position: "relative" }}
+               style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
+    
             >
               Contact Us
             </h4>
-            <p className="mb-2" style={{ color: "#0e0f0f" }}>
+            <p className="mb-2" style={{ color: "#0E0F0F", 
+              fontFamily:"font family/Font 2",
+              fontWeight:"font weight/400",
+
+            }}>
               <i className="bi bi-geo-alt me-2"></i>Lb nagar vanasthalipuram
               hyderabad 500070
             </p>
-            <p className="mb-2" style={{ color: "#0e0f0f" }}>
+            <p className="mb-2" style={{ color: "#0E0F0F", 
+              fontFamily:"font family/Font 2",
+              fontWeight:"font weight/400",
+
+            }}>
               <i className="bi bi-telephone me-2"></i> (+91) 9777733220
             </p>
-            <p className="mb-2" style={{ color: "#0e0f0f" }}>
+            <p className="mb-2" style={{ color: "#0E0F0F", 
+              fontFamily:"font family/Font 2",
+              fontWeight:"font weight/400",
+
+            }}>
               <i className="bi bi-envelope me-2"></i> beautybliss@gmail.com
             </p>
           </motion.div>
@@ -44,7 +57,7 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-              style={{ color: "#201548", position: "relative" }}
+              style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
             >
               Quick Links
             </h4>
@@ -53,17 +66,18 @@ const Footer = () => {
                 href="/salon"
                 className="mb-2 text-decoration-none"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
-                  fontWeight: "500",
+                  fontWeight: "font weight/400",
+                  fontFamily:"font family/Font 2"
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
-                  e.currentTarget.style.color = "#0e0f0f";
+                  // e.currentTarget.style.color = "#0e0f0f";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateX(0)";
-                  e.currentTarget.style.color = "#201548";
+                  // e.currentTarget.style.color = "#201548";
                 }}
               >
                 Salon Services
@@ -72,17 +86,19 @@ const Footer = () => {
                 href="/beauty"
                 className="mb-2 text-decoration-none"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
-                  fontWeight: "500",
+                  fontWeight: "font weight/400",
+                   fontFamily:"font family/Font 2"
+              
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
-                  e.currentTarget.style.color = "#0e0f0f";
+                  // e.currentTarget.style.color = "#0e0f0f";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateX(0)";
-                  e.currentTarget.style.color = "#201548";
+                  // e.currentTarget.style.color = "#201548";
                 }}
               >
                 Beauty Treatments
@@ -91,17 +107,19 @@ const Footer = () => {
                 href="/skincare"
                 className="mb-2 text-decoration-none"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
-                  fontWeight: "500",
+                  fontWeight: "font weight/400",
+                   fontFamily:"font family/Font 2"
+              
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
-                  e.currentTarget.style.color = "#0e0f0f";
+                  // e.currentTarget.style.color = "#0e0f0f";
                 }}
                 onMouseLeave={(e) => {
                   e.currentTarget.style.transform = "translateX(0)";
-                  e.currentTarget.style.color = "#201548";
+                  // e.currentTarget.style.color = "#201548";
                 }}
               >
                 Skincare Solutions
@@ -119,7 +137,8 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-              style={{ color: "#201548", position: "relative" }}
+              style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
+    
             >
               Follow Us
             </h4>
@@ -127,7 +146,7 @@ const Footer = () => {
               <a
                 href="https://facebook.com"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
                 }}
                 target="_blank"
@@ -144,7 +163,7 @@ const Footer = () => {
               <a
                 href="https://twitter.com"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
                 }}
                 target="_blank"
@@ -161,7 +180,7 @@ const Footer = () => {
               <a
                 href="https://instagram.com"
                 style={{
-                  color: "#201548",
+                  color: "#54A3C1",
                   transition: "all 0.3s ease",
                 }}
                 target="_blank"
@@ -180,7 +199,11 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="text-center mt-5" style={{ color: "#0e0f0f" }}>
+        <div className="text-center mt-5" style={{ color: "#0E0F0F", 
+              fontFamily:"font family/Font 2",
+              fontWeight:"font weight/400",
+
+            }}>
           <p className="mb-0">
             ©️ {new Date().getFullYear()} BeautyBliss. All rights reserved.
           </p>

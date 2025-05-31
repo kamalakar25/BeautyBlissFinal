@@ -11,14 +11,14 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('lg')]: {
     display: 'block',
-    color: '#201548',
+    color: '#fb646b',
     backgroundColor: 'transparent',
-    border: '2px solid #201548',
+    border: '2px solid #fb646b',
     borderRadius: '50%',
     padding: '8px',
     transition: 'all 0.3s ease',
     '&:hover': {
-      backgroundColor: '#201548',
+      backgroundColor: '#fb646b',
       color: '#ffffff',
       transform: 'scale(1.1)',
       boxShadow: '0 4px 12px rgba(32, 21, 72, 0.4)',
@@ -146,7 +146,7 @@ const BookingDetails = () => {
         sx={{
           width: '100%',
           maxWidth: '1200px',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#f8cad7',
           borderRadius: '12px',
           p: '24px',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
@@ -182,7 +182,7 @@ const BookingDetails = () => {
               textAlign: 'center',
               transition: 'all 0.3s ease',
               '&:hover': {
-                color: '#201548',
+                color: '#fb646b',
                 textShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
               },
             }}
@@ -224,7 +224,7 @@ const BookingDetails = () => {
                   sx={{
                     p: '10px',
                     borderRadius: '8px',
-                    border: '2px solid #201548',
+                    border: '2px solid #fb646b',
                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(4px)',
                     fontSize: '0.95rem',
@@ -234,9 +234,9 @@ const BookingDetails = () => {
                     textAlign: 'center',
                     transition: 'all 0.3s ease',
 
-                    
+
                     '&:focus': {
-                      borderColor: '#201548',
+                      borderColor: '#fb646b',
                       boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                       backgroundColor: '#ffffff',
                     },
@@ -246,7 +246,7 @@ const BookingDetails = () => {
                     },
                   }}
                 />
-                <FilterToggleButton onClick={handleToggleFilters} style={{borderRadius:"20px"}}>
+                <FilterToggleButton onClick={handleToggleFilters} style={{ borderRadius: "20px" }}>
                   <FilterListIcon />
                 </FilterToggleButton>
               </Box>
@@ -260,7 +260,7 @@ const BookingDetails = () => {
                   fontWeight: 'medium',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    color: '#201548',
+                    color: '#fb646b',
                     transform: 'scale(1.05)',
                   },
                 }}
@@ -287,19 +287,19 @@ const BookingDetails = () => {
                   sx={{
                     p: '10px',
                     borderRadius: '8px',
-                    border: '2px solid #201548',
+                    border: '2px solid #fb646b',
                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(4px)',
                     fontSize: '0.95rem',
                     width: { xs: '100%', sm: '200px' },
                     maxWidth: '200px',
                     color: '#0e0f0f',
-                    mt: { xs: 0, sm: '20px' },
+                    mt: { xs: 0, sm: '30px' },
                     textAlign: 'center',
                     display: { xs: 'none', lg: 'block' },
                     transition: 'all 0.3s ease',
                     '&:focus': {
-                      borderColor: '#201548',
+                      borderColor: '#fb646b',
                       boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                       backgroundColor: '#ffffff',
                     },
@@ -338,7 +338,7 @@ const BookingDetails = () => {
                         fontWeight: 'medium',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          color: '#201548',
+                          color: '#fb646b',
                         },
                       }}
                     >
@@ -354,7 +354,7 @@ const BookingDetails = () => {
                       sx={{
                         p: '10px',
                         borderRadius: '8px',
-                        border: '2px solid #201548',
+                        border: '2px solid #fb646b',
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(4px)',
                         fontSize: '0.95rem',
@@ -364,7 +364,7 @@ const BookingDetails = () => {
                         color: '#0e0f0f',
                         transition: 'all 0.3s ease',
                         '&:focus': {
-                          borderColor: '#201548',
+                          borderColor: '#fb646b',
                           boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                           backgroundColor: '#ffffff',
                         },
@@ -383,14 +383,14 @@ const BookingDetails = () => {
                   sx={{
                     p: '10px 20px',
                     borderRadius: "8px",
-                    border: "2px solid #201548",
-                    background: "#201548",
+                    border: "2px solid #fb646b",
+                    background: "#fb646b",
                     fontSize: "0.95rem",
                     fontWeight: "medium",
                     color: "#fff",
                     marginTop: "27px !important",
 
-                  
+
                     cursor: !searchQuery && !bookingDateFilter ? 'not-allowed' : 'pointer',
                     mt: { xs: 0, sm: '20px' },
                     transition: 'all 0.3s ease',
@@ -399,11 +399,11 @@ const BookingDetails = () => {
                     '&:hover': {
                       ...(searchQuery || bookingDateFilter
                         ? {
-                            background: 'linear-gradient(90deg, #201548, #201548)',
-                            color: '#ffffff',
-                            transform: 'scale(1.05)',
-                            boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
-                          }
+                          background: 'linear-gradient(90deg, #fb646b, #fb646b)',
+                          color: '#ffffff',
+                          transform: 'scale(1.05)',
+                          boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
+                        }
                         : {}),
                     },
                   }}
@@ -449,7 +449,7 @@ const BookingDetails = () => {
             <Box
               component="thead"
               sx={{
-                background: 'linear-gradient(90deg, #201548, #201548)',
+                background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                 color: '#ffffff',
               }}
             >
@@ -467,7 +467,7 @@ const BookingDetails = () => {
                         border: '1px solid #e2e8f0',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          background: '#201548',
+                          background: '#fb646b',
                           boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
                         },
                       }}
@@ -642,7 +642,7 @@ const BookingDetails = () => {
                         },
                       }}
                     >
-                 {booking.relatedServices == null || !Array.isArray(booking.relatedServices) || booking.relatedServices.length === 0 ? 'N/A' : booking.relatedServices.join(', ')}
+                      {booking.relatedServices == null || !Array.isArray(booking.relatedServices) || booking.relatedServices.length === 0 ? 'N/A' : booking.relatedServices.join(', ')}
                     </Box>
                     <Box
                       component="td"
@@ -685,25 +685,45 @@ const BookingDetails = () => {
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
               sx={{
-                p: '10px 20px',
-                borderRadius: '8px',
-                border: '2px solid #201548',
-                background: '#201548 ',
-                color: '#fff',
-                fontSize: '0.95rem',
-                fontWeight: 'medium',
+                p: '10px 24px',
+                borderRadius: '30px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                color: '#ffffff',
+                fontSize: '0.9rem',
+                fontWeight: '600',
                 cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.4s ease',
+                boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                position: 'relative',
+                overflow: 'hidden',
+                letterSpacing: '0.5px',
                 '&:hover': {
                   ...(currentPage !== 1
                     ? {
-                        background: 'linear-gradient(90deg, #201548, #201548)',
-                        color: '#ffffff',
-                        transform: 'scale(1.05)',
-                        boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
-                      }
+                      background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                      color: '#0e0f0f',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                      '&:after': {
+                        width: '100%',
+                      },
+                    }
                     : {}),
+                },
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '0',
+                  height: '3px',
+                  background: '#ffffff',
+                  transition: 'width 0.4s ease',
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
                 },
               }}
             >
@@ -712,13 +732,29 @@ const BookingDetails = () => {
             <Box
               component="span"
               sx={{
-                fontSize: '0.95rem',
+                fontSize: '1.1rem',
+                fontWeight: '600',
                 color: '#0e0f0f',
-                fontWeight: 'medium',
-                transition: 'all 0.3s ease',
+                textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
+                letterSpacing: '0.5px',
+                position: 'relative',
+                transition: 'transform 0.4s ease',
                 '&:hover': {
-                  color: '#201548',
-                  transform: 'scale(1.05)',
+                  transform: 'scale(1.1)',
+                  
+                },
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: '-4px',
+                  left: 0,
+                  width: '0',
+                  height: '2px',
+                  background: '#fb646b',
+                  transition: 'width 0.4s ease',
+                },
+                '&:hover:after': {
+                  width: '100%',
                 },
               }}
             >
@@ -729,25 +765,45 @@ const BookingDetails = () => {
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
               sx={{
-                p: '10px 20px',
-                borderRadius: '8px',
-                border: '2px solid #201548',
-                background: '#201548 ',
-                color: '#fff',
-                fontSize: '0.95rem',
-                fontWeight: 'medium',
+                p: '10px 24px',
+                borderRadius: '30px',
+                border: 'none',
+                background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                color: '#ffffff',
+                fontSize: '0.9rem',
+                fontWeight: '600',
                 cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                transition: 'all 0.3s ease',
-                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                transition: 'all 0.4s ease',
+                boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                position: 'relative',
+                overflow: 'hidden',
+                letterSpacing: '0.5px',
                 '&:hover': {
                   ...(currentPage !== totalPages
                     ? {
-                        background: 'linear-gradient(90deg, #201548, #201548)',
-                        color: '#ffffff',
-                        transform: 'scale(1.05)',
-                        boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
-                      }
+                      background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                      color: '#0e0f0f',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                      '&:after': {
+                        width: '100%',
+                      },
+                    }
                     : {}),
+                },
+                '&:after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  width: '0',
+                  height: '3px',
+                  background: '#ffffff',
+                  transition: 'width 0.4s ease',
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
                 },
               }}
             >

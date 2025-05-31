@@ -15,7 +15,7 @@ const modalStyle = {
   transform: 'translate(-50%, -50%)',
   width: { xs: '95%', sm: '80%', md: '70%', lg: '60%' }, // Increased width on xs for better fit
   maxWidth: 800,
-  bgcolor: '#ffffff',
+  bgcolor: '#F8CAD7',
   borderRadius: { xs: '8px', sm: '12px' }, // Smaller radius on xs
   boxShadow: '0 8px 25px rgba(32, 21, 72, 0.1)',
   p: { xs: 2, sm: 4 }, // Reduced padding on xs
@@ -110,7 +110,7 @@ const blogPosts = [
 const cardStyle = {
   sx: {
     borderRadius: '12px',
-    background: 'linear-gradient(to top, #ffffff, #f8f7ff 80%)',
+    background: '#F8CAD7',
     boxShadow: '0 8px 25px rgba(32, 21, 72, 0.1)',
     width: '100%',
     maxWidth: 400,
@@ -175,7 +175,7 @@ const BlogCardsWithDropdown = () => {
 
   return (
     <Box sx={{
-      background: '#ffffff',
+      background: '#F8CAD7',
       py: 8,
       minHeight: '100vh',
       px: { xs: 1.5, sm: 3, md: 5 },
@@ -287,10 +287,10 @@ const BlogCardsWithDropdown = () => {
             flexWrap="wrap"
             gap={0.1}
             sx={{
-              background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
+              // background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
               py: 1.5,
               borderRadius: 2,
-              boxShadow: "0 4px 12px rgba(32, 21, 72, 0.1)",
+              // boxShadow: "0 4px 12px rgba(32, 21, 72, 0.1)",
               position: "relative",
               zIndex: 1,
             }}
@@ -302,6 +302,7 @@ const BlogCardsWithDropdown = () => {
                 fontSize: { xs: "1.6rem", sm: "2rem", md: "2.4rem" },
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
+                color: "#fb646b",
                 fontFamily: "'Playfair Display', serif",
                 textAlign: "center",
               }}

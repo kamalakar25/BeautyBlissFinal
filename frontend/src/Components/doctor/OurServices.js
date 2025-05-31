@@ -17,7 +17,7 @@ const services = [
       "Specialized care for hair loss, dandruff, and scalp issues. Treatments include PRP, laser therapy, and regrowth plans.",
     image:
       "https://img.freepik.com/premium-photo/hair-treatment-procedure-with-professional-applying-serum_37732-6171.jpg?w=360",
-    color: "#201548",
+    color: " #fb646b",
     bgColor: "#ffffff",
   },
   {
@@ -25,7 +25,7 @@ const services = [
     description:
       "Advanced solutions for acne, pigmentation, and anti-aging. Services include chemical peels, laser, and rejuvenation.",
     image: "https://img1.wsimg.com/isteam/stock/gYlVpPP",
-    color: "#201548",
+    color: "#fb646b",
     bgColor: "#ffffff",
   },
 ];
@@ -41,7 +41,8 @@ const OurServices = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "#ffffff",
+        background: "#F8CAD7",
+       
         px: { xs: 2, sm: 4, md: 6 },
         py: { xs: 4, sm: 6, md: 8 },
         position: "relative",
@@ -364,10 +365,10 @@ const OurServices = () => {
         flexWrap="wrap"
         gap={0.1}
         sx={{
-          background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
+          // background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
           py: 1.5,
           borderRadius: 2,
-          boxShadow: "0 4px 12px rgba(32, 21, 72, 0.1)",
+          // boxShadow: "0 4px 12px rgba(32, 21, 72, 0.1)",
           position: "relative",
           zIndex: 1,
         }}
@@ -375,6 +376,7 @@ const OurServices = () => {
         <h2
           className="fw-bold title-text animate__animated animate__fadeInDown"
           style={{
+            color: " #fb646b" ,
             animationDuration: "0.8s",
             fontSize: { xs: "1.6rem", sm: "2rem", md: "2.4rem" },
             letterSpacing: "1.5px",
@@ -461,7 +463,7 @@ const OurServices = () => {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "#0e0f0f",
+                    color: "#2D2828",
                     mb: 2,
                     fontSize: { xs: "0.9rem", sm: "0.95rem" },
                     fontFamily: "'Poppins', sans-serif",
@@ -477,7 +479,7 @@ const OurServices = () => {
                   onClick={() => handleServiceClick(service.title)}
                   className="book-now-button"
                   sx={{
-                    backgroundColor: "#201548",
+                    backgroundColor: "#f195ae",
                     color: "#ffffff",
                     padding: { xs: "0.8rem 2.5rem", sm: "0.9rem 3rem" },
                     borderRadius: "10px",
@@ -491,7 +493,7 @@ const OurServices = () => {
                     position: "relative",
                     transition: "background-color 0.3s ease, transform 0.3s ease",
                     "&:hover": {
-                      backgroundColor: "#36257d",
+                      backgroundColor: "#fb646b",
                       transform: "scale(1.08)",
                     },
                   }}

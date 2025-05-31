@@ -69,7 +69,7 @@ const Approvals = () => {
         flexDirection: 'column',
         alignItems: 'center',
         mt: '100px',
-        background: 'linear-gradient(180deg, #ffffff 0%, #E8ECEF 100%)',
+        // background: 'linear-gradient(180deg, #ffffff 0%, #E8ECEF 100%)',
       }}
     >
       {/* Dot Spinner CSS */}
@@ -185,7 +185,7 @@ const Approvals = () => {
         sx={{
           width: '100%',
           maxWidth: '1300px',
-          background: 'rgba(255, 255, 255, 0.9)',
+          backgroundColor: '#f8cad7',
           backdropFilter: 'blur(10px)',
           borderRadius: '20px',
           p: '30px',
@@ -218,7 +218,7 @@ const Approvals = () => {
             },
             '&:hover': {
               transform: 'scale(1.03)',
-              color: '#201548',
+              color: '#fb646b',
             },
           }}
         >
@@ -317,7 +317,7 @@ const Approvals = () => {
                 <Box
                   component="thead"
                   sx={{
-                    background: 'linear-gradient(135deg, #201548, #201548)',
+                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
                     color: '#ffffff',
                     boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
                   }}
@@ -494,7 +494,7 @@ const Approvals = () => {
                             fontWeight: '600',
                             borderRadius: '12px',
                             border: 'none',
-                            background: 'linear-gradient(135deg, #201548, #201548)',
+                            background: 'linear-gradient(135deg, #fb646b, #fb646b)',
                             color: '#ffffff',
                             position: 'relative',
                             overflow: 'hidden',
@@ -571,7 +571,7 @@ const Approvals = () => {
                             transition: 'all 0.4s ease',
                             letterSpacing: '0.5px',
                             '&:hover': {
-                              background: 'linear-gradient(135deg, #201548, #201548)',
+                              background: 'linear-gradient(135deg, #fb646b, #fb646b)',
                               color: '#ffffff',
                               transform: 'translateY(-2px)',
                               boxShadow: '0 8px 20px rgba(0,0,0,0.2), 0 0 15px rgba(32, 21, 72, 0.3)',
@@ -630,7 +630,7 @@ const Approvals = () => {
                     p: '10px 24px',
                     borderRadius: '30px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #201548, #201548)',
+                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
                     color: '#ffffff',
                     fontSize: '0.9rem',
                     fontWeight: '600',
@@ -644,7 +644,7 @@ const Approvals = () => {
                       ...(currentPage !== 1
                         ? {
                             background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                            color: '#0e0f0f',
+                            color: '#ffffff',
                             transform: 'translateY(-2px)',
                             boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
                             '&:after': {
@@ -691,7 +691,7 @@ const Approvals = () => {
                       left: 0,
                       width: '0',
                       height: '2px',
-                      background: '#201548',
+                      background: '#fb646b',
                       transition: 'width 0.4s ease',
                     },
                     '&:hover:after': {
@@ -709,7 +709,7 @@ const Approvals = () => {
                     p: '10px 24px',
                     borderRadius: '30px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #201548, #201548)',
+                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
                     color: '#ffffff',
                     fontSize: '0.9rem',
                     fontWeight: '600',

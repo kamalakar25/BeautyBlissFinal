@@ -21,7 +21,7 @@ const Transformation = () => {
   return (
     <Box
       sx={{
-        background: "#ffffff",
+        background: "#F8CAD7",
         minHeight: "100vh",
         py: { xs: 4, sm: 6 },
         px: { xs: 2, sm: 4 },
@@ -98,8 +98,8 @@ const Transformation = () => {
 
           .transform-button:hover {
             border-image: linear-gradient(45deg, #36257d, #201548) 1;
-            background: linear-gradient(45deg, rgba(32, 21, 72, 0.08), rgba(54, 37, 125, 0.08));
-            box-shadow: 0 3px 8px rgba(32, 21, 72, 0.15);
+            background: linear-gradient(45deg, rgba(251,100,107, 0.08), rgba(54, 37, 125, 0.08));
+            box-shadow: 0 3px 8px rgba(251,100,107, 0.15);
           }
 
           .transform-button:hover .transform-button-text {
@@ -174,7 +174,7 @@ const Transformation = () => {
               transparent 10px
             );
             background-size: 100% 10px;
-            box-shadow: 0 0 12px rgba(32, 21, 72, 0.7);
+            box-shadow: 0 0 12px rgba(251,100,107, 0.7);
             transform: translateX(-50%);
             z-index: 2;
             transition: left 0.3s ease-out;
@@ -190,7 +190,7 @@ const Transformation = () => {
             background: #ffffff;
             border: 2px solid #201548;
             border-radius: 4px;
-            box-shadow: 0 0 12px rgba(32, 21, 72, 0.7);
+            box-shadow: 0 0 12px rgba(251,100,107, 0.7);
             transform: translate(-50%, -50%);
             z-index: 3;
             transition: left 0.3s ease-out, transform 0.3s ease-out;
@@ -203,7 +203,7 @@ const Transformation = () => {
 
           .slider-handle:focus {
             outline: none;
-            box-shadow: 0 0 0 3px rgba(32, 21, 72, 0.3);
+            box-shadow: 0 0 0 3px rgba(251,100,107, 0.3);
           }
 
           /* Responsive adjustments */
@@ -231,10 +231,10 @@ const Transformation = () => {
         flexWrap="wrap"
         gap={0.1}
         sx={{
-          background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
+          // background: "linear-gradient(to right, #ffffff, #f8f7ff, #ffffff)",
           py: 1.5,
           borderRadius: 2,
-          boxShadow: "0 4px 12px rgba(32, 21, 72, 0.1)",
+          // boxShadow: "0 4px 12px rgba(251,100,107, 0.1)",
           position: "relative",
           zIndex: 1,
         }}
@@ -243,6 +243,7 @@ const Transformation = () => {
           className="title-text animate__animated animate__fadeInDown"
           style={{
             animationDuration: "0.8s",
+            color: "#fb646b",
             fontSize: { xs: "1.6rem", sm: "2rem", md: "2.4rem" },
             letterSpacing: "1.5px",
             textTransform: "uppercase",
@@ -264,7 +265,7 @@ const Transformation = () => {
             sx={{
               textAlign: "center",
               mb: 2,
-              color: "#3b1a5a",
+              color: " #fb646b",
               fontWeight: 700,
               fontFamily: "'Playfair Display', serif",
               fontSize: { xs: "1.5rem", sm: "1.8rem" },
@@ -354,7 +355,7 @@ const Transformation = () => {
                   position: "absolute",
                   top: "8px",
                   left: "12px",
-                  backgroundColor: "rgba(32, 21, 72, 0.7)",
+                  backgroundColor: "rgba(251,100,107, 0.7)",
                   color: "#ffffff",
                   padding: "6px 12px",
                   borderRadius: "6px",
@@ -373,7 +374,7 @@ const Transformation = () => {
                   position: "absolute",
                   top: "8px",
                   right: "12px",
-                  backgroundColor: "rgba(32, 21, 72, 0.7)",
+                  backgroundColor: "rgba(251,100,107, 0.7)",
                   color: "#ffffff",
                   padding: "6px 12px",
                   borderRadius: "6px",
@@ -448,7 +449,7 @@ const Transformation = () => {
             sx={{
               textAlign: "center",
               mb: 2,
-              color: "#3b1a5a",
+              color: " #fb646b",
               fontWeight: 700,
               fontFamily: "'Playfair Display', serif",
               fontSize: { xs: "1.5rem", sm: "1.8rem" },
@@ -538,7 +539,7 @@ const Transformation = () => {
                   position: "absolute",
                   top: "8px",
                   left: "12px",
-                  backgroundColor: "rgba(32, 21, 72, 0.7)",
+                  backgroundColor: "rgba(251,100,107, 0.7)",
                   color: "#ffffff",
                   padding: "6px 12px",
                   borderRadius: "6px",
@@ -557,7 +558,7 @@ const Transformation = () => {
                   position: "absolute",
                   top: "8px",
                   right: "12px",
-                  backgroundColor: "rgba(32, 21, 72, 0.7)",
+                  backgroundColor: "rgba(251,100,107, 0.7)",
                   color: "#ffffff",
                   padding: "6px 12px",
                   borderRadius: "6px",

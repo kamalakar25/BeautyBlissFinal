@@ -5,13 +5,13 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  background-color: #fff;
+  background-color: #FFEBF1;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.navbar.scrolled {
+/* .navbar.scrolled {
   background-color: #f8f9fa;
-}
+} */
 
 .navbar-container {
   display: flex;
@@ -57,7 +57,8 @@
 
 .navbar-links a.active {
   font-weight: bold;
-  color: #36257d;
+  color: #F710B9;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Notification wrapper and badge */

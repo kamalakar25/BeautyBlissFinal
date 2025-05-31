@@ -85,7 +85,7 @@ const BridalShowcase = () => {
         px: { xs: 2, sm: 3, md: 4 },
         py: { xs: 6, sm: 8 },
         boxSizing: "border-box",
-        background: "#f7f4ff",
+        backgroundColor: '#f8cad7',
         minHeight: "100vh",
         position: "relative",
         "&:before": {
@@ -96,6 +96,8 @@ const BridalShowcase = () => {
           width: "100%",
           height: "100%",
           background: "radial-gradient(circle, rgba(106, 78, 156, 0.08) 1px, transparent 1px)",
+          
+
           backgroundSize: "16px 16px",
           opacity: 0.3,
         },
@@ -171,18 +173,18 @@ const BridalShowcase = () => {
               box-shadow: 0 8px 25px rgba(232, 185, 35, 0.3);
             }
 
-            .divider {
-              width: 120px;
-              height: 4px;
-              background: linear-gradient(90deg, #3a2a6a, #fff);
-              margin: 1.5rem 0;
-              border-radius: 2px;
-            }
+            // .divider {
+            //   width: 120px;
+            //   height: 4px;
+            //   background: linear-gradient(90deg, #3a2a6a, #fff);
+            //   margin: 1.5rem 0;
+            //   border-radius: 2px;
+            // }
 
             .image-container {
               border: 3px solid transparent;
               background: linear-gradient(#ffffff, #ffffff) padding-box,
-                          linear-gradient(90deg, #3a2a6a,rgb(228, 228, 227)) border-box;
+                          linear-gradient(90deg, #fdf2f5,rgb(228, 228, 227)) border-box;
             }
 
             .experience-badge {
@@ -191,7 +193,7 @@ const BridalShowcase = () => {
               right: 20px;
               width: 80px;
               height: 80px;
-              background: linear-gradient(135deg, #3a2a6a,rgb(236, 235, 230));
+              background: linear-gradient(135deg,#f452c7, #f293b2);
               border-radius: 50%;
               display: flex;
               align-items: center;
@@ -216,7 +218,7 @@ const BridalShowcase = () => {
                sx={{
                  fontWeight: 'bold',
                  fontFamily: 'Playfair Display, serif',
-                 color: '#201548', // Updated highlighted text color
+                 color: '#e42b5f', // Updated highlighted text color
                  textAlign: 'center',
                  mb: 6,
                  textTransform: 'uppercase',
@@ -230,7 +232,7 @@ const BridalShowcase = () => {
                    transform: 'translateX(-50%)',
                    width: '80px',
                    height: '3px',
-                   background: '#201548', // Updated underline color
+                   background: '#e42b5f', // Updated underline color
                  }
                }}
              >
@@ -256,7 +258,7 @@ const BridalShowcase = () => {
                 sx={{
                   display: "flex",
                   flexDirection: { xs: "column", md: "row" },
-                  bgcolor: "#ffffff",
+                  // bgcolor: "#ffffff",
                   borderRadius: "2rem",
                   boxShadow: {
                     xs: "0 15px 30px rgba(0, 0, 0, 0.15)",
@@ -264,9 +266,9 @@ const BridalShowcase = () => {
                   },
                   overflow: "hidden",
                   mx: "auto",
-                  border: "2px solid transparent",
-                  background: "linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(90deg, #3a2a6a,rgb(236, 236, 236)) border-box",
-                  transition: "transform 0.4s ease, box-shadow 0.4s ease",
+                  // border: "2px solid red",
+                  // background: "linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(90deg, #fdf2f5,rgb(236, 236, 236)) border-box",
+                   transition: "transform 0.4s ease, box-shadow 0.4s ease",
                   "&:hover": {
                     transform: "scale(1.02)",
                     boxShadow: "0 30px 60px rgba(0, 0, 0, 0.2)",
@@ -281,8 +283,8 @@ const BridalShowcase = () => {
                     position: "relative",
                     overflow: "hidden",
                     borderRadius: "2rem 0 0 2rem",
-                    border: "2px solid transparent",
-                    background: "linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(90deg, #3a2a6a,rgb(248, 248, 248)) border-box",
+                    // border: "2px solid transparent",
+                    // background: "linear-gradient(#ffffff, #ffffff) padding-box, linear-gradient(90deg, #3a2a6a,rgb(248, 248, 248)) border-box",
                     borderRight: { xs: "none", md: "none" },
                     borderBottom: { xs: "none", md: "2px solid transparent" },
                   }}
@@ -313,7 +315,7 @@ const BridalShowcase = () => {
                       left: 0,
                       width: "100%",
                       height: "100%",
-                      background: "linear-gradient(180deg, rgba(58, 42, 106, 0.2), rgba(232, 185, 35, 0.1))",
+                      // background: "linear-gradient(180deg, rgba(58, 42, 106, 0.2), rgba(232, 185, 35, 0.1))",
                       borderRadius: "inherit",
                     }}
                   />
@@ -333,12 +335,12 @@ const BridalShowcase = () => {
                     display: "flex",
                     flexDirection: "column",
                     justifyContent: "center",
-                    background: "linear-gradient(to bottom, #3a2a6a, #2a1c4a)",
+                    background: "linear-gradient(to bottom,#f293b2, #f587cc)",
                     borderRadius: "0 2rem 2rem 0",
-                    border: "2px solid transparent",
+                    // border: "2px solid transparent",
                     borderLeft: { xs: "none", md: "none" },
                     borderTop: { xs: "none", md: "2px solid transparent" },
-                    background: "linear-gradient(#3a2a6a, #2a1c4a) padding-box, linear-gradient(90deg, #3a2a6a,rgb(255, 254, 251)) border-box",
+                    // background: "linear-gradient(#f293b2, #f587cc) padding-box, linear-gradient(90deg, #3a2a6a,rgb(255, 254, 251)) border-box",
                   }}
                 >
                   <Typography
@@ -379,56 +381,62 @@ const BridalShowcase = () => {
                       </motion.li>
                     ))}
                   </Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      gap: { xs: 1.5, sm: 2 },
-                      justifyContent: "center",
-                      flexWrap: "wrap",
-                    }}
-                  >
-                    <Button
-                      className="custom-button"
-                      variant="outlined"
-                      onClick={prevArtist}
-                      sx={{
-                        color: "#000",
-                        fontSize: { xs: "0.875rem", sm: "1rem" },
-                        px: { xs: 3, sm: 4 },
-                        py: 1,
-                        textTransform: "none",
-                        fontFamily: '"Lora", serif',
-                        "&:hover": {
-                          color: "#ffffff",
-                          background: "linear-gradient(90deg, #3a2a6a,rgb(245, 241, 227))",
-                        },
-                      }}
-                    >
-                      Previous
-                    </Button>
-                    <Button
-                      className="custom-button"
-                      variant="contained"
-                      onClick={nextArtist}
-                      sx={{
-                        color: "#000",
-                        fontSize: { xs: "0.875rem", sm: "1rem" },
-                        px: { xs: 3, sm: 4 },
-                        py: 1,
-                        textTransform: "none",
-                        fontFamily: '"Lora", serif',
-                        // background: "linear-gradient(90deg,rgb(241, 241, 241), #3a2a6a)",
-                      
-                        "&:hover": {
-                          color: "#000",
-                          background: "linear-gradient(90deg,rgb(241, 241, 241), #3a2a6a)",
-                      
-                        },
-                      }}
-                    >
-                      Next
-                    </Button>
-                  </Box>
+ <Box
+  sx={{
+    display: "flex",
+    flexDirection: { xs: "column", sm: "row" }, // Stack on small, row on larger
+    justifyContent: { xs: "center", sm: "space-between" },
+    alignItems: "center",
+    gap: 2,
+    width: "100%",
+    maxWidth: 500,
+    mx: "auto",
+    px: 2,
+  }}
+>
+  <Button
+    className="custom-button"
+    variant="outlined"
+    onClick={prevArtist}
+    sx={{
+      color: "#000",
+      fontSize: { xs: "0.875rem", sm: "1rem" },
+      px: { xs: 3, sm: 4 },
+      py: 1,
+      textTransform: "none",
+      fontFamily: '"Lora", serif',
+      "&:hover": {
+        color: "#ffffff",
+        background: "linear-gradient(90deg, #3a2a6a,rgb(245, 241, 227))",
+      },
+      width: { xs: "100%", sm: "auto" },
+    }}
+  >
+    Previous
+  </Button>
+  <Button
+    className="custom-button"
+    variant="contained"
+    onClick={nextArtist}
+    sx={{
+      color: "#000",
+      fontSize: { xs: "0.875rem", sm: "1rem" },
+      px: { xs: 3, sm: 4 },
+      py: 1,
+      textTransform: "none",
+      fontFamily: '"Lora", serif',
+      "&:hover": {
+        color: "#000",
+        background: "linear-gradient(90deg,rgb(241, 241, 241), #3a2a6a)",
+      },
+      width: { xs: "100%", sm: "auto" },
+    }}
+  >
+    Next
+  </Button>
+</Box>
+
+
                 </Box>
               </Box>
             </motion.div>

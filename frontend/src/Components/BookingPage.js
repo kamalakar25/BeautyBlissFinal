@@ -1066,7 +1066,7 @@ const BookingPage = () => {
       style={{
         padding: "1rem",
         minHeight: "100vh",
-        background: "#ffffff",
+        background: "#f8d7da",
       }}
     >
       <style>
@@ -1205,29 +1205,36 @@ const BookingPage = () => {
             gap: 0.5rem;
             margin-bottom: 1rem;
             justify-content: center;
+            background: #f8d7da;
+            padding: 1rem;
+            border-radius: 15px;
           }
           .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid #201548;
-            border-radius: 5px;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 25px;
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
             flex: 1;
             text-align: center;
-            max-width: 150px;
+            max-width: 200px;
             background: #ffffff;
-            color: #201548;
+            color: #721c24;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
           }
           .filter-btn.active {
-            background: #201548;
-            color: #ffffff;
-          }
-          .filter-btn:hover {
-            background: #201548;
+            background: #dc3545;
             color: #ffffff;
             transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+          }
+          .filter-btn:hover {
+            background: #dc3545;
+            color: #ffffff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
           }
           .table-container {
             width: 100%;
@@ -1294,21 +1301,21 @@ const BookingPage = () => {
             color: #1a1138;
           }
           .action-reschedule {
-            color: #ffffff;
-            background: #201548;
+            color:rgb(0, 0, 0);
+            background:rgb(163, 163, 163);
           }
           .action-reschedule i {
             color: #ffffff;
           }
           .action-reschedule:hover {
-            background: #1a1138;
+            background: #fb646b;
           }
           .action-reschedule:hover i {
             color: #ffffff;
           }
           .action-pay {
             color: #ffffff;
-            background: #4a3f8c;
+            background: #fb646b;
           }
           .action-pay:hover {
             background: #6683a8;
@@ -1330,8 +1337,8 @@ const BookingPage = () => {
             }
             .filter-btn {
               font-size: 0.8rem;
-              padding: 0.4rem 0.8rem;
-              max-width: 120px;
+              padding: 0.6rem 1.2rem;
+              max-width: 150px;
             }
           }
           @media (max-width: 600px) {
@@ -1381,7 +1388,7 @@ const BookingPage = () => {
             }
             .filter-btn {
               font-size: 0.75rem;
-              padding: 0.3rem;
+              padding: 0.5rem;
               max-width: none;
             }
             .modal-content {
@@ -1408,19 +1415,19 @@ const BookingPage = () => {
           className={`filter-btn ${filterStatus === "all" ? "active" : ""}`}
           onClick={handleAllBookings}
         >
-          All Bookings
+          ALL BOOKINGS
         </button>
         <button
           className={`filter-btn ${filterStatus === "paid" ? "active" : ""}`}
           onClick={handlePaidBookings}
         >
-          Confirmed Bookings
+          COMPLETED
         </button>
         <button
           className={`filter-btn ${filterStatus === "pending" ? "active" : ""}`}
           onClick={handlePendingBookings}
         >
-          Failures Bookings
+          CANCELLED
         </button>
       </div>
 

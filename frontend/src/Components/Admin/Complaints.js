@@ -11,14 +11,14 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('lg')]: {
     display: 'block',
-    color: '#201548',
+    color: '#fb646b',
     backgroundColor: 'transparent',
-    border: '2px solid #201548',
+    border: '2px solid #fb646b',
     borderRadius: '50%',
     padding: '8px',
     transition: 'all 0.3s ease',
     '&:hover': {
-      backgroundColor: '#201548',
+      backgroundColor: '#fb646b',
       color: '#ffffff',
       transform: 'scale(1.1)',
       boxShadow: '0 4px 12px rgba(32, 21, 72, 0.4)',
@@ -169,7 +169,7 @@ const Complaints = () => {
         sx={{
           width: '100%',
           maxWidth: '1200px',
-          backgroundColor: '#ffffff',
+          backgroundColor: '#f8cad7',
           borderRadius: '12px',
           p: '24px',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
@@ -205,7 +205,7 @@ const Complaints = () => {
               textAlign: 'center',
               transition: 'all 0.3s ease',
               '&:hover': {
-                color: '#201548',
+                color: '#fb646b',
                 textShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
               },
             }}
@@ -222,7 +222,7 @@ const Complaints = () => {
               fontWeight: 'medium',
               transition: 'all 0.3s ease',
               '&:hover': {
-                color: '#201548',
+                color: '#fb646b',
                 transform: 'scale(1.05)',
               },
             }}
@@ -265,7 +265,7 @@ const Complaints = () => {
                   sx={{
                     p: '10px',
                     borderRadius: '8px',
-                    border: '2px solid #201548',
+                    border: '2px solid #fb646b',
                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(4px)',
                     fontSize: '0.95rem',
@@ -275,7 +275,7 @@ const Complaints = () => {
                     textAlign: 'center',
                     transition: 'all 0.3s ease',
                     '&:focus': {
-                      borderColor: '#201548',
+                      borderColor: '#fb646b',
                       boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                       backgroundColor: '#ffffff',
                     },
@@ -309,19 +309,19 @@ const Complaints = () => {
                   sx={{
                     p: '10px',
                     borderRadius: '8px',
-                    border: '2px solid #201548',
+                    border: '2px solid #fb646b',
                     backgroundColor: 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(4px)',
                     fontSize: '0.95rem',
                     width: { xs: '100%', sm: '200px' },
                     maxWidth: '200px',
                     color: '#0e0f0f',
-                    mt: { xs: 0, sm: '20px' },
+                    mt: { xs: 0, sm: '30px' },
                     textAlign: 'center',
                     display: { xs: 'none', lg: 'block' },
                     transition: 'all 0.3s ease',
                     '&:focus': {
-                      borderColor: '#201548',
+                      borderColor: '#fb646b',
                       boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                       backgroundColor: '#ffffff',
                     },
@@ -360,7 +360,7 @@ const Complaints = () => {
                         fontWeight: 'medium',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          color: '#201548',
+                          color: '#fb646b',
                         },
                       }}
                     >
@@ -375,7 +375,7 @@ const Complaints = () => {
                       sx={{
                         p: '10px',
                         borderRadius: '8px',
-                        border: '2px solid #201548',
+                        border: '2px solid #fb646b',
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(4px)',
                         fontSize: '0.95rem',
@@ -385,7 +385,7 @@ const Complaints = () => {
                         color: '#0e0f0f',
                         transition: 'all 0.3s ease',
                         '&:focus': {
-                          borderColor: '#201548',
+                          borderColor: '#fb646b',
                           boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                           backgroundColor: '#ffffff',
                         },
@@ -415,7 +415,7 @@ const Complaints = () => {
                         fontWeight: 'medium',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          color: '#201548',
+                          color: '#fb646b',
                         },
                       }}
                     >
@@ -432,7 +432,7 @@ const Complaints = () => {
                       sx={{
                         p: '10px',
                         borderRadius: '8px',
-                        border: '2px solid #201548',
+                        border: '2px solid #fb646b',
                         backgroundColor: 'rgba(255, 255, 255, 0.9)',
                         backdropFilter: 'blur(4px)',
                         fontSize: '0.95rem',
@@ -444,7 +444,7 @@ const Complaints = () => {
                         color: '#0e0f0f',
                         transition: 'all 0.3s ease',
                         '&:focus': {
-                          borderColor: '#201548',
+                          borderColor: '#fb646b',
                           boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
                           backgroundColor: '#ffffff',
                         },
@@ -463,8 +463,8 @@ const Complaints = () => {
                   sx={{
                     p: '10px 20px',
                     borderRadius: '8px',
-                    border: '2px solid #201548',
-                    background: '#201548',
+                    border: '2px solid #fb646b',
+                    background: '#fb646b',
                     fontSize: '0.95rem',
                     fontWeight: 'medium',
                     color: '#fff',
@@ -476,7 +476,7 @@ const Complaints = () => {
                     '&:hover': {
                       ...(searchQuery || fromDate || toDate
                         ? {
-                            background: 'linear-gradient(90deg, #201548, #201548)',
+                            background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                             color: '#ffffff',
                             transform: 'scale(1.05)',
                             boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
@@ -498,7 +498,7 @@ const Complaints = () => {
                   fontWeight: 'medium',
                   transition: 'all 0.3s ease',
                   '&:hover': {
-                    color: '#201548',
+                    color: '#fb646b',
                     transform: 'scale(1.05)',
                   },
                 }}
@@ -531,10 +531,10 @@ const Complaints = () => {
                     fontWeight: 'medium',
                     minWidth: '120px',
                     borderRadius: '8px',
-                    border: activeView === 'user' ? 'none' : '2px solid #201548',
+                    border: activeView === 'user' ? 'none' : '2px solid #fb646b',
                     background:
                       activeView === 'user'
-                        ? 'linear-gradient(90deg, #201548, #201548)'
+                        ? 'linear-gradient(90deg, #fb646b, #fb646b)'
                         : 'linear-gradient(90deg, #ffffff, #e2e8f0)',
                     color: activeView === 'user' ? '#ffffff' : '#0e0f0f',
                     cursor: 'pointer',
@@ -543,7 +543,7 @@ const Complaints = () => {
                     transition: 'all 0.3s ease',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                     '&:hover': {
-                      background: 'linear-gradient(90deg, #201548, #201548)',
+                      background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                       color: '#ffffff',
                       transform: 'scale(1.05)',
                       boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
@@ -567,10 +567,10 @@ const Complaints = () => {
                     fontWeight: 'medium',
                     minWidth: '120px',
                     borderRadius: '8px',
-                    border: activeView === 'sp' ? 'none' : '2px solid #201548',
+                    border: activeView === 'sp' ? 'none' : '2px solid #fb646b',
                     background:
                       activeView === 'sp'
-                        ? 'linear-gradient(90deg, #201548, #201548)'
+                        ? 'linear-gradient(90deg, #fb646b, #fb646b)'
                         : 'linear-gradient(90deg, #ffffff, #e2e8f0)',
                     color: activeView === 'sp' ? '#ffffff' : '#0e0f0f',
                     cursor: 'pointer',
@@ -579,7 +579,7 @@ const Complaints = () => {
                     transition: 'all 0.3s ease',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
                     '&:hover': {
-                      background: 'linear-gradient(90deg, #201548, #201548)',
+                      background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                       color: '#ffffff',
                       transform: 'scale(1.05)',
                       boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
@@ -628,7 +628,7 @@ const Complaints = () => {
             <Box
               component="thead"
               sx={{
-                background: 'linear-gradient(90deg, #201548, #201548)',
+                background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                 color: '#ffffff',
               }}
             >
@@ -654,7 +654,7 @@ const Complaints = () => {
                           border: '1px solid #e2e8f0',
                           transition: 'all 0.3s ease',
                           '&:hover': {
-                            background: '#201548',
+                            background: '#fb646b',
                             boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
                           },
                         }}
@@ -675,7 +675,7 @@ const Complaints = () => {
                             border: '1px solid #e2e8f0',
                             transition: 'all 0.3s ease',
                             '&:hover': {
-                              background: '#201548',
+                              background: '#fb646b',
                               boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
                             },
                           }}
@@ -976,7 +976,7 @@ const Complaints = () => {
               sx={{
                 p: '10px 20px',
                 borderRadius: '8px',
-                border: '2px solid #201548',
+                border: '2px solid #fb646b',
                 background: 'linear-gradient(90deg, #ffffff, #e2e8f0)',
                 color: '#0e0f0f',
                 fontSize: '0.95rem',
@@ -987,7 +987,7 @@ const Complaints = () => {
                 '&:hover': {
                   ...(currentPage !== 1
                     ? {
-                        background: 'linear-gradient(90deg, #201548, #201548)',
+                        background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                         color: '#ffffff',
                         transform: 'scale(1.05)',
                         boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
@@ -1006,7 +1006,7 @@ const Complaints = () => {
                 fontWeight: 'medium',
                 transition: 'all 0.3s ease',
                 '&:hover': {
-                  color: '#201548',
+                  color: '#fb646b',
                   transform: 'scale(1.05)',
                 },
               }}
@@ -1020,7 +1020,7 @@ const Complaints = () => {
               sx={{
                 p: '10px 20px',
                 borderRadius: '8px',
-                border: '2px solid #201548',
+                border: '2px solid #fb646b',
                 background: 'linear-gradient(90deg, #ffffff, #e2e8f0)',
                 color: '#0e0f0f',
                 fontSize: '0.95rem',
@@ -1031,7 +1031,7 @@ const Complaints = () => {
                 '&:hover': {
                   ...(currentPage !== totalPages
                     ? {
-                        background: 'linear-gradient(90deg, #201548, #201548)',
+                        background: 'linear-gradient(90deg, #fb646b, #fb646b)',
                         color: '#ffffff',
                         transform: 'scale(1.05)',
                         boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',

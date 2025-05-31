@@ -23,3 +23,154 @@
 .pagination {
   margin-bottom: 0;
 }
+
+
+
+
+/* General container styling */
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Table styling */
+.table {
+  background-color: #FFEBF1;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table thead {
+  background-color: #f1f5f9;
+  color: #2D2828;
+}
+
+.table th,
+.table td {
+  padding: 16px;
+  vertical-align: middle;
+  color: #2D2828;
+}
+
+.table tr:hover {
+  background-color: #F8CAD7;
+}
+
+.table .badge {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Button styling */
+.btn-custom {
+  background-color: #fb646b;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-custom:hover {
+  background-color: #D946EF;
+}
+
+.btn-outline-custom {
+  border: 2px solid #fb646b;
+  color: #fb646b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-custom:hover {
+  background-color: #fb646b;
+  color: #fff;
+}
+
+/* Input and select styling */
+.form-control,
+.form-select {
+  border: 2px solid #FB646B;
+  border-radius: 6px;
+  background-color: #FFEBF1;
+  color: #2D2828;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #D946EF;
+  box-shadow: 0 0 0 0.2rem rgba(217, 70, 239, 0.25);
+  outline: none;
+}
+
+.input-group-text {
+  background-color: #FFEBF1;
+  border: 2px solid #FB646B;
+  border-right: none;
+  border-radius: 6px 0 0 6px;
+}
+
+/* Pagination styling */
+.pagination-btn {
+  background-color: #fb646b;
+  color: #fff;
+  border: 2px solid #fb646b;
+  padding: 8px 16px;
+  border-radius: 6px;
+  margin: 0 8px;
+  transition: background-color 0.3s ease;
+}
+
+.pagination-btn:disabled {
+  background-color: #e5e7eb;
+  border-color: #e5e7eb;
+  color: #6b7280;
+  cursor: not-allowed;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background-color: #D946EF;
+  border-color: #D946EF;
+}
+
+.pagination-info {
+  color: #2D2828;
+  font-weight: 500;
+}
+
+/* Modal styling */
+.modal-content {
+  background-color: #FFEBF1;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+  border-bottom: none;
+}
+
+.modal-title {
+  color: #F710B9;
+  font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .table {
+    font-size: 0.9rem;
+  }
+
+  .btn-custom,
+  .btn-outline-custom,
+  .pagination-btn {
+    padding: 6px 12px;
+    font-size: 0.9rem;
+  }
+
+  .container {
+    padding: 0 15px;
+  }
+}

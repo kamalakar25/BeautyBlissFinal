@@ -1,61 +1,51 @@
-import React, { useRef, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Carousel } from "react-responsive-carousel";
-import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { motion, AnimatePresence } from "framer-motion";
-import { Button, Fab, IconButton, useScrollTrigger, Zoom } from "@mui/material";
+import BookOnlineIcon from '@mui/icons-material/BookOnline';
+import FaceIcon from '@mui/icons-material/Face';
 import {
   Box,
+  Button,
   Card,
-  CardMedia,
+  Container,
   Typography,
   useMediaQuery,
+  useScrollTrigger,
   useTheme,
-  Container,
-  Divider,
-} from "@mui/material";
-import BookOnlineIcon from "@mui/icons-material/BookOnline";
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
-import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
-import SpaIcon from "@mui/icons-material/Spa";
-import ScissorsIcon from "@mui/icons-material/ContentCut";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
-import FaceIcon from "@mui/icons-material/Face";
-import PedicureIcon from "@mui/icons-material/PedalBike";
+  Zoom,
+} from '@mui/material';
+import { motion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import { useNavigate } from 'react-router-dom';
+import './salon.css';
 
 // Import images
-import Salon1 from "../Assets/salon1.jpg";
-import Salon2 from "../Assets/salon2.jpg";
-import Salon3 from "../Assets/salon3.webp";
-import haircut from "../Assets/salon4.jpg";
-import facial from "../Assets/salon5.png";
-import haircolor from "../Assets/salon6.jpg";
-import shaving from "../Assets/salon7.png";
-import ourwork from "../Assets/salon8.webp";
-import ourwork2 from "../Assets/salon9.jpg";
-import ourwork3 from "../Assets/salon10.jpg";
-import ourwork4 from "../Assets/salon11.jpg";
-import ourwork5 from "../Assets/salon12.jpg";
-import About from "../Assets/salon13.jpg";
-import pedicure from "../Assets/pedicure.jpg";
-
+import portfolio2 from '../Assets/12.jpeg';
+import portfolio1 from '../Assets/13.jpeg';
+import portfolio3 from '../Assets/14.jpeg';
+import facial1 from '../Assets/facial1.webp';
+import haircolor1 from '../Assets/hair color1.webp';
+import haircut1 from '../Assets/haircut1.jpg';
+import hero from '../Assets/hero salon.png';
+import Salon1 from '../Assets/salon1.jpg';
+import About from '../Assets/salon13.png';
+import facial from '../Assets/salon5.png';
+import shaving1 from '../Assets/shaving.webp';
 
 const BookNowButton = () => {
-  const isMobile = useMediaQuery("(max-width:600px)");
+  const isMobile = useMediaQuery('(max-width:600px)');
   const navigate = useNavigate();
 
   return (
     <Zoom in={true} timeout={1500} mountOnEnter unmountOnExit>
       <Box
         sx={{
-          position: "fixed",
+          position: 'fixed',
           bottom: { xs: 20, sm: 40 },
           right: { xs: 20, sm: 40 },
           zIndex: 1000,
         }}
       >
         <Button
-          variant="contained"
+          variant='contained'
           size={isMobile ? 'small' : 'medium'}
           sx={{
             background: 'linear-gradient(135deg, #201548 0%, #3a2a6b 100%)',
@@ -89,7 +79,8 @@ const BookNowButton = () => {
               left: 0,
               width: '100%',
               height: '100%',
-              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+              background:
+                'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
               transform: 'translateX(-100%)',
               transition: '0.6s',
             },
@@ -97,9 +88,13 @@ const BookNowButton = () => {
               transform: 'translateX(100%)',
             },
           }}
-          onClick={() => navigate('/products', { state: { designation: 'Salon' } })}
+          onClick={() =>
+            navigate('/products', { state: { designation: 'Salon' } })
+          }
         >
-          <BookOnlineIcon sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.2rem' } }} />
+          <BookOnlineIcon
+            sx={{ mr: 1, fontSize: { xs: '1rem', sm: '1.2rem' } }}
+          />
           Book Now
         </Button>
       </Box>
@@ -111,26 +106,26 @@ const SalonPage = () => {
   const carouselRef = useRef(null);
   const navigate = useNavigate();
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const [activeIndex, setActiveIndex] = useState(0);
   const [hoveredCard, setHoveredCard] = useState(null);
 
   // Color scheme
   const colors = {
-    background: "#ffffff",
-    text: "#0e0f0f",
-    primary: "#201548",
-    secondary: "#3a2a6d",
-    accent: "#5e43ba",
-    lightAccent: "rgb(228, 205, 231)",
+    background: '#ffffff',
+    text: '#0e0f0f',
+    primary: '#201548',
+    secondary: '#3a2a6d',
+    accent: '#5e43ba',
+    lightAccent: 'rgb(228, 205, 231)',
   };
 
   const descriptions = [
-    "Revitalize your skin with our rejuvenating facial treatments, tailored to refresh and hydrate your complexion.",
+    'Revitalize your skin with our rejuvenating facial treatments, tailored to refresh and hydrate your complexion.',
     "Get the perfect look with our expert men's haircut services, designed to match your style and personality.",
     "Enhance your hair's natural beauty with our stunning balayage and highlights, creating seamless, sun-kissed looks.",
     "Transform your style with our professional women's hair coloring services, offering vibrant and lasting results.",
-    "Add volume and movement to your hair with our trendy layer cuts, customized to suit your face shape and style.",
+    'Add volume and movement to your hair with our trendy layer cuts, customized to suit your face shape and style.',
   ];
 
   // Animation variants
@@ -139,7 +134,7 @@ const SalonPage = () => {
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: { duration: 0.6, ease: 'easeOut' },
     },
   };
 
@@ -159,53 +154,82 @@ const SalonPage = () => {
       y: 0,
       opacity: 1,
       transition: {
-        type: "spring",
+        type: 'spring',
         stiffness: 80,
         damping: 12,
       },
     },
   };
 
+  // Sample data for cards (replace image URLs with your actual images)
   const SalonCards = [
     {
       id: 1,
-      title: "HairCut",
-      icon: <ScissorsIcon fontSize="large" />,
-      img: haircut,
+      title: 'HAIRCUT',
       description:
-        "Get a fresh and stylish haircut that suits your personality and enhances your look!",
+        'Get a fresh and stylish haircut that suits your personality and enhances your look!',
+      image: haircut1, // Replace with actual image URL
+      smallIcon: <i class='fa-solid fa-scissors'></i>, // Replace with actual small icon URL
     },
     {
       id: 2,
-      title: "Facial",
-      icon: <FaceIcon fontSize="large" />,
-      img: facial,
+      title: 'SHAVING',
       description:
-        "Enhance your skin's natural glow with our expert facial treatments.",
+        'Experience a smooth and clean shave with our professional shaving services.',
+      image: shaving1, // Replace with actual image URL
+      smallIcon: <i class='fa-solid fa-scissors'></i>, // Replace with actual small icon URL
     },
     {
       id: 3,
-      title: "HairColor",
-      icon: <ColorLensIcon fontSize="large" />,
-      img: haircolor,
+      title: 'FACIAL',
       description:
-        "Transform your hair with our expert hair coloring services.",
+        "Enhance your skin's natural glow with our expert facial treatments.",
+      image: facial1, // Replace with actual image URL
+      smallIcon: <FaceIcon fontSize='small' />,
     },
     {
       id: 4,
-      title: "Shaving",
-      icon: <ScissorsIcon fontSize="large" />,
-      img: shaving,
+      title: 'HAIR COLOUR',
       description:
-        "Experience a smooth and clean shave with our professional shaving services.",
+        'Transform your hair with our expert hair coloring services.',
+      image: haircolor1, // Replace with actual image URL
+      smallIcon: <i class='fa-solid fa-palette'></i>, // Replace with actual small icon URL
     },
   ];
 
-  const images = [ourwork, ourwork2, ourwork3, ourwork4, ourwork5];
+  const portfolioItems = [
+    {
+      id: 1,
+      // title: "Rejuvenating Facial",
+      // description: "Special treatment for glowing skin",
+      image: portfolio1,
+      name: 'Niharika',
+      tagline: 'Revitalize your skin with our facial treatments',
+      icon: portfolio1, // Single icon per card
+    },
+    {
+      id: 2,
+      // title: "Anti-Aging Therapy",
+      // description: "Reduce wrinkles and fine lines",
+      image: portfolio2,
+      name: 'Priya',
+      tagline: 'Turn back time with our anti-aging solutions',
+      icon: portfolio2, // Different icon
+    },
+    {
+      id: 3,
+      // title: "Deep Cleansing",
+      // description: "Purify your skin completely",
+      image: portfolio3,
+      name: 'Ananya',
+      tagline: 'Deep pore cleansing for fresh skin',
+      icon: portfolio3, // Different icon
+    },
+  ];
 
   const handleServiceClick = (service) => {
-    navigate("/products", {
-      state: { designation: "Salon", service: service },
+    navigate('/products', {
+      state: { designation: 'Salon', service: service },
     });
   };
 
@@ -213,7 +237,7 @@ const SalonPage = () => {
     if (carouselRef.current) {
       const cardWidth =
         carouselRef.current.firstChild.getBoundingClientRect().width + 16;
-      carouselRef.current.scrollBy({ left: -cardWidth, behavior: "smooth" });
+      carouselRef.current.scrollBy({ left: -cardWidth, behavior: 'smooth' });
     }
   };
 
@@ -221,13 +245,13 @@ const SalonPage = () => {
     if (carouselRef.current) {
       const cardWidth =
         carouselRef.current.firstChild.getBoundingClientRect().width + 16;
-      carouselRef.current.scrollBy({ left: cardWidth, behavior: "smooth" });
+      carouselRef.current.scrollBy({ left: cardWidth, behavior: 'smooth' });
     }
   };
 
   // Scroll to top on mount
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   // Scroll reveal animation for floating button
@@ -239,7 +263,7 @@ const SalonPage = () => {
     const handleClick = (event) => {
       window.scrollTo({
         top: 0,
-        behavior: "smooth",
+        behavior: 'smooth',
       });
     };
 
@@ -247,8 +271,8 @@ const SalonPage = () => {
       <Zoom in={trigger}>
         <Box
           onClick={handleClick}
-          role="presentation"
-          sx={{ position: "fixed", bottom: 16, right: 16 }}
+          role='presentation'
+          sx={{ position: 'fixed', bottom: 16, right: 16 }}
         >
           {children}
         </Box>
@@ -262,347 +286,603 @@ const SalonPage = () => {
         backgroundColor: colors.background,
         color: colors.text,
         fontFamily: "'Poppins', sans-serif",
-        overflowX: "hidden",
+        overflowX: 'hidden',
       }}
     >
       {/* Hero Carousel */}
-      <section>
-        <Carousel
-          showThumbs={false}
-          autoPlay
-          infiniteLoop
-          showStatus={false}
-          showArrows={!isMobile}
-          interval={5000}
-          selectedItem={activeIndex}
-          onChange={setActiveIndex}
-          renderIndicator={(onClickHandler, isSelected, index, label) => (
-            <li
-              style={{
-                display: "inline-block",
-                width: "12px",
-                height: "12px",
-                borderRadius: "50%",
-                margin: "0 4px",
-                backgroundColor: isSelected ? colors.primary : "#ccc",
-                cursor: "pointer",
-                transition: "all 0.3s ease",
-              }}
-              onClick={onClickHandler}
-              onKeyDown={onClickHandler}
-              value={index}
-              key={index}
-              role="button"
-              tabIndex={0}
-              aria-label={`Slide ${index + 1}`}
-            />
-          )}
-        >
-          {[Salon1, Salon2, Salon3].map((img, index) => (
-            <Box key={index} sx={{ position: "relative" }}>
-              <img
-                src={img}
-                alt={`Salon ${index + 1}`}
-                style={{
-                  width: "100%",
-                  height: isMobile ? "60vh" : "70vh",
-                  objectFit: "cover",
-                  objectPosition: "center",
-                }}
-              />
-              {/* <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-                style={{
-                  position: "absolute",
-                  bottom: "20%",
-                  left: "10%",
-                  textAlign: "left",
-                  color: "white",
-                  textShadow: "2px 2px 4px rgba(0,0,0,0.5)",
-                }}
-              >
-                <Typography
-                  variant={isMobile ? "h4" : "h2"}
-                  sx={{
-                    fontWeight: 700,
-                    mb: 2,
-                    letterSpacing: "1px",
-                  }}
-                >
-                  Luxury Salon Experience
-                </Typography>
-                <Typography
-                  variant={isMobile ? "body1" : "h6"}
-                  sx={{
-                    maxWidth: isMobile ? "90%" : "50%",
-                    lineHeight: 1.6,
-                  }}
-                >
-                  Discover premium beauty services tailored just for you
-                </Typography>
-                <Button
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    backgroundColor: colors.primary,
-                    "&:hover": {
-                      backgroundColor: colors.secondary,
-                    },
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: "50px",
-                    fontSize: isMobile ? "0.875rem" : "1rem",
-                  }}
-                  onClick={() => navigate("/products")}
-                >
-                  Book Now
-                </Button>
-              </motion.div> */}
-            </Box>
-          ))}
-        </Carousel>
-      </section>
-
-      {/* Services Section */}
-      <Container
-        maxWidth="xl"
-        sx={{
-          py: { xs: 4, sm: 6, md: 8 },
-          backgroundColor: "#E6DDEE",
+      <div
+        style={{
+          backgroundColor: 'rgb(248,202,215)', // Soft pink background
+          minHeight: '100vh',
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '16px',
+          flexWrap: 'wrap',
+          gap: '24px',
+          fontFamily: "'Inter', sans-serif", // Clean, modern font
         }}
       >
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={staggerContainer}
+        {/* Text Section (Left Side) */}
+        <div
           style={{
-            textAlign: "center",
-            marginBottom: { xs: "2rem", sm: "3rem", md: "4rem" },
+            flex: 1,
+            textAlign: 'left',
+            minWidth: '300px',
+            paddingRight: '16px',
+            marginLeft: '56px',
+            maxWidth: '600px', // Prevents text section from becoming too wide
           }}
         >
-          <motion.div variants={fadeInUp}>
-            <Typography
-              variant="h3"
-              sx={{
-                fontWeight: 700,
-                mb: 2,
-                background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                display: "inline-block",
-                fontSize: { xs: "1.75rem", sm: "2.25rem", md: "3rem" },
+          <h1
+            style={{
+              fontSize: 'clamp(32px, 10vw, 36px)', // Responsive font size
+              fontWeight: 'bold',
+              color: '#1F2937',
+              lineHeight: '1.2',
+              '@media (min-width: 640px)': {
+                fontSize: 'clamp(36px, 8vw, 48px)',
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: 'clamp(48px, 6vw, 64px)',
+              },
+            }}
+          >
+            DISC
+            <span
+              style={{
+                display: 'inline-block',
+                width: 'clamp(60px, 12vw, 80px)',
+                height: 'clamp(30px, 6vw, 35px)',
+                margin: '0 4px',
+                marginTop: '-25px',
+                verticalAlign: 'middle',
+                '@media (min-width: 640px)': {
+                  width: 'clamp(40px, 8vw, 48px)',
+                  height: 'clamp(40px, 8vw, 48px)',
+                },
+                '@media (min-width: 1024px)': {
+                  width: 'clamp(48px, 6vw, 56px)',
+                  height: 'clamp(48px, 6vw, 56px)',
+                },
               }}
             >
-              Our Premium Services
-            </Typography>
-          </motion.div>
-          <motion.div variants={fadeInUp}>
-            <Typography
-              variant="subtitle1"
-              sx={{
-                color: colors.text,
-                maxWidth: "700px",
-                margin: "0 auto",
-                lineHeight: 1.6,
-                fontSize: { xs: "0.875rem", sm: "1rem", md: "1.125rem" },
-                opacity: 0.9,
-                marginBottom: "10px",
-              }}
-            >
-              Experience luxury and precision with our expertly crafted services
-            </Typography>
-          </motion.div>
-        </motion.div>
-
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: {
-              xs: "1fr 1fr", // 2 cards per row on mobile
-              sm: "1fr 1fr", // 2 cards per row on small screens
-              md: "repeat(4, 1fr)", // 4 cards per row on medium and larger
-            },
-            gap: { xs: 2, sm: 3, md: 4 },
-            alignItems: "stretch", // Ensure all cards stretch to same height
-          }}
-        >
-          {SalonCards.map((card, index) => (
-            <motion.div
-              key={card.id}
-              variants={cardItem}
-              whileHover={{ y: -10 }}
-              onMouseEnter={() => setHoveredCard(card.id)}
-              onMouseLeave={() => setHoveredCard(null)}
-              style={{ display: "flex", height: "100%" }}
-            >
-              <Card
-                sx={{
-                  flex: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                  borderRadius: "16px",
-                  overflow: "hidden",
-                  boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  position: "relative",
-                  border: `1px solid ${colors.lightAccent}`,
-                  backgroundColor: "rgb(228, 205, 231)",
+              <img
+                src={facial}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '4px double #3B82F6', // Double border for the image
+                  transition: 'transform 0.3s ease', // Smooth hover effect
                 }}
-                onClick={() => handleServiceClick(card.title)}
+                onMouseEnter={(e) => (e.target.style.transform = 'scale(1.1)')}
+                onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+                alt='Facial Treatment'
+              />
+            </span>
+            VER YOUR
+            <br />
+            SIGNATURE GL
+            <span
+              style={{
+                display: 'inline-block',
+                width: 'clamp(60px, 12vw, 80px)',
+                height: 'clamp(30px, 6vw, 35px)',
+                margin: '0 4px',
+                marginTop: '-25px',
+                verticalAlign: 'middle',
+                '@media (min-width: 640px)': {
+                  width: 'clamp(40px, 8vw, 48px)',
+                  height: 'clamp(40px, 8vw, 48px)',
+                },
+                '@media (min-width: 1024px)': {
+                  width: 'clamp(48px, 6vw, 56px)',
+                  height: 'clamp(48px, 6vw, 56px)',
+                },
+              }}
+            >
+              <img
+                src={Salon1}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  border: '4px double #3B82F6', // Double border for the image
+                  transition: 'transform 0.3s ease',
+                }}
+                onMouseEnter={(e) => (e.target.style.transform = 'scale(1.1)')}
+                onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+                alt='Salon'
+              />
+            </span>
+            W
+          </h1>
+          <p
+            style={{
+              fontSize: 'clamp(14px, 4vw, 16px)',
+              color: '#4B5563',
+              marginTop: '12px',
+              lineHeight: '1.5',
+              '@media (min-width: 640px)': {
+                fontSize: 'clamp(16px, 3vw, 18px)',
+              },
+              '@media (min-width: 1024px)': {
+                fontSize: 'clamp(18px, 2vw, 20px)',
+                marginTop: '16px',
+              },
+            }}
+          >
+            Experience the transformative power of GlowGenics and unveil your
+            signature glow.
+          </p>
+          <button
+            style={{
+              marginTop: '16px',
+              padding: '8px 20px',
+              backgroundColor: '#FFFFFF',
+              color: '#1F2937',
+              fontWeight: '600',
+              borderRadius: '9999px',
+              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+              border: 'none',
+              cursor: 'pointer',
+              transition: 'background-color 0.3s, transform 0.2s',
+              '@media (min-width: 1024px)': {
+                marginTop: '24px',
+                padding: '12px 24px',
+              },
+            }}
+            onMouseEnter={(e) => {
+              e.target.style.backgroundColor = '#F3F4F6';
+              e.target.style.transform = 'translateY(-2px)';
+            }}
+            onMouseLeave={(e) => {
+              e.target.style.backgroundColor = '#FFFFFF';
+              e.target.style.transform = 'translateY(0)';
+            }}
+            onClick={() =>
+              navigate('/products', { state: { designation: 'Salon' } })
+            }
+          >
+            Explore now
+          </button>
+        </div>
+
+        {/* Image Placeholder Section (Right Side) */}
+        <div
+          style={{
+            flex: 1,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'relative',
+            minWidth: '300px',
+          }}
+        >
+          {/* Main Image */}
+          <div
+            style={{
+              // width: 'clamp(200px, 80vw, 400px)',
+              // height: 'clamp(250px, 100vw, 500px)',
+              width: '60%',
+              height: '60%',
+              // maxWidth: '400px',
+              // maxHeight: '500px',
+              // borderTopLeftRadius: '9999px',
+              // borderTopRightRadius: '9999px',
+              overflow: 'hidden',
+              zIndex: 1,
+              // boxShadow: '0 8px 16px rgba(0, 0, 0, 0.15)', // Subtle shadow for depth
+              '@media (min-width: 320px)': {
+                width: 'clamp(180px, 70vw, 280px)',
+                height: 'clamp(225px, 87.5vw, 350px)',
+              },
+              '@media (min-width: 640px)': {
+                width: 'clamp(200px, 50vw, 320px)',
+                height: 'clamp(250px, 62.5vw, 400px)',
+              },
+              '@media (min-width: 1024px)': {
+                width: 'clamp(240px, 30vw, 360px)',
+                height: 'clamp(300px, 37.5vw, 450px)',
+              },
+              '@media (min-width: 1440px)': {
+                width: 'clamp(280px, 25vw, 400px)',
+                height: 'clamp(350px, 31.25vw, 500px)',
+              },
+            }}
+          >
+            <img
+              src={hero}
+              alt='Hero'
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                transition: 'transform 0.3s ease',
+              }}
+              // onMouseEnter={(e) => (e.target.style.transform = 'scale(1.05)')}
+              // onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Services Section */}
+ <Box
+  sx={{
+    width: '100%',
+    backgroundColor: 'rgb(248,202,215)',
+    display: 'flex',
+    justifyContent: 'center'
+  }}
+>
+  <Container
+    maxWidth='xl'
+    sx={{
+      py: { xs: 3, sm: 4, md: 5, lg: 6, xl: 6 },
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      px: { xs: 2, sm: 3, md: 4, lg: 4, xl: 4 },
+    }}
+  >
+    <motion.div
+      initial='hidden'
+      animate='visible'
+      variants={staggerContainer}
+      style={{
+        textAlign: 'center',
+        marginBottom: {
+          xs: '0.75rem',
+          sm: '1rem',
+          md: '1.5rem',
+          lg: '2rem',
+          xl: '2rem',
+        },
+      }}
+    >
+      <motion.div variants={fadeInUp}>
+        <Typography
+          variant='h3'
+          sx={{
+            fontWeight: 700,
+            color: '#6A1B9A',
+            textTransform: 'uppercase',
+            fontSize: {
+              xs: '1rem',
+              sm: '1.25rem',
+              md: '1.5rem',
+              lg: '2rem',
+              xl: '2.25rem',
+            },
+            lineHeight: 1.2,
+            width: '100%',
+            fontFamily: 'Playfair Display, serif',
+          }}
+        >
+          Our <span style={{ color: 'rgb(216, 56, 163)' }}>Premium</span>{' '}
+          Services
+        </Typography>
+      </motion.div>
+      <motion.div variants={fadeInUp}>
+        <Typography
+          variant='subtitle1'
+          sx={{
+            color: 'black',
+            width: '100%',
+            lineHeight: 1.5,
+            textTransform: 'uppercase',
+            fontSize: {
+              xs: '0.625rem',
+              sm: '0.75rem',
+              md: '0.875rem',
+              lg: '1rem',
+              xl: '1.125rem',
+            },
+            opacity: 0.9,
+            mt: { xs: 0.5, sm: 0.75, md: 1, lg: 1, xl: 1 },
+          }}
+        >
+          Experience luxury and precision with our expertly crafted services
+        </Typography>
+      </motion.div>
+    </motion.div>
+
+    {/* Images and Cards */}
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+      }}
+    >
+      {/* Images Row for Larger Screens */}
+      <Box
+        sx={{
+          display: { xs: 'none', sm: 'flex' },
+          flexWrap: 'wrap',
+          justifyContent: 'center',
+          gap: { xs: 10, sm: 8, md: 12, lg: 24, xl: 32 },
+          mb: { sm: 4, md: 5, lg: 6, xl: 6 },
+          width: '100%',
+          marginTop: { sm: '1rem', md: '2rem', lg: '2.5rem', xl: '3rem' },
+          px: { sm: 2, md: 0 },
+        }}
+      >
+        {SalonCards.map((card, index) => (
+          <Box
+            key={index}
+            sx={{
+              position: 'relative',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Box
+              sx={{
+                width: { sm: '5rem', md: '6rem', lg: '8rem', xl: '9rem' },
+                height: { sm: '5rem', md: '6rem', lg: '8rem', xl: '9rem' },
+                backgroundColor: 'white',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                border: '1px solid rgb(249, 245, 250)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+              }}
+            >
+              <img
+                src={card.image}
+                alt={card.title}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                }}
+              />
+            </Box>
+            {/* Small Icon on Right Side, Slightly Below Midpoint */}
+            <Box
+              sx={{
+                width: {
+                  sm: '1.75rem',
+                  md: '2rem',
+                  lg: '2.5rem',
+                  xl: '2.75rem',
+                },
+                height: {
+                  sm: '1.75rem',
+                  md: '2rem',
+                  lg: '2.5rem',
+                  xl: '2.75rem',
+                },
+                borderRadius: '50%',
+                backgroundColor: 'rgb(241,149,174)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                position: 'absolute',
+                right: {
+                  sm: '-0.6rem',
+                  md: '-0.7rem',
+                  lg: '-0.9rem',
+                  xl: '-1rem',
+                },
+                top: { sm: '2.5rem', md: '3rem', lg: '4rem', xl: '4.5rem' },
+                border: '1px solid rgb(249, 245, 250)',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                overflow: 'hidden',
+              }}
+            >
+              {card.smallIcon}
+            </Box>
+          </Box>
+        ))}
+      </Box>
+
+      {/* Cards with Images for Small Screens */}
+      <Box
+        sx={{
+          display: 'grid',
+          gridTemplateColumns: {
+            xs: '1fr',
+            sm: 'repeat(auto-fit, minmax(250px, 1fr))',
+            md: 'repeat(2, 1fr)',
+            lg: 'repeat(4, 1fr)',
+            xl: 'repeat(4, 1fr)',
+          },
+          gap: { xs: 2, sm: 2.5, md: 3, lg: 4, xl: 4 },
+          width: '100%',
+          px: { xs: 1, sm: 2, md: 0 },
+        }}
+      >
+        {SalonCards.map((card, index) => (
+          <motion.div
+            key={card.id}
+            variants={cardItem}
+            whileHover={{ y: -5 }}
+            onMouseEnter={() => setHoveredCard(card.id)}
+            onMouseLeave={() => setHoveredCard(null)}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              height: '100%',
+            }}
+          >
+            {/* Image for Small Screens */}
+            <Box
+              sx={{
+                position: 'relative',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <Box
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  width: { xs: '6rem' },
+                  height: { xs: '6rem' },
+                  backgroundColor: 'white',
+                  borderRadius: '50%',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: '1px solid rgb(249, 245, 250)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  mb: 1,
+                  overflow: 'hidden',
+                }}
               >
-                <Box
-                  sx={{
-                    position: "relative",
-                    height: { xs: "180px", sm: "220px", md: "250px" },
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
                   }}
-                >
-                  <CardMedia
-                    component="img"
-                    image={card.img}
-                    alt={card.title}
+                />
+              </Box>
+              {/* Small Icon on Right Side for Small Screens, Slightly Below Midpoint */}
+              <Box
+                sx={{
+                  display: { xs: 'flex', sm: 'none' },
+                  width: { xs: '2rem' },
+                  height: { xs: '2rem' },
+                  borderRadius: '50%',
+                  backgroundColor: 'rgb(241,149,174)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  position: 'absolute',
+                  right: { xs: '-0.6rem' },
+                  top: { xs: '2.8rem' },
+                  border: '1px solid rgb(249, 245, 250)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  overflow: 'hidden',
+                }}
+              >
+                {card.smallIcon}
+              </Box>
+            </Box>
+            <Card
+              sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                borderRadius: '0px 0px 30px 30px',
+                boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                border: '1px solid rgb(214, 196, 216)',
+                backgroundColor: 'rgb(241,149,174)',
+                width: '100%',
+              }}
+            >
+              <Box
+                sx={{
+                  p: { xs: 1.5, sm: 2, md: 3, lg: 4, xl: 4 },
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <Box>
+                  <Typography
+                    variant='h6'
                     sx={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                      filter:
-                        hoveredCard === card.id
-                          ? "brightness(0.7)"
-                          : "brightness(0.95)",
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 0,
-                      left: 0,
-                      width: "100%",
-                      height: "100%",
-                      background: `linear-gradient(to top, ${colors.primary} 0%, transparent 70%)`,
-                      opacity: hoveredCard === card.id ? 0.8 : 0.6,
-                      transition: "all 0.3s ease",
-                    }}
-                  />
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: "50%",
-                      left: "50%",
-                      transform: "translate(-50%, -50%)",
-                      color: "white",
-                      textAlign: "center",
-                      width: "100%",
-                      zIndex: 2,
-                      px: 2,
+                      fontWeight: 600,
+                      textTransform: 'uppercase',
+                      color: 'black',
+                      fontSize: {
+                        xs: '0.75rem',
+                        sm: '0.875rem',
+                        md: '1rem',
+                        lg: '1.125rem',
+                        xl: '1.125rem',
+                      },
+                      mb: 1,
                     }}
                   >
-                    {React.cloneElement(card.icon, {
-                      sx: {
-                        fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                        color: "white",
-                        mb: 1,
-                        transition: "all 0.3s ease",
-                        transform:
-                          hoveredCard === card.id ? "scale(1.2)" : "scale(1)",
-                      },
-                    })}
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: "1px",
-                        transition: "all 0.3s ease",
-                        transform:
-                          hoveredCard === card.id ? "scale(1.05)" : "scale(1)",
-                        fontSize: { xs: "0.875rem", sm: "1rem", md: "1.25rem" },
-                      }}
-                    >
-                      {card.title}
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    p: { xs: 2, sm: 3 },
-                    backgroundColor: colors.lightAccent,
-                    flex: 1,
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "space-between",
-                  }}
-                >
+                    {card.title}
+                  </Typography>
                   <Typography
-                    variant="body1"
+                    variant='body2'
                     sx={{
+                      color: 'black',
+                      fontSize: {
+                        xs: '0.625rem',
+                        sm: '0.75rem',
+                        md: '0.875rem',
+                        lg: '0.875rem',
+                        xl: '0.875rem',
+                      },
+                      lineHeight: 1.4,
                       mb: 2,
-                      fontSize: { xs: "0.75rem", sm: "0.875rem", md: "1rem" },
-                      lineHeight: 1.5,
-                      flexGrow: 1,
                     }}
                   >
                     {card.description}
                   </Typography>
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: colors.primary,
-                      color: "white",
-                      borderRadius: "50px",
-                      px: { xs: 2, sm: 3 },
-                      py: 1,
-                      alignSelf: "flex-start",
-                      "&:hover": {
-                        backgroundColor: colors.secondary,
-                      },
-                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                      minWidth: { xs: "100px", sm: "120px" },
-                    }}
-                  >
-                    View More
-                  </Button>
                 </Box>
-              </Card>
-            </motion.div>
-          ))}
-        </Box>
-      </Container>
-
+                <Button
+                  variant='contained'
+                  sx={{
+                    backgroundColor: 'black',
+                    color: 'white',
+                    borderRadius: '9999px',
+                    px: { xs: 1.5, sm: 2, md: 3, lg: 4, xl: 4 },
+                    py: 1,
+                    fontSize: {
+                      xs: '0.625rem',
+                      sm: '0.75rem',
+                      md: '0.875rem',
+                      lg: '0.875rem',
+                      xl: '0.875rem',
+                    },
+                    '&:hover': {
+                      backgroundColor: '#333',
+                    },
+                  }}
+                  onClick={() =>
+                    navigate('/products', {
+                      state: { designation: 'Salon' },
+                    })
+                  }
+                >
+                  View More
+                </Button>
+              </Box>
+            </Card>
+          </motion.div>
+        ))}
+      </Box>
+    </Box>
+  </Container>
+</Box>
       {/* About Us Section */}
+
       <Box
         sx={{
-          backgroundColor: "rgb(215, 232, 250)",
-          py: { xs: 6, md: 10 },
-          position: "relative",
-          overflow: "hidden",
-          borderTop: `1px solid ${colors.lightAccent}`,
-          borderBottom: `1px solid ${colors.lightAccent}`,
+          backgroundColor: 'rgb(248,202,215)', // BeautyBliss background color
+          py: { xs: 5, sm: 6, md: 8 },
+          position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        {/* Decorative elements */}
-        <Box
-          sx={{
-            position: "absolute",
-            top: -100,
-            right: -100,
-            width: 300,
-            height: 300,
-            borderRadius: "50%",
-            // backgroundColor: `${colors.accent}10`,
-
-            filter: "blur(40px)",
-            zIndex: 0,
-          }}
-        />
-
         <Container
-          maxWidth="xl"
+          maxWidth='lg'
           sx={{
-            position: "relative",
+            position: 'relative',
             zIndex: 1,
+            // backgroundColor: "rgb(240, 192, 206)", // BeautyBliss container color
+            borderRadius: '12px',
+            py: { xs: 2, sm: 3, md: 4 },
           }}
         >
           {/* Section Header */}
@@ -610,44 +890,43 @@ const SalonPage = () => {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            viewport={{ once: true, margin: "-50px" }}
-            style={{ textAlign: "center", marginBottom: "3rem" }}
+            viewport={{ once: true, margin: '-50px' }}
+            style={{ textAlign: 'center', marginBottom: '2.5rem' }}
           >
             <Typography
-              variant="h3"
+              variant='h3'
               sx={{
                 fontWeight: 800,
-                mb: 2,
-                fontSize: { xs: "2rem", md: "2.5rem" },
-                background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                display: "inline-block",
-                position: "relative",
-                "&:after": {
+                mb: 1.5,
+                fontSize: { xs: '1.75rem', sm: '2rem', md: '2.25rem' },
+                background: '#56BBF1',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                display: 'inline-block',
+                position: 'relative',
+                '&:after': {
                   content: '""',
-                  position: "absolute",
-                  bottom: "-10px",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  width: "80px",
-                  height: "4px",
-                  background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-                  borderRadius: "2px",
+                  position: 'absolute',
+                  bottom: '-8px',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '70px',
+                  height: '3px',
+                  // background: "linear-gradient(90deg, rgba(246, 16, 185, 1.00) 0%, rgba(151, 71, 255, 1.00) 100%)",
+                  borderRadius: '2px',
                 },
               }}
             >
               About Our Salon
             </Typography>
             <Typography
-              variant="subtitle1"
+              variant='subtitle1'
               sx={{
-                color: colors.text,
-                maxWidth: "700px",
-                margin: "0 auto",
-                lineHeight: 1.6,
-                fontSize: { xs: "1rem", md: "1.1rem" },
-                opacity: 0.8,
+                color: '#2D2828',
+                maxWidth: '650px',
+                margin: '0 auto',
+                lineHeight: 1.5,
+                fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
               }}
             >
               Where beauty meets perfection and every visit is a transformation
@@ -657,48 +936,41 @@ const SalonPage = () => {
           {/* Content */}
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", md: "row" },
-              alignItems: "center",
-              gap: { xs: 4, md: 8 },
+              display: 'flex',
+              flexDirection: { xs: 'column', md: 'row' },
+              alignItems: 'center',
+              gap: { xs: 3.5, sm: 4.5, md: 6 },
             }}
           >
-            {/* Image */}
+            {/* Image with Oval Frame and Decorative Lines */}
             <motion.div
               initial={{ x: -50, opacity: 0 }}
               whileInView={{ x: 0, opacity: 1 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
-              style={{ flex: 1, position: "relative" }}
+              style={{ flex: 1, position: 'relative' }}
             >
               <Box
-                component="img"
+                component='img'
                 src={About}
-                alt="Salon Interior"
+                alt='Salon Interior'
                 sx={{
-                  width: "100%",
-                  borderRadius: "16px",
-                  boxShadow: "0 20px 40px rgba(0,0,0,0.1)",
-                  transform: { xs: "rotate(0deg)", md: "rotate(-3deg)" },
-                  transition: "all 0.4s ease",
-                  "&:hover": {
-                    transform: "rotate(0deg) scale(1.02)",
+                  width: '100%',
+                  borderRadius: '50% / 40%', // Oval shape
+                  // boxShadow: "0 10px 20px rgba(0,0,0,0.1)",
+                  transition: 'all 0.4s ease',
+                  '&:hover': {
+                    transform: 'scale(1.02)',
                   },
                   zIndex: 2,
-                  position: "relative",
-                }}
-              />
-              {/* Decorative shape behind image */}
-              <Box
-                sx={{
-                  position: "absolute",
-                  top: { xs: -20, md: -30 },
-                  left: { xs: -20, md: -30 },
-                  width: "100%",
-                  height: "100%",
-                  borderRadius: "16px",
-                  border: `2px solid ${colors.accent}30`,
-                  zIndex: 1,
+                  position: 'relative',
+                  maxWidth: {
+                    xs: '280px',
+                    sm: '330px',
+                    md: '380px',
+                    lg: '700px',
+                  },
+                  margin: '0 auto',
                 }}
               />
             </motion.div>
@@ -712,24 +984,24 @@ const SalonPage = () => {
               style={{ flex: 1 }}
             >
               <Typography
-                variant="h4"
+                variant='h4'
                 sx={{
                   fontWeight: 700,
-                  mb: 3,
-                  color: colors.primary,
-                  fontSize: { xs: "1.5rem", md: "2rem" },
+                  mb: 2.5,
+                  color: '#56BBF1',
+                  fontSize: { xs: '1.4rem', sm: '1.75rem', md: '2rem' },
                 }}
               >
                 Your Personal Beauty Haven
               </Typography>
 
               <Typography
-                variant="body1"
+                variant='body1'
                 sx={{
-                  mb: 3,
-                  lineHeight: 1.8,
-                  fontSize: { xs: "1rem", md: "1.1rem" },
-                  color: colors.text,
+                  mb: 2.5,
+                  lineHeight: 1.6,
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+                  color: '#2D2828',
                 }}
               >
                 Since 2010, <strong>Beauty Haven Salon</strong> has been the
@@ -739,15 +1011,15 @@ const SalonPage = () => {
               </Typography>
 
               <Typography
-                variant="body1"
+                variant='body1'
                 sx={{
-                  mb: 4,
-                  lineHeight: 1.8,
-                  fontSize: { xs: "1rem", md: "1.1rem" },
-                  color: colors.text,
+                  mb: 3.5,
+                  lineHeight: 1.6,
+                  fontSize: { xs: '0.9rem', sm: '1rem', md: '1.1rem' },
+                  color: '#2D2828',
                 }}
               >
-                Our team of <strong>award-winning stylists</strong> and{" "}
+                Our team of <strong>award-winning stylists</strong> and{' '}
                 <strong>skincare specialists</strong>
                 continuously train in the latest techniques to bring you
                 cutting-edge services with timeless elegance.
@@ -756,32 +1028,28 @@ const SalonPage = () => {
               {/* Features Grid */}
               <Box
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)" },
-                  gap: 3,
-                  mt: 4,
+                  display: 'grid',
+                  gridTemplateColumns: { xs: '1fr', sm: 'repeat(2, 1fr)' },
+                  gap: { xs: 2.5, sm: 3 },
+                  mt: 3.5,
                 }}
               >
                 {[
                   {
-                    title: "Certified Experts",
-                    // icon: <VerifiedUserIcon color="primary" />,
-                    text: "All our professionals are fully certified and regularly trained",
+                    title: 'Certified Experts',
+                    text: 'All our professionals are fully certified and regularly trained',
                   },
                   {
-                    title: "Premium Products",
-                    // icon: <SpaIcon color="primary" />,
-                    text: "We use only the highest quality professional products",
+                    title: 'Premium Products',
+                    text: 'We use only the highest quality professional products',
                   },
                   {
-                    title: "Sanitized Tools",
-                    // icon: <CleanHandsIcon color="primary" />,
-                    text: "All equipment is sterilized after each use for your safety",
+                    title: 'Sanitized Tools',
+                    text: 'All equipment is sterilized after each use for your safety',
                   },
                   {
-                    title: "Personalized Care",
-                    // icon: <PersonIcon color="primary" />,
-                    text: "Tailored services to match your unique style and needs",
+                    title: 'Personalized Care',
+                    text: 'Tailored services to match your unique style and needs',
                   },
                 ].map((feature, index) => (
                   <motion.div
@@ -791,338 +1059,96 @@ const SalonPage = () => {
                   >
                     <Box
                       sx={{
-                        display: "flex",
-                        gap: 2,
-                        p: 2,
-                        backgroundColor: `${colors.primary}08`,
-                        borderRadius: "12px",
-                        border: `1px solid ${colors.lightAccent}`,
-                        transition: "all 0.3s ease",
-                        "&:hover": {
-                          backgroundColor: `${colors.primary}12`,
-                          boxShadow: `0 5px 15px ${colors.accent}10`,
+                        p: { xs: 1.75, sm: 2.25 },
+                        background:
+                          'linear-gradient(rgb(241, 149, 174) 0%, rgb(241, 149, 174) 61.5385%)',
+                        borderRadius: '8px',
+                        // border: "1px solid #FB646B",
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          background:
+                            'linear-gradient(rgb(241, 149, 174) 0%, rgb(241, 149, 174) 80%)',
+                          boxShadow: '0 5px 15px rgba(0,0,0,0.05)',
                         },
                       }}
                     >
-                      {/* <Box
+                      <Typography
+                        variant='subtitle1'
                         sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          width: 40,
-                          height: 40,
-                          borderRadius: "50%",
-                          backgroundColor: `${colors.primary}15`,
-                          flexShrink: 0,
+                          fontWeight: 600,
+                          mb: 0.75,
+                          color: '#fff',
+                          fontSize: { xs: '0.95rem', sm: '1.05rem' },
                         }}
                       >
-                        {feature.icon}
-                      </Box> */}
-                      <Box>
-                        <Typography
-                          variant="subtitle1"
-                          sx={{
-                            fontWeight: 600,
-                            mb: 0.5,
-                            color: colors.primary,
-                          }}
-                        >
-                          {feature.title}
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          sx={{
-                            color: colors.text,
-                            opacity: 0.9,
-                            fontSize: "0.9rem",
-                          }}
-                        >
-                          {feature.text}
-                        </Typography>
-                      </Box>
+                        {feature.title}
+                      </Typography>
+                      <Typography
+                        variant='body2'
+                        sx={{
+                          color: '#E3F6FF',
+                          opacity: 0.9,
+                          fontSize: { xs: '0.8rem', sm: '0.9rem' },
+                        }}
+                      >
+                        {feature.text}
+                      </Typography>
                     </Box>
                   </motion.div>
                 ))}
               </Box>
-
-              {/* CTA Button */}
-              {/* <motion.div
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                style={{ marginTop: "2rem" }}
-              >
-                <Button
-                  variant="contained"
-                  size="large"
-                  // startIcon={<CalendarTodayIcon />}
-                  sx={{
-                    backgroundColor: colors.primary,
-                    color: "white",
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: "12px",
-                    fontSize: "1rem",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    "&:hover": {
-                      backgroundColor: colors.secondary,
-                      boxShadow: `0 5px 15px ${colors.accent}40`,
-                    },
-                  }}
-                  onClick={() => navigate("/booking")}
-                >
-                  Book Your Appointment
-                </Button>
-              </motion.div> */}
             </motion.div>
           </Box>
         </Container>
       </Box>
-
       {/* Our Work Section */}
-      <Container
-        maxWidth="xl"
-        sx={{ py: 4, position: "relative", backgroundColor: "#E6DDEE" }}
-      >
-        {/* Section Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-          style={{ textAlign: "center", marginBottom: "2rem" }}
-        >
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: 700,
-              mb: 1,
-              background: `linear-gradient(90deg, ${colors.primary}, ${colors.accent})`,
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              display: "inline-block",
-              fontSize: { xs: "1.5rem", sm: "2rem", md: "3rem" },
-            }}
-          >
-            Our Portfolio
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            sx={{
-              color: colors.text,
-              maxWidth: "600px",
-              margin: "0 auto",
-              lineHeight: 1.6,
-              opacity: 0.8,
-              fontSize: { xs: "0.875rem", sm: "1rem" },
-            }}
-          >
-            Browse through our gallery to see the transformations we've created
-          </Typography>
-        </motion.div>
+      <div className='kportfolio-app'>
+        <header className='kportfolio-header'>
+          <h1>Our Portfolio</h1>
+          <p className='kportfolio-subtitle'>
+            Browse through our gallery to see the transformations we've created.
+          </p>
+        </header>
 
-        {/* Carousel Container */}
-        <Box
-          sx={{
-            position: "relative",
-            width: "100%",
-            mx: "auto",
-            px: { xs: 1, sm: 2, md: 6 },
-            marginBottom: { xs: 6, sm: 8 },
-          }}
-        >
-          {/* Navigation Arrows - Visible from 320px */}
-          <IconButton
-            onClick={handlePrev}
-            sx={{
-              position: "absolute",
-              left: { xs: 0, sm: 4 },
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              backgroundColor: "transparent",
-              color: colors.primary,
-              // boxShadow: 1,
-              "&:hover": {
-                backgroundColor: "white",
-                transform: "translateY(-50%) scale(1.1)",
-              },
-              transition: "all 0.2s ease",
-              width: { xs: 36, sm: 48 },
-              height: { xs: 36, sm: 48 },
-            }}
-          >
-            <ArrowBackIosIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            onClick={handleNext}
-            sx={{
-              position: "absolute",
-              right: { xs: 0, sm: 4 },
-              top: "50%",
-              transform: "translateY(-50%)",
-              zIndex: 2,
-              backgroundColor: "transparent",
-              color: colors.primary,
-              // boxShadow: 1,
-              "&:hover": {
-                backgroundColor: "white",
-                transform: "translateY(-50%) scale(1.1)",
-              },
-              transition: "all 0.2s ease",
-              width: { xs: 36, sm: 48 },
-              height: { xs: 36, sm: 48 },
-            }}
-          >
-            <ArrowForwardIosIcon fontSize="small" />
-          </IconButton>
-
-          {/* Carousel Items */}
-          <Box
-            ref={carouselRef}
-            sx={{
-              display: "flex",
-              overflowX: "auto",
-              scrollSnapType: "x mandatory",
-              gap: { xs: 1, sm: 2 },
-              py: 1,
-              scrollBehavior: "smooth",
-              "&::-webkit-scrollbar": { display: "none" },
-              msOverflowStyle: "none",
-              scrollbarWidth: "none",
-            }}
-          >
-            {images.map((img, index) => (
-              <Box
-                key={index}
-                sx={{
-                  flex: "0 0 auto",
-                  width: { xs: "85vw", sm: "50vw", md: "30vw" },
-                  minWidth: { xs: "85vw", sm: "50vw", md: "30vw" },
-                  scrollSnapAlign: "center",
-                  position: "relative",
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  transition: "transform 0.3s ease",
-                  "&:hover": {
-                    transform: "scale(1.02)",
-                  },
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  image={img}
-                  alt={`Work ${index + 1}`}
-                  sx={{
-                    width: "100%",
-                    height: { xs: "250px", sm: "300px", md: "400px" },
-                    objectFit: "cover",
-                    filter: "brightness(0.95)",
-                    transition: "filter 0.3s ease",
-                    "&:hover": {
-                      filter: "brightness(1)",
-                    },
-                  }}
+        <div className='kportfolio-grid'>
+          {portfolioItems.map((item) => (
+            <div className='kportfolio-card' key={item.id}>
+              <div className='kcard-image-container'>
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className='kcard-image'
                 />
-                {/* Caption that appears on hover */}
-                <Box
-                  sx={{
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    p: 2,
-                    background:
-                      "linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)",
-                    color: "white",
-                    opacity: 0,
-                    transition: "opacity 0.3s ease",
-                    "&:hover": {
-                      opacity: 1,
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 600,
-                      fontSize: { xs: "1rem", sm: "1.25rem" },
-                    }}
-                  >
-                    {
-                      [
-                        "Hair Styling",
-                        "Makeover",
-                        "Color Treatment",
-                        "Spa Day",
-                        "Complete Makeover",
-                      ][index]
-                    }
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    sx={{
-                      mt: 0.5,
-                      fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                    }}
-                  >
-                    {descriptions[index].substring(0, 80)}...
-                  </Typography>
-                </Box>
-              </Box>
-            ))}
-          </Box>
-
-          {/* Indicators with Active Status */}
-          {/* <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 1,
-              mt: 2,
-            }}
-          >
-            {images.map((_, index) => (
-              <Box
-                key={index}
-                onClick={() => {
-                  const cardWidth =
-                    carouselRef.current.firstChild.getBoundingClientRect()
-                      .width + 12;
-                  carouselRef.current.scrollTo({
-                    left: index * cardWidth,
-                    behavior: "smooth",
-                  });
-                }}
-                sx={{
-                  width: { xs: "8px", sm: "10px" },
-                  height: { xs: "8px", sm: "10px" },
-                  borderRadius: "50%",
-                  backgroundColor:
-                    activeIndex === index ? colors.primary : colors.lightAccent,
-                  cursor: "pointer",
-                  transition: "all 0.3s ease",
-                  transform: activeIndex === index ? "scale(1.2)" : "scale(1)",
-                }}
-              />
-            ))}
-          </Box> */}
-          {/* Active Status Display */}
-          {/* <Typography
-            variant="caption"
-            sx={{
-              display: "block",
-              textAlign: "center",
-              mt: 1,
-              color: colors.text,
-              opacity: 0.7,
-              fontSize: { xs: "0.75rem", sm: "0.875rem" },
-            }}
-          >
-            {activeIndex + 1} of {images.length}
-          </Typography> */}
-        </Box>
-      </Container>
+                {/* <div className="kcard-content"> */}
+                {/* <span className="kcard-number">{item.id}</span> */}
+                <h2 className='kcard-title'>{item.title}</h2>
+                <p className='kcard-description'>{item.description}</p>
+                {/* </div> */}
+              </div>
+              <div className='kwave-container'>
+                <svg viewBox='0 0 500 60' preserveAspectRatio='none'>
+                  <path
+                    d='M0,25 C150,40 350,0 500,5 L795,90 L0,60 Z'
+                    fill='#f195ae'
+                  ></path>
+                </svg>
+                <div className='kwave-content'>
+                  <div className='kwave-text'>
+                    <div className='kwave-name'>
+                      <img src={item.icon} alt='icon' className='kwave-icon' />
+                      {item.name}
+                    </div>
+                    <div className='kwave-tagline'>
+                      Revitalize your skin with our rejuvenating facial
+                      treatments, tailored to rates.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* CTA Section */}
       {/* <Box
@@ -1185,7 +1211,6 @@ const SalonPage = () => {
       </Box> */}
 
       {/* Book Now Floating Button */}
- 
 
       <BookNowButton />
     </Box>

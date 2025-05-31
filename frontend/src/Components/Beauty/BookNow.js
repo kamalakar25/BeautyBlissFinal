@@ -390,9 +390,11 @@ const BookNow = ({ parlor, onBack }) => {
       minWidth: "0",
     },
     bookButton: {
-      background: "linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%)",
+       background: "linear-gradient(90deg, #a18cd1 0%, #fbc2eb 100%)",
+      
+
       "&:hover": {
-        background: "linear-gradient(90deg, #8e7ac7 0%, #f9b0e2 100%)",
+          background: "linear-gradient(90deg, #f35fc9 0% #efb1da)",
         transform: "translateY(-2px)",
         boxShadow: "0 6px 15px rgba(161, 140, 209, 0.4)",
       },

@@ -7,13 +7,17 @@ import {
   CircularProgress,
   Button,
   Divider,
+  Step,
+  StepLabel,
+  Stepper,
 } from "@mui/material";
 import axios from "axios";
 import { jsPDF } from "jspdf";
 
+// Define BASE_URL for API calls
 const BASE_URL = process.env.REACT_APP_API_URL;
 
-// Updated Color Palette
+// Updated Color Palette (kept as-is from your old code)
 const theme = {
   primary: "#ffffff", // Background color
   secondary: "rgba(255, 255, 255, 0.8)", // Semi-transparent white for loading
@@ -37,6 +41,9 @@ const PaymentCallback = () => {
   const [terms, setTerms] = useState([]);
   const maxRetries = 5;
   const retryDelay = 3000;
+
+  // Define steps for progress navigation
+  const steps = ["Booking Slot", "Billing", "Confirmation"];
 
   const verifyPayment = async (orderId) => {
     try {
@@ -66,6 +73,7 @@ const PaymentCallback = () => {
     fetchTerms();
   }, []);
 
+  // Payment verification logic
   useEffect(() => {
     const attemptVerification = async () => {
       if (!orderId) {
@@ -136,6 +144,7 @@ const PaymentCallback = () => {
     }
   };
 
+  // PDF Receipt Generation
   const generateReceiptPDF = () => {
     const doc = new jsPDF({
       orientation: "portrait",
@@ -449,377 +458,460 @@ const PaymentCallback = () => {
     <Box
       sx={{
         p: { xs: 2, sm: 3, md: 4 },
-        maxWidth: { xs: "100%", sm: 600 },
-        width: "100%",
-        mx: "auto",
-        bgcolor: theme.primary,
-        borderRadius: { xs: 0, sm: 3 },
-        boxShadow: { xs: "none", sm: "0 4px 12px rgba(0,0,0,0.1)" },
-        minHeight: "100vh",
+        width: "100%", // Ensure full width
+        minHeight: "100vh", // Ensure full viewport height
+        bgcolor: "#f8bbd0", // Background color
         display: "flex",
         flexDirection: "column",
+        position: "relative", // Ensure layout control
+        boxSizing: "border-box", // Prevent padding issues
       }}
     >
+      {/* Progress Navigation (Centered) */}
+      <Box
+        sx={{
+          mb: 2,
+          maxWidth: "400px",
+          mx: "auto", // Center the stepper horizontally
+        }}
+      >
+        <Stepper
+          activeStep={2} // Set "Confirmation" as the active step (index 2)
+          alternativeLabel
+          sx={{
+            "& .MuiStepLabel-label": {
+              fontFamily: "'Montserrat', sans-serif",
+              fontSize: { xs: "0.8rem", sm: "1rem" },
+            },
+          }}
+        >
+          {steps.map((label, index) => (
+            <Step key={label}>
+              <StepLabel
+                sx={{
+                  "& .MuiStepLabel-label": {
+                    color: index <= 2 ? "#f06292" : "#999", // Pink for completed/active steps
+                    fontWeight: index <= 2 ? 600 : 400,
+                  },
+                  "& .MuiStepIcon-root": {
+                    color: index <= 2 ? "#f06292" : "#ccc", // Pink for completed/active steps
+                    "&.Mui-completed": {
+                      color: "#f06292",
+                    },
+                    "&.Mui-active": {
+                      color: "#f06292",
+                    },
+                  },
+                  "& .MuiStepIcon-text": {
+                    fill: "#ffffff",
+                  },
+                }}
+              >
+                {label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+      </Box>
+
       <Typography
         variant="h4"
         sx={{
           mb: { xs: 2, sm: 3 },
-          color: theme.textPrimary,
+          color: "#000000",
           fontWeight: 700,
           textAlign: "center",
           fontSize: { xs: "1.5rem", sm: "1.8rem", md: "2.2rem" },
+          fontFamily: "'Montserrat', sans-serif",
         }}
       >
         Payment Status
       </Typography>
-      {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            flexGrow: 1,
-            bgcolor: theme.secondary,
-            borderRadius: 2,
-            p: { xs: 2, sm: 3 },
-          }}
-        >
-          <CircularProgress sx={{ color: theme.accent }} />
-          <Typography
+
+      <Box
+        sx={{
+          maxWidth: { xs: "100%", sm: 600 },
+          width: "100%",
+          mx: "auto",
+          flexGrow: 1, // Ensure content takes available space
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {loading ? (
+          <Box
             sx={{
-              mt: 2,
-              color: theme.textSecondary,
-              fontSize: { xs: "0.9rem", sm: "1rem" },
-            }}
-          >
-            Checking payment status, please wait...
-          </Typography>
-        </Box>
-      ) : error ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            flexGrow: 1,
-            px: { xs: 1, sm: 0 },
-          }}
-        >
-          <Alert
-            severity="error"
-            sx={{
-              mb: 3,
-              width: "100%",
-              bgcolor: "#FFEBEE",
-              color: theme.error,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              flexGrow: 1,
+              bgcolor: theme.secondary,
               borderRadius: 2,
-              fontSize: { xs: "0.85rem", sm: "0.9rem" },
-              "& .MuiAlert-icon": { color: theme.error },
+              p: { xs: 2, sm: 3 },
             }}
           >
-            {error}
-          </Alert>
-          <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-            <Button
-              variant="contained"
-              onClick={handleTryAgain}
+            <CircularProgress sx={{ color: "#f06292" }} />
+            <Typography
               sx={{
-                bgcolor: theme.accent,
-                color: "#fff",
-                borderRadius: 2,
-                px: { xs: 2, sm: 3 },
-                py: 1,
-                fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                fontWeight: 500,
-                "&:hover": { bgcolor: "#00897B" },
+                mt: 2,
+                color: "#000000",
+                fontSize: { xs: "0.9rem", sm: "1rem" },
+                fontFamily: "'Montserrat', sans-serif",
               }}
             >
-              Try Again
-            </Button>
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/")}
-              sx={{
-                borderColor: theme.accent,
-                color: theme.accent,
-                borderRadius: 2,
-                px: { xs: 2, sm: 3 },
-                py: 1,
-                fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                fontWeight: 500,
-                "&:hover": {
-                  bgcolor: theme.primary,
-                  borderColor: theme.accent,
-                },
-              }}
-            >
-              Back to Home
-            </Button>
+              Checking payment status, please wait...
+            </Typography>
           </Box>
-        </Box>
-      ) : (
-        <Box
-          sx={{
-            flexGrow: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: { xs: 1.5, sm: 2 },
-          }}
-        >
-          <Alert
-            severity={
-              paymentStatus?.paymentStatus === "PAID"
-                ? "success"
-                : paymentStatus?.paymentStatus === "FAILED"
-                ? "error"
-                : "warning"
-            }
+        ) : error ? (
+          <Box
             sx={{
-              borderRadius: 2,
-              bgcolor:
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              flexGrow: 1,
+              px: { xs: 1, sm: 0 },
+            }}
+          >
+            <Alert
+              severity="error"
+              sx={{
+                mb: 3,
+                width: "100%",
+                bgcolor: "#FFEBEE",
+                color: theme.error,
+                borderRadius: 2,
+                fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                "& .MuiAlert-icon": { color: theme.error },
+              }}
+            >
+              {error}
+            </Alert>
+            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+              <Button
+                variant="contained"
+                onClick={handleTryAgain}
+                sx={{
+                  bgcolor: "#f06292",
+                  color: "#fff",
+                  borderRadius: 2,
+                  px: { xs: 2, sm: 3 },
+                  py: 1,
+                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                  fontWeight: 500,
+                  "&:hover": { bgcolor: "#ec407a" },
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                Try Again
+              </Button>
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/")}
+                sx={{
+                  borderColor: "#f06292",
+                  color: "#f06292",
+                  borderRadius: 2,
+                  px: { xs: 2, sm: 3 },
+                  py: 1,
+                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                  fontWeight: 500,
+                  "&:hover": {
+                    bgcolor: "#f8bbd0",
+                    borderColor: "#f06292",
+                  },
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                Back to Home
+              </Button>
+            </Box>
+          </Box>
+        ) : (
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: { xs: 1.5, sm: 2 },
+            }}
+          >
+            <Alert
+              severity={
                 paymentStatus?.paymentStatus === "PAID"
-                  ? "#E8F5E9"
+                  ? "success"
                   : paymentStatus?.paymentStatus === "FAILED"
-                  ? "#FFEBEE"
-                  : "#FFF8E1",
-              color:
-                paymentStatus?.paymentStatus === "PAID"
-                  ? theme.success
-                  : paymentStatus?.paymentStatus === "FAILED"
-                  ? theme.error
-                  : "#FFCA28",
-              fontSize: { xs: "0.85rem", sm: "0.9rem" },
-              "& .MuiAlert-icon": {
+                  ? "error"
+                  : "warning"
+              }
+              sx={{
+                borderRadius: 2,
+                bgcolor:
+                  paymentStatus?.paymentStatus === "PAID"
+                    ? "#E8F5E9"
+                    : paymentStatus?.paymentStatus === "FAILED"
+                    ? "#FFEBEE"
+                    : "#FFF8E1",
                 color:
                   paymentStatus?.paymentStatus === "PAID"
                     ? theme.success
                     : paymentStatus?.paymentStatus === "FAILED"
                     ? theme.error
                     : "#FFCA28",
-              },
-            }}
-          >
-            {paymentStatus?.paymentStatus === "PAID"
-              ? `Payment Successful`
-              : paymentStatus?.paymentStatus === "FAILED"
-              ? `Payment Failed for order: ${orderId}: ${
-                  paymentStatus.failureReason || "Unknown reason"
-                }`
-              : `Payment is still processing for order: ${orderId}. Please wait or refresh the status.`}
-          </Alert>
-          {paymentStatus && (
-            <Box
-              sx={{
-                p: { xs: 2, sm: 3 },
-                borderRadius: 3,
-                bgcolor: theme.transparent,
-                backdropFilter: "blur(5px)",
-                border: `1px solid rgba(255, 255, 255, 0.3)`,
-                boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
+                fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                "& .MuiAlert-icon": {
+                  color:
+                    paymentStatus?.paymentStatus === "PAID"
+                      ? theme.success
+                      : paymentStatus?.paymentStatus === "FAILED"
+                      ? theme.error
+                      : "#FFCA28",
+                },
+                fontFamily: "'Montserrat', sans-serif",
               }}
             >
-              <Typography
-                variant="h6"
-                sx={{
-                  mb: 2,
-                  color: theme.textPrimary,
-                  fontWeight: 600,
-                  fontSize: { xs: "1.2rem", sm: "1.4rem" },
-                }}
-              >
-                Receipt
-              </Typography>
-              <Divider sx={{ my: 2, bgcolor: "rgba(255, 255, 255, 0.5)" }} />
+              {paymentStatus?.paymentStatus === "PAID"
+                ? `Payment Successful`
+                : paymentStatus?.paymentStatus === "FAILED"
+                ? `Payment Failed for order: ${orderId}: ${
+                    paymentStatus.failureReason || "Unknown reason"
+                  }`
+                : `Payment is still processing for order: ${orderId}. Please wait or refresh the status.`}
+            </Alert>
+            {paymentStatus && (
               <Box
                 sx={{
-                  display: "grid",
-                  gridTemplateColumns: {
-                    xs: "1fr",
-                    sm: "1fr 1fr",
-                    md: "1fr 1fr",
-                  },
-                  gap: { xs: 1, sm: 2 },
-                  fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                  p: { xs: 2, sm: 3 },
+                  borderRadius: 3,
+                  bgcolor: theme.transparent,
+                  backdropFilter: "blur(5px)",
+                  border: `1px solid rgba(255, 255, 255, 0.3)`,
+                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
                 }}
               >
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Parlor:</strong> {paymentStatus.parlor.name || "N/A"}
+                <Typography
+                  variant="h6"
+                  sx={{
+                    mb: 2,
+                    color: "#000000",
+                    fontWeight: 600,
+                    fontSize: { xs: "1.2rem", sm: "1.4rem" },
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Receipt
                 </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Customer:</strong> {paymentStatus.name || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Service:</strong> {paymentStatus.service || "N/A"}
-                </Typography>
-                {paymentStatus.relatedServices?.length > 0 && (
-                  <Typography sx={{ color: theme.textSecondary }}>
-                    <strong>Additional Services:</strong>{" "}
-                    {paymentStatus.relatedServices.join(", ")}
+                <Divider sx={{ my: 2, bgcolor: "#f06292" }} />
+                <Box
+                  sx={{
+                    display: "grid",
+                    gridTemplateColumns: {
+                      xs: "1fr",
+                      sm: "1fr 1fr",
+                      md: "1fr 1fr",
+                    },
+                    gap: { xs: 1, sm: 2 },
+                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
+                  }}
+                >
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Parlor:</strong> {paymentStatus.parlor.name || "N/A"}
                   </Typography>
-                )}
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Date:</strong>{" "}
-                  {paymentStatus.date
-                    ? new Date(paymentStatus.date).toLocaleDateString()
-                    : "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Time:</strong> {paymentStatus.time || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Employee:</strong>{" "}
-                  {paymentStatus.favoriteEmployee || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Total Amount:</strong>{" "}
-                  {paymentStatus.currency || "INR"}{" "}
-                  {(paymentStatus.total_amount || 0)}
-                </Typography>
-                {paymentStatus.couponCode && (
-                  <>
-                    <Typography sx={{ color: theme.textSecondary }}>
-                      <strong>Coupon Code:</strong>{" "}
-                      {paymentStatus.couponCode || "N/A"}
-                    </Typography>
-                    <Typography sx={{ color: theme.textSecondary }}>
-                      <strong>Discount:</strong>{" "}
-                      {paymentStatus.currency || "INR"}{" "}
-                      {(paymentStatus.discountAmount || 0)}
-                    </Typography>
-                  </>
-                )}
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Amount Paid:</strong>{" "}
-                  {paymentStatus.currency || "INR"}{" "}
-                  {(paymentStatus.amount || 0)}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Payment Method:</strong>{" "}
-                  {paymentStatus.Payment_Mode || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Transaction ID:</strong>{" "}
-                  {paymentStatus.transactionId || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Order ID:</strong> {paymentStatus.orderId || "N/A"}
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Status:</strong>{" "}
-                  <span
-                    style={{
-                      color:
-                        paymentStatus.paymentStatus === "PAID"
-                          ? theme.success
-                          : paymentStatus.paymentStatus === "FAILED"
-                          ? theme.error
-                          : "#FFCA28",
-                    }}
-                  >
-                    {paymentStatus.paymentStatus || "N/A"}
-                  </span>
-                </Typography>
-                <Typography sx={{ color: theme.textSecondary }}>
-                  <strong>Created At:</strong>{" "}
-                  {paymentStatus.createdAt
-                    ? new Date(paymentStatus.createdAt).toLocaleString()
-                    : "N/A"}
-                </Typography>
-                {paymentStatus.paymentStatus === "FAILED" && (
-                  <Typography sx={{ color: theme.error }}>
-                    <strong>Reason:</strong>{" "}
-                    {paymentStatus.failureReason || "Unknown"}
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Customer:</strong> {paymentStatus.name || "N/A"}
                   </Typography>
-                )}
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Service:</strong> {paymentStatus.service || "N/A"}
+                  </Typography>
+                  {paymentStatus.relatedServices?.length > 0 && (
+                    <Typography sx={{ color: "#000000" }}>
+                      <strong>Additional Services:</strong>{" "}
+                      {paymentStatus.relatedServices.join(", ")}
+                    </Typography>
+                  )}
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Date:</strong>{" "}
+                    {paymentStatus.date
+                      ? new Date(paymentStatus.date).toLocaleDateString()
+                      : "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Time:</strong> {paymentStatus.time || "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Employee:</strong>{" "}
+                    {paymentStatus.favoriteEmployee || "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Total Amount:</strong>{" "}
+                    {paymentStatus.currency || "INR"}{" "}
+                    {(paymentStatus.total_amount || 0)}
+                  </Typography>
+                  {paymentStatus.couponCode && (
+                    <>
+                      <Typography sx={{ color: "#000000" }}>
+                        <strong>Coupon Code:</strong>{" "}
+                        {paymentStatus.couponCode || "N/A"}
+                      </Typography>
+                      <Typography sx={{ color: "#000000" }}>
+                        <strong>Discount:</strong>{" "}
+                        {paymentStatus.currency || "INR"}{" "}
+                        {(paymentStatus.discountAmount || 0)}
+                      </Typography>
+                    </>
+                  )}
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Amount Paid:</strong>{" "}
+                    {paymentStatus.currency || "INR"}{" "}
+                    {(paymentStatus.amount || 0)}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Payment Method:</strong>{" "}
+                    {paymentStatus.Payment_Mode || "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Transaction ID:</strong>{" "}
+                    {paymentStatus.transactionId || "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Order ID:</strong> {paymentStatus.orderId || "N/A"}
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Status:</strong>{" "}
+                    <span
+                      style={{
+                        color:
+                          paymentStatus.paymentStatus === "PAID"
+                            ? theme.success
+                            : paymentStatus.paymentStatus === "FAILED"
+                            ? theme.error
+                            : "#FFCA28",
+                      }}
+                    >
+                      {paymentStatus.paymentStatus || "N/A"}
+                    </span>
+                  </Typography>
+                  <Typography sx={{ color: "#000000" }}>
+                    <strong>Created At:</strong>{" "}
+                    {paymentStatus.createdAt
+                      ? new Date(paymentStatus.createdAt).toLocaleString()
+                      : "N/A"}
+                  </Typography>
+                  {paymentStatus.paymentStatus === "FAILED" && (
+                    <Typography sx={{ color: theme.error }}>
+                      <strong>Reason:</strong>{" "}
+                      {paymentStatus.failureReason || "Unknown"}
+                    </Typography>
+                  )}
+                </Box>
               </Box>
-            </Box>
-          )}
-          <Box
-            sx={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: { xs: 1, sm: 2 },
-              justifyContent: "center",
-              mt: { xs: 1, sm: 2 },
-            }}
-          >
-            {paymentStatus?.paymentStatus === "PAID" && (
-              <Button
-                variant="contained"
-                onClick={generateReceiptPDF}
-                sx={{
-                  bgcolor: theme.accent,
-                  color: "#fff",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": { bgcolor: "#00897B" },
-                }}
-              >
-                Download Receipt
-              </Button>
             )}
-            {paymentStatus?.paymentStatus === "PENDING" && (
-              <Button
-                variant="contained"
-                onClick={handleRefreshStatus}
-                sx={{
-                  bgcolor: theme.accent,
-                  color: "#fff",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": { bgcolor: "#00897B" },
-                }}
-              >
-                Refresh Status
-              </Button>
-            )}
-            {paymentStatus?.paymentStatus === "FAILED" && (
-              <Button
-                variant="contained"
-                onClick={handleTryAgain}
-                sx={{
-                  bgcolor: theme.accent,
-                  color: "#fff",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": { bgcolor: "#00897B" },
-                }}
-              >
-                Try Again
-              </Button>
-            )}
-            <Button
-              variant="outlined"
-              onClick={() => navigate("/")}
+            <Box
               sx={{
-                borderColor: theme.accent,
-                color: theme.accent,
-                borderRadius: 2,
-                px: { xs: 2, sm: 3 },
-                py: 1,
-                fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                fontWeight: 500,
-                "&:hover": {
-                  bgcolor: theme.primary,
-                  borderColor: theme.accent,
-                },
+                display: "flex",
+                flexWrap: "wrap",
+                gap: { xs: 1, sm: 2 },
+                justifyContent: "center",
+                mt: { xs: 1, sm: 2 },
               }}
             >
-              Back to Home
-            </Button>
+              {paymentStatus?.paymentStatus === "PAID" && (
+                <Button
+                  variant="contained"
+                  onClick={generateReceiptPDF}
+                  sx={{
+                    bgcolor: "#f06292",
+                    color: "#fff",
+                    borderRadius: 2,
+                    px: { xs: 2, sm: 3 },
+                    py: 1,
+                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                    fontWeight: 500,
+                    "&:hover": { bgcolor: "#ec407a" },
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Download Receipt
+                </Button>
+              )}
+              {paymentStatus?.paymentStatus === "PENDING" && (
+                <Button
+                  variant="contained"
+                  onClick={handleRefreshStatus}
+                  sx={{
+                    bgcolor: "#f06292",
+                    color: "#fff",
+                    borderRadius: 2,
+                    px: { xs: 2, sm: 3 },
+                    py: 1,
+                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                    fontWeight: 500,
+                    "&:hover": { bgcolor: "#ec407a" },
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Refresh Status
+                </Button>
+              )}
+              {paymentStatus?.paymentStatus === "FAILED" && (
+                <Button
+                  variant="contained"
+                  onClick={handleTryAgain}
+                  sx={{
+                    bgcolor: "#f06292",
+                    color: "#fff",
+                    borderRadius: 2,
+                    px: { xs: 2, sm: 3 },
+                    py: 1,
+                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                    fontWeight: 500,
+                    "&:hover": { bgcolor: "#ec407a" },
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  Try Again
+                </Button>
+              )}
+              <Button
+                variant="outlined"
+                onClick={() => navigate("/")}
+                sx={{
+                  borderColor: "#f06292",
+                  color: "#f06292",
+                  borderRadius: 2,
+                  px: { xs: 2, sm: 3 },
+                  py: 1,
+                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
+                  fontWeight: 500,
+                  "&:hover": {
+                    bgcolor: "#f8bbd0",
+                    borderColor: "#f06292",
+                  },
+                  fontFamily: "'Montserrat', sans-serif",
+                }}
+              >
+                Back to Home
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      )}
+        )}
+      </Box>
+
+      {/* Global CSS to ensure full-screen background */}
+      <style jsx global>{`
+        html,
+        body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          height: 100%;
+          overflow-x: hidden;
+        }
+        #root {
+          width: 100%;
+          min-height: 100vh;
+        }
+      `}</style>
     </Box>
   );
 };

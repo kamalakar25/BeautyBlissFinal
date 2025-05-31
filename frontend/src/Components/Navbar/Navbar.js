@@ -471,7 +471,17 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="navbar-logo">
           <Link to="/" style={{ textDecoration: "none" }}>
-            <h1 style={{ color: "#36257d", fontStyle: "Cursive" }}>
+            <h1
+              style={{
+                background: "linear-gradient(to right, #f710b9, #9b45fc)", // Your gradient colors
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                fontFamily: "times new roman",
+                fontStyle: "cursive",
+                fontWeight: "550",
+                fontSize: "1.5rem",
+              }}
+            >
               BeautyBliss
             </h1>
           </Link>

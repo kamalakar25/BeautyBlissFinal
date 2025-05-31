@@ -1,26 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+"use client";
+
+import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import {
-  Box,
-  TextField,
-  Select,
-  MenuItem,
-  Button,
-  FormControl,
-  InputLabel,
-  FormControlLabel,
-  Checkbox,
-  Typography,
-  Alert,
-  FormGroup,
-  Modal,
-  IconButton,
-  Chip,
-  Link,
-} from "@mui/material";
-import { ExpandMore, ExpandLess, Close } from "@mui/icons-material";
 import axios from "axios";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -68,6 +50,11 @@ const BookSlot = () => {
   // State for parlor timings
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
 
+  // State for window width to handle responsiveness
+  const [windowWidth, setWindowWidth] = useState(
+    typeof window !== "undefined" ? window.innerWidth : 1024
+  );
+
   // Refs for form fields
   const nameRef = useRef(null);
   const dateRef = useRef(null);
@@ -76,6 +63,25 @@ const BookSlot = () => {
   const amountRef = useRef(null);
   const favoriteEmployeeRef = useRef(null);
   const termsRef = useRef(null);
+
+  // Handle window resize for responsiveness
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Handle Escape key for modals
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "Escape") {
+        setTermsModalOpen(false);
+        setOpenModals({});
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Fetch service details
   useEffect(() => {
@@ -87,7 +93,6 @@ const BookSlot = () => {
         );
         setServiceAll(response.data.services);
       } catch (error) {
-        // console.error("Error fetching service details:", error);
         setErrors((prev) => ({
           ...prev,
           api: "Failed to fetch service details. Please try again.",
@@ -233,16 +238,16 @@ const BookSlot = () => {
     }
   };
 
-  // Generate time slots
+  // Generate time slots in "HH:MM - HH:MM" format
   const generateTimeSlots = (startTime, endTime, interval = 60) => {
     const slots = [];
     const start = parseTime(startTime);
     const end = parseTime(endTime);
 
-    for (let time = start; time < end; time += interval) {
+    for (let time = start; time + interval <= end; time += interval) {
       const slotStart = formatTime(time);
       const slotEnd = formatTime(time + interval);
-      slots.push(`${slotStart}-${slotEnd}`);
+      slots.push(`${slotStart} - ${slotEnd}`);
     }
     return slots;
   };
@@ -312,7 +317,7 @@ const BookSlot = () => {
 
   // Calculate total amount
   const calculateTotalAmount = () => {
-    const baseAmount = parseFloat(formData.amount) || 0;
+    const baseAmount = Number.parseFloat(formData.amount) || 0;
     let totalAmount = baseAmount;
 
     formData.relatedServices.forEach((relatedService) => {
@@ -321,7 +326,7 @@ const BookSlot = () => {
           svc.serviceName === relatedService || svc.style === relatedService
       );
       if (relatedServiceDetail) {
-        totalAmount += parseFloat(relatedServiceDetail.price) || 0;
+        totalAmount += Number.parseFloat(relatedServiceDetail.price) || 0;
       }
     });
 
@@ -330,7 +335,7 @@ const BookSlot = () => {
 
   // Time slot utilities
   const timeToMinutes = (time) => {
-    const [start] = time.split("-");
+    const [start] = time.split(" - ");
     const [hours, minutes] = start.split(":").map(Number);
     return hours * 60 + minutes;
   };
@@ -531,8 +536,8 @@ const BookSlot = () => {
     if (!location || typeof location !== "string") return null;
     const match = location.match(/Lat:\s*([\d.-]+),\s*Lon:\s*([\d.-]+)/i);
     if (!match) return null;
-    const lat = parseFloat(match[1]);
-    const lon = parseFloat(match[2]);
+    const lat = Number.parseFloat(match[1]);
+    const lon = Number.parseFloat(match[2]);
     if (isNaN(lat) || isNaN(lon)) return null;
     return { lat, lon };
   };
@@ -553,1255 +558,940 @@ const BookSlot = () => {
     return acc;
   }, {});
 
+  // Generate date options for the next 7 days
+  const generateDateOptions = () => {
+    const dates = [];
+    const today = new Date();
+
+    for (let i = 1; i <= 7; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i);
+      dates.push({
+        value: date.toISOString().split("T")[0],
+        label: date.toLocaleDateString("en-US", {
+          weekday: "short",
+          month: "short",
+          day: "numeric",
+        }),
+      });
+    }
+    return dates;
+  };
+
   // Render service checkboxes
-const renderServiceCheckboxes = () => {
-  const categories = Object.keys(groupedServices);
+  const renderServiceCheckboxes = () => {
+    const categories = Object.keys(groupedServices);
 
-  if (categories.length === 0) {
+    if (categories.length === 0) {
+      return (
+        <div
+          style={{
+            color: "#666",
+            fontStyle: "italic",
+            marginTop: "16px",
+            fontSize: "14px",
+          }}
+        >
+          No Additional Services Available
+        </div>
+      );
+    }
+
     return (
-      <Typography
-        variant="body1"
-        sx={{
-          mt: 2,
-          color: "#666",
-          fontStyle: "italic",
-        }}
-      >
-        No Additional Services
-      </Typography>
-    );
-  }
-
-  return (
-    <Box className="services-grid">
-      {categories.map((category) => (
-        <Box key={category}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              cursor: "pointer",
-              "&:hover": { color: "#201548" },
-              transition: "all 0.3s ease",
-            }}
-            onClick={() => handleToggleModal(category)}
-          >
-            <Typography
-              variant="h6"
-              sx={{
-                color: "#0e0f0f",
-                fontWeight: "500",
-                fontSize: "0.9rem",
-                flexGrow: 1,
+      <div style={{ marginTop: "16px" }}>
+        {categories.map((category) => (
+          <div key={category} style={{ marginBottom: "8px" }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+                padding: "8px",
+                borderRadius: "4px",
+                transition: "background 0.2s",
+                background: openModals[category]
+                  ? "rgba(0,0,0,0.04)"
+                  : "transparent",
               }}
+              onClick={() => handleToggleModal(category)}
             >
-              {category}
-            </Typography>
-            <IconButton sx={{ padding: "0.25rem" }}>
-              {openModals[category] ? (
-                <ExpandLess sx={{ color: "#201548", fontSize: "1rem" }} />
-              ) : (
-                <ExpandMore sx={{ color: "#201548", fontSize: "1rem" }} />
-              )}
-            </IconButton>
-          </Box>
-          <Modal
-            open={openModals[category] || false}
-            onClose={() => handleToggleModal(category)}
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Box
-              sx={{
-                bgcolor: "#ffffff",
-                p: 3,
-                borderRadius: 3,
-                maxWidth: 450,
-                maxHeight: "80vh",
-                overflowY: "auto",
-                boxShadow: "0 6px 24px rgba(0,0,0,0.12)",
-                transform: "scale(0.9)",
-                animation: "modalPop 0.4s ease-out forwards",
-                "&:hover": { transform: "scale(1)" },
-                transition: "transform 0.3s ease-in-out",
-              }}
-            >
-              <Typography
-                variant="h5"
-                sx={{
-                  mb: 2,
-                  color: "#0e0f0f",
-                  fontWeight: "600",
-                  fontSize: "1.2rem",
+              <span
+                style={{
+                  flexGrow: 1,
+                  fontWeight: 500,
+                  fontSize: "16px",
                 }}
               >
                 {category}
-              </Typography>
-              <FormGroup>
-                {groupedServices[category].map((service, index) => (
-                  <FormControlLabel
-                    key={index}
-                    control={
-                      <Checkbox
-                        checked={formData.relatedServices.includes(
-                          service.style || service.serviceName
-                        )}
-                        onChange={handleRelatedServiceChange}
-                        value={service.style || service.serviceName}
-                        sx={{
-                          color: "#d0d0d0",
-                          "&.Mui-checked": { color: "#201548" },
-                        }}
-                      />
-                    }
-                    label={
-                      <Box sx={{ display: "flex", alignItems: "center" }}>
-                        <Typography
-                          sx={{ fontSize: "0.9rem", color: "#0e0f0f" }}
-                        >
-                          {service.style || service.serviceName}
-                        </Typography>
-                        <Typography
-                          sx={{
-                            ml: 2,
-                            fontSize: "0.8rem",
-                            color: "#666",
-                          }}
-                        >
-                          (₹{service.price}, {service.duration} min)
-                        </Typography>
-                      </Box>
-                    }
-                  />
-                ))}
-              </FormGroup>
-              <Button
-                variant="contained"
-                onClick={() => handleToggleModal(category)}
-                fullWidth
-                sx={{
-                  mt: 2,
-                  backgroundColor: "#201548",
-                  color: "#ffffff",
-                  fontWeight: "500",
-                  borderRadius: 2,
-                  fontSize: "0.85rem",
-                  "&:hover": {
-                    backgroundColor: "#1a1138",
-                    transform: "translateY(-2px)",
-                  },
+              </span>
+              <span style={{ fontSize: "20px" }}>
+                {openModals[category] ? "−" : "+"}
+              </span>
+            </div>
+
+            {openModals[category] && (
+              <div
+                style={{
+                  position: "fixed",
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background: "rgba(0,0,0,0.5)",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  zIndex: 1000,
                 }}
+                onClick={() => handleToggleModal(category)}
               >
-                Close
-              </Button>
-            </Box>
-          </Modal>
-        </Box>
-      ))}
-    </Box>
-  );
-};
-
-
-  // Render selected services
-  const renderSelectedServices = () => {
-    return (
-      <Box
-        sx={{
-          mt: 2,
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 1,
-          animation: "slideIn 0.5s ease-out",
-        }}
-      >
-        {formData.relatedServices.map((service) => (
-          <Chip
-            key={service}
-            label={service}
-            onDelete={() => handleRemoveService(service)}
-            deleteIcon={<Close />}
-            sx={{
-              bgcolor: "#201548",
-              color: "#ffffff",
-              fontWeight: "500",
-              fontSize: "0.85rem",
-              "&:hover": {
-                bgcolor: "#1a1138",
-                transform: "scale(1.05)",
-                boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              },
-              transition: "all 0.2s ease",
-              animation: "fadeIn 0.4s ease-out",
-            }}
-          />
+                <div
+                  style={{
+                    background: "#fff",
+                    borderRadius: "8px",
+                    padding: "16px",
+                    width: "90%",
+                    maxWidth: "400px",
+                    maxHeight: "80vh",
+                    overflowY: "auto",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <h3 style={{ fontSize: "20px", marginBottom: "16px" }}>
+                    {category}
+                  </h3>
+                  <div>
+                    {groupedServices[category].map((service, index) => (
+                      <label
+                        key={index}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={formData.relatedServices.includes(
+                            service.style || service.serviceName
+                          )}
+                          onChange={handleRelatedServiceChange}
+                          value={service.style || service.serviceName}
+                          style={{ marginRight: "8px", accentColor: "#E91E63" }}
+                        />
+                        <div>
+                          <div style={{ fontSize: "14px" }}>
+                            {service.style || service.serviceName}
+                          </div>
+                          <div style={{ fontSize: "12px", color: "#666" }}>
+                            ₹{service.price} • {service.duration} min
+                          </div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                  <button
+                    style={{
+                      width: "100%",
+                      padding: "10px",
+                      background: "linear-gradient(135deg, #E91E63, #F06292)",
+                      color: "#fff",
+                      border: "none",
+                      borderRadius: "4px",
+                      cursor: "pointer",
+                      marginTop: "16px",
+                      fontSize: "14px",
+                    }}
+                    onClick={() => handleToggleModal(category)}
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         ))}
-      </Box>
+      </div>
     );
   };
 
+  // Handle image load error
+  const handleImageError = (e) => {
+    e.target.src = "/placeholder-image.jpg"; // Fallback image
+  };
+
+  // Dynamic styles based on window width
+  const isMediumScreen = windowWidth >= 768;
+  const isLargeScreen = windowWidth >= 1024;
+  const isSmallScreen = windowWidth < 640;
+
   return (
-    <div className="container my-5">
-      <style>
-        {`
-        .book-slot-container {
-          background: #ffffff;
-          border-radius: 14px;
-          padding: 1rem;
-          box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
-          min-height: 80vh;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          animation: containerFadeIn 0.8s ease-in-out;
-          max-width: 100%;
-          margin: 0 auto;
-        }
+    <div
+      style={{
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #FCE4EC, #F8BBD9, #E1BEE7)",
+        padding: isSmallScreen ? "12px" : "16px",
+        fontFamily: "Arial, sans-serif",
+        boxSizing: "border-box",
+        paddingTop: isSmallScreen ? "20px" : "60px",
+      }}
+    >
+      <div
+        style={{
+          maxWidth: "1200px",
+          margin: "0 auto",
+          display: "flex",
+          flexDirection: "column",
+          gap: isMediumScreen ? "24px" : "16px",
+        }}
+      >
+        {Object.keys(parlor).length === 0 ? (
+          <div
+            style={{
+              background: "#fff3cd",
+              padding: "12px",
+              borderRadius: "8px",
+              color: "#856404",
+              width: "100%",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
+          >
+            No parlor data available. Please select a parlor.
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "flex",
+              flexDirection: isMediumScreen ? "row" : "column",
+              gap: isMediumScreen ? "24px" : "16px",
+            }}
+          >
+            {/* Left Section - Service Details */}
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+                background: "rgba(255,255,255,0.95)",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                width: "100%",
+                flex: isMediumScreen ? "1" : "none",
+                minWidth: 0,
+              }}
+            >
+              {/* Hero Image */}
+              <div
+                style={{
+                  height: isLargeScreen
+                    ? "260px"
+                    : isSmallScreen
+                    ? "180px"
+                    : "220px",
+                  width: "100%",
+                }}
+              >
+                <img
+                  src={`${BASE_URL}/${parlor.image}`}
+                  alt={parlor.name || "Parlor Image"}
+                  style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                  onError={handleImageError}
+                />
+              </div>
 
-        .shop-info-card {
-          background: linear-gradient(145deg, #ffffff, #f8fafc);
-          border-radius: 12px;
-          padding: 1.25rem;
-          transition: transform 0.4s ease, box-shadow 0.4s ease;
-          border: 1px solid #e8ecef;
-          animation: slideInLeft 0.6s ease-out;
-          width: 100%;
-          max-width: 400px;
-        }
-
-        .shop-info-card:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .booking-form-card {
-          background: #ffffff;
-          border-radius: 12px;
-          padding: 1.5rem;
-          transition: transform 0.4s ease, box-shadow 0.4s ease;
-          border: 1px solid #32226b;
-          animation: slideInRight 0.6s ease-out;
-          width: 100%;
-          max-width: 600px;
-        }
-
-        .booking-form-card:hover {
-          transform: translateY(-6px);
-          box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
-        }
-
-        .form-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 1rem;
-          margin-bottom: 1.5rem;
-        }
-
-        .services-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 0.5rem;
-          margin-bottom: 1rem;
-        }
-
-        .service-category {
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          min-height: 40px;
-          padding: 0.5rem;
-        }
-
-        .form-field {
-          transition: all 0.3s ease;
-          animation: fadeInUp 0.5s ease-out;
-        }
-
-        .form-field:hover {
-          transform: translateY(-2px);
-        }
-
-        .full-width-field {
-          grid-column: span 1;
-        }
-
-        .direction-button {
-          border-radius: 8px;
-          text-transform: none;
-          font-weight: 500;
-          padding: 0.5rem 1rem;
-          transition: all 0.3s ease;
-          font-size: 0.875rem;
-          background-color: #201548;
-          color: #ffffff;
-          animation: fadeIn 0.7s ease-out;
-        }
-
-        .direction-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-          background-color: #1a1138;
-        }
-
-        .book-slot-button {
-          border-radius: 8px;
-          text-transform: none;
-          font-size: 1rem;
-          padding: 0.6rem;
-          font-weight: 500;
-          transition: all 0.3s ease;
-          background-color: #201548;
-          color: #ffffff;
-          animation: fadeIn 0.8s ease-out;
-        }
-
-        .book-slot-button:hover {
-          transform: translateY(-3px) scale(1.02);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
-          background-color: #1a1138;
-        }
-
-        .parlor-image {
-          border-radius: 10px;
-          object-fit: cover;
-          width: 100%;
-          height: 140px;
-          transition: transform 0.4s ease, filter 0.4s ease;
-        }
-
-        .parlor-image:hover {
-          transform: scale(1.05);
-          filter: brightness(1.1);
-        }
-
-        .terms-link {
-          cursor: pointer;
-          color: #201548;
-          text-decoration: underline;
-          font-size: 0.875rem;
-          transition: color 0.3s ease;
-        }
-
-        .terms-link:hover {
-          color: #1a1138;
-        }
-
-        .css-11hgk1s-MuiButtonBase-root-MuiChip-root .MuiChip-deleteIcon {
-          -webkit-tap-highlight-color: transparent;
-          color: rgba(255, 255, 255, 0.26);
-          cursor: pointer;
-          margin: 0 5px 0 -6px;
-        }
-
-        @keyframes containerFadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes slideInLeft {
-          from { opacity: 0; transform: translateX(-20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes slideInRight {
-          from { opacity: 0; transform: translateX(20px); }
-          to { opacity: 1; transform: translateX(0); }
-        }
-
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; }
-          to { opacity: 1; }
-        }
-
-        @keyframes modalPop {
-          from { opacity: 0; transform: scale(0.8); }
-          to { opacity: 1; transform: scale(0.9); }
-        }
-
-        @media (min-width: 320px) and (max-width: 480px) {
-          .book-slot-container {
-            padding: 0.5rem;
-            min-height: auto;
-            align-items: flex-start;
-          }
-          .shop-info-card {
-            padding: 0.75rem;
-            margin-bottom: 1rem;
-            max-width: 100%;
-          }
-          .booking-form-card {
-            padding: 0.75rem;
-            max-width: 100%;
-          }
-          .form-grid {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-          }
-          .services-grid {
-            grid-template-columns: 1fr;
-            gap: 0.5rem;
-          }
-          .service-category {
-            padding: 0.4rem;
-            min-height: 36px;
-          }
-          .service-category h6 {
-            font-size: 0.85rem;
-          }
-          .parlor-image {
-            height: 100px;
-          }
-          .direction-button {
-            font-size: 0.75rem;
-            padding: 0.4rem 0.8rem;
-          }
-          .book-slot-button {
-            font-size: 0.8rem;
-            padding: 0.5rem;
-          }
-          .booking-form-card h3 {
-            font-size: 1.4rem;
-          }
-          .shop-info-card h5 {
-            font-size: 1.2rem;
-          }
-        }
-
-        @media (min-width: 481px) and (max-width: 768px) {
-          .book-slot-container {
-            padding: 1rem;
-            min-height: auto;
-            align-items: flex-start;
-          }
-          .shop-info-card {
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-            max-width: 100%;
-          }
-          .booking-form-card {
-            padding: 1rem;
-            max-width: 100%;
-          }
-          .form-grid {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-          }
-          .services-grid {
-            grid-template-columns: 1fr;
-            gap: 0.75rem;
-          }
-          .service-category {
-            padding: 0.5rem;
-            min-height: 38px;
-          }
-          .service-category h6 {
-            font-size: 0.9rem;
-          }
-          .parlor-image {
-            height: 120px;
-          }
-          .direction-button {
-            font-size: 0.8rem;
-          }
-          .book-slot-button {
-            font-size: 0.85rem;
-          }
-          .booking-form-card h3 {
-            font-size: 1.6rem;
-          }
-          .shop-info-card h5 {
-            font-size: 1.3rem;
-          }
-        }
-
-        @media (min-width: 769px) and (max-width: 1024px) {
-          .book-slot-container {
-            padding: 1.5rem;
-            max-width: 960px;
-            margin: 0 auto;
-          }
-          .shop-info-card {
-            padding: 1.25rem;
-            max-width: 360 Dumas, Claude (French, 1946- )px;
-          }
-          .booking-form-card {
-            padding: 1.5rem;
-            max-width: 560px;
-          }
-          .form-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.25rem;
-          }
-          .services-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-          }
-          .service-category {
-            padding: 0.5rem;
-            min-height: 40px;
-          }
-          .service-category h6 {
-            font-size: 0.9rem;
-          }
-          .full-width-field {
-            grid-column: span 2;
-          }
-          .parlor-image {
-            height: 130px;
-          }
-          .direction-button {
-            font-size: 0.85rem;
-          }
-          .book-slot-button {
-            font-size: 0.9rem;
-          }
-          .booking-form-card h3 {
-            font-size: 1.7rem;
-          }
-          .shop-info-card h5 {
-            font-size: 1.35rem;
-          }
-        }
-
-        @media (min-width: 1025px) and (max-width: 1440px) {
-          .book-slot-container {
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-          }
-          .shop-info-card {
-            padding: 1.5rem;
-            max-width: 400px;
-          }
-          .booking-form-card {
-            padding: 2rem;
-            max-width: 600px;
-            margin-left: 1rem;
-          }
-          .form-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.5rem;
-          }
-          .services-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-          }
-          .service-category {
-            padding: 0.5rem;
-            min-height: 40px;
-          }
-          .service-category h6 {
-            font-size: 0.9rem;
-          }
-          .full-width-field {
-            grid-column: span 2;
-          }
-          .parlor-image {
-            height: 140px;
-          }
-          .direction-button {
-            font-size: 0.85rem;
-            padding: 0.5rem 1.2rem;
-          }
-          .book-slot-button {
-            font-size: 0.95rem;
-            padding: 0.7rem;
-          }
-          .booking-form-card h3 {
-            font-size: 1.8rem;
-          }
-          .shop-info-card h5 {
-            font-size: 1.4rem;
-          }
-        }
-
-        @media (min-width: 1441px) {
-          .book-slot-container {
-            padding: 2.5rem;
-            max-width: 1400px;
-            margin: 0 auto;
-          }
-          .shop-info-card {
-            padding: 1.75rem;
-            max-width: 450px;
-          }
-          .booking-form-card {
-            padding: 2.5rem;
-            max-width: 650px;
-            margin-left: 1.5rem;
-          }
-          .form-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1.75rem;
-          }
-          .services-grid {
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-          }
-          .service-category {
-            padding: 0.6rem;
-            min-height: 44px;
-          }
-          .service-category h6 {
-            font-size: 1rem;
-          }
-          .full-width-field {
-            grid-column: span 2;
-          }
-          .parlor-image {
-            height: 160px;
-          }
-          .direction-button {
-            font-size: 0.9rem;
-            padding: 0.6rem 1.4rem;
-          }
-          .book-slot-button {
-            font-size: 1rem;
-            padding: 0.8rem;
-          }
-          .booking-form-card h3 {
-            font-size: 2rem;
-          }
-          .shop-info-card h5 {
-            font-size: 1.5rem;
-          }
-        }
-        `}
-      </style>
-
-      <div className="container my-5">
-        <div className="book-slot-container">
-          <div className="row g-4">
-            {/* Left Section - Shop Info */}
-            <div className="col-12 col-md-4">
-              <Box className="shop-info-card text-center">
-                {Object.keys(parlor).length === 0 ? (
-                  <Alert
-                    severity="warning"
-                    sx={{
-                      borderRadius: 2,
-                      fontSize: "0.85rem",
-                      animation: "fadeIn 0.5s ease-out",
-                    }}
-                  >
-                    No parlor data available. Please select a parlor.
-                  </Alert>
-                ) : (
-                  <>
-                    <img
-                      src={`${BASE_URL}/${parlor.image}`}
-                      alt={parlor.name || "Shop"}
-                      className="parlor-image mb-3"
-                    />
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        color: "#0e0f0f",
-                        fontWeight: "600",
-                        mb: 1,
-                        fontSize: "1.4rem",
-                      }}
-                    >
-                      {parlor.name || "Shop Name"}
-                    </Typography>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        color: "#201548",
-                        mb: 1,
-                        fontSize: "0.9rem",
-                        fontWeight: "500",
-                      }}
-                    >
-                      {parlor.designation || "Designation"}
-                    </Typography>
-                    <Typography
-                      sx={{ color: "#0e0f0f", mb: 1, fontSize: "0.85rem" }}
-                    >
-                      {parlor.style || "Style"}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#0e0f0f",
-                        mb: 1,
-                        fontWeight: "500",
-                        fontSize: "0.85rem",
-                      }}
-                    >
-                      Price: ₹{calculateTotalAmount()}
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#0e0f0f",
-                        mb: 1,
-                        fontWeight: "500",
-                        fontSize: "0.85rem",
-                      }}
-                    >
-                      Duration: {formData.duration} minutes
-                    </Typography>
-                    <Typography
-                      sx={{
-                        color: "#0e0f0f",
-                        mb: 2,
-                        fontWeight: "500",
-                        fontSize: "0.85rem",
-                      }}
-                    >
-                      Rating: {parlor.spRating || "0"}
-                    </Typography>
-                    <Button
-                      variant="outlined"
-                      className="direction-button"
-                      onClick={() =>
-                        window.open(getGoogleMapsUrl(parlor.location), "_blank")
-                      }
-                      disabled={!parlor.location}
-                      sx={{
-                        color: "#201548",
-                        borderColor: "#201548",
-                        "&:hover": {
-                          backgroundColor: "rgba(32, 21, 72, 0.1)",
-                          borderColor: "#1a1138",
-                          color: "#1a1138",
-                        },
-                      }}
-                    >
-                      Get Directions
-                    </Button>
-                  </>
-                )}
-              </Box>
-            </div>
-
-            {/* Right Section - Payment Form */}
-            <div className="col-12 col-md-8">
-              <Box className="booking-form-card">
-                <Typography
-                  variant="h3"
-                  sx={{
-                    mb: 2,
-                    textAlign: "center",
-                    color: "#0e0f0f",
-                    fontWeight: "600",
-                    fontSize: "1.8rem",
-                    animation: "fadeIn 0.6s ease-out",
-                  }}
-                >
-                  Book Your Slot
-                </Typography>
-
-                {Object.keys(parlor).length === 0 && (
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 2,
-                      borderRadius: 2,
-                      fontSize: "0.85rem",
-                      animation: "fadeIn 0.5s ease-out",
-                    }}
-                  >
-                    Please select a parlor to proceed with booking.
-                  </Alert>
-                )}
-
-                {errors.api && (
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 2,
-                      borderRadius: 2,
-                      fontSize: "0.85rem",
-                      animation: "fadeIn 0.5s ease-out",
-                    }}
-                  >
-                    {errors.api}
-                  </Alert>
-                )}
-
-                {errors.relatedServices && (
-                  <Alert
-                    severity="error"
-                    sx={{
-                      mb: 2,
-                      borderRadius: 2,
-                      fontSize: "0.85rem",
-                      animation: "fadeIn 0.5s ease-out",
-                    }}
-                  >
-                    {errors.relatedServices}
-                  </Alert>
-                )}
-
-                <Box className="form-grid">
-                  <TextField
-                    fullWidth
-                    label="Name"
-                    name="name"
-                    value={formData.name}
-                    disabled
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": { color: "#201548" },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    error={!!errors.name}
-                    helperText={errors.name}
-                    inputRef={nameRef}
-                  />
-                  <TextField
-                    fullWidth
-                    type="date"
-                    label="Date"
-                    name="date"
-                    InputLabelProps={{ shrink: true }}
-                    value={formData.date}
-                    onChange={(e) => {
-                      const { value } = e.target;
-                      const selectedDate = new Date(value);
-                      const tomorrow = new Date();
-                      tomorrow.setDate(tomorrow.getDate() + 1);
-                      tomorrow.setHours(0, 0, 0, 0);
-
-                      if (selectedDate < tomorrow) {
-                        setErrors((prev) => ({
-                          ...prev,
-                          date: "Dates before tomorrow are not allowed",
-                        }));
-                      } else {
-                        setErrors((prev) => ({ ...prev, date: "" }));
-                        setFormData((prev) => ({ ...prev, date: value }));
-                      }
-                    }}
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": { color: "#201548" },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    error={!!errors.date}
-                    helperText={errors.date}
-                    inputProps={{
-                      min: new Date(
-                        new Date().setDate(new Date().getDate() + 1)
-                      )
-                        .toISOString()
-                        .split("T")[0],
-                    }}
-                    inputRef={dateRef}
-                  />
-                  <FormControl
-                    fullWidth
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    error={!!errors.favoriteEmployee}
-                  >
-                    <InputLabel
-                      sx={{
-                        "&.Mui-focused": { color: "#201548" },
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      }}
-                    >
-                      Favorite Employee
-                    </InputLabel>
-                    <Select
-                      name="favoriteEmployee"
-                      value={formData.favoriteEmployee}
-                      onChange={handleInputChange}
-                      label="Favorite Employee"
-                      inputRef={favoriteEmployeeRef}
-                    >
-                      <MenuItem
-                        value=""
-                        disabled
-                        sx={{ fontSize: "0.9rem", color: "#0e0f0f" }}
-                      >
-                        Select an employee
-                      </MenuItem>
-                      {manPower.map((employee) => (
-                        <MenuItem
-                          key={employee._id}
-                          value={employee.name}
-                          sx={{ fontSize: "0.9rem", color: "#0e0f0f" }}
-                        >
-                          {employee.name} ({employee.experience} years exp)
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.favoriteEmployee && (
-                      <Typography
-                        color="error"
-                        sx={{ mt: 0.5, fontSize: "0.8rem" }}
-                      >
-                        {errors.favoriteEmployee}
-                      </Typography>
-                    )}
-                  </FormControl>
-                  <FormControl
-                    fullWidth
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    error={!!errors.time}
-                  >
-                    <InputLabel
-                      sx={{
-                        "&.Mui-focused": { color: "#201548" },
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      }}
-                    >
-                      Available Time
-                    </InputLabel>
-                    <Select
-                      name="time"
-                      value={formData.time}
-                      onChange={handleInputChange}
-                      label="Available Time"
-                      disabled={
-                        !formData.date ||
-                        !formData.favoriteEmployee ||
-                        availableTimeSlots.length === 0 ||
-                        formData.duration === 0
-                      }
-                      inputRef={timeRef}
-                    >
-                      <MenuItem
-                        value=""
-                        disabled
-                        sx={{ fontSize: "0.9rem", color: "#0e0f0f" }}
-                      >
-                        {availableTimeSlots.length === 0
-                          ? "No available time slots"
-                          : formData.duration === 0
-                          ? "Service duration not available"
-                          : "Select a time slot"}
-                      </MenuItem>
-                      {availableTimeSlots.map((slot) => (
-                        <MenuItem
-                          key={slot}
-                          value={slot}
-                          disabled={!isSlotAvailable(slot, formData.duration)}
-                          sx={{ fontSize: "0.9rem" }}
-                        >
-                          {slot}{" "}
-                          {!isSlotAvailable(slot, formData.duration)
-                            ? "(Booked)"
-                            : ""}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                    {errors.time && (
-                      <Typography
-                        color="error"
-                        sx={{ mt: 0.5, fontSize: "0.8rem" }}
-                      >
-                        {errors.time}
-                      </Typography>
-                    )}
-                  </FormControl>
-                  <TextField
-                    fullWidth
-                    label="Service"
-                    name="service"
-                    value={formData.service}
-                    onChange={handleInputChange}
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": { color: "#201548" },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    InputProps={{ readOnly: true }}
-                    error={!!errors.service}
-                    helperText={errors.service}
-                    inputRef={serviceRef}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Total Amount"
-                    name="totalAmount"
-                    type="number"
-                    value={calculateTotalAmount()}
-                    className="form-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": { color: "#201548" },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    InputProps={{ readOnly: true }}
-                    error={!!errors.amount}
-                    helperText={errors.amount}
-                    inputRef={amountRef}
-                  />
-                  <TextField
-                    fullWidth
-                    label="Total Duration (minutes)"
-                    name="duration"
-                    type="number"
-                    value={formData.duration}
-                    className="form-field full-width-field"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
-                        "&:hover fieldset": { borderColor: "#201548" },
-                        "&.Mui-focused fieldset": { borderColor: "#201548" },
-                        backgroundColor: "#ffffff",
-                      },
-                      "& .MuiInputLabel-root.Mui-focused": { color: "#201548" },
-                      "& .MuiInputBase-input": {
-                        fontSize: "0.9rem",
-                        color: "#0e0f0f",
-                      },
-                    }}
-                    InputProps={{ readOnly: true }}
-                    error={!!errors.duration}
-                    helperText={errors.duration}
-                  />
-                </Box>
-
-                <Typography
-                  variant="h5"
-                  sx={{
-                    mb: 1,
-                    color: "#0e0f0f",
-                    fontWeight: "500",
-                    fontSize: "1.2rem",
-                    animation: "fadeIn 0.6s ease-out",
-                  }}
-                >
-                  Additional Services (Additional charges may apply)
-                </Typography>
-                {renderServiceCheckboxes()}
-                {formData.relatedServices.length > 0 &&
-                  renderSelectedServices()}
-
-                  
-
-               
-
-                <Box
-                  sx={{
-                    mt: 2,
+              <div style={{ padding: isSmallScreen ? "12px" : "16px" }}>
+                {/* Service Title */}
+                <div
+                  style={{
+                    position: "relative",
+                    marginBottom: "12px",
                     display: "flex",
                     alignItems: "center",
-                    animation: "fadeIn 0.6s ease-out",
+                    justifyContent: "space-between",
                   }}
-                  ref={termsRef}
                 >
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        checked={termsAgreed}
-                        onChange={handleTermsChange}
-                        sx={{
-                          color: "#d0d0d0",
-                          "&.Mui-checked": { color: "#201548" },
-                          transition: "color 0.2s ease",
-                        }}
-                      />
-                    }
-                    label={
-                      <Typography sx={{ fontSize: "0.9rem", color: "#0e0f0f" }}>
-                        I agree to the{" "}
-                        <Link
-                          className="terms-link"
-                          onClick={handleTermsModalToggle}
-                          sx={{ fontSize: "0.9rem" }}
-                        >
-                          Terms & Conditions
-                        </Link>
-                      </Typography>
-                    }
-                    sx={{
-                      "&:hover": { bgcolor: "#f7f7f7", borderRadius: 1 },
-                      animation: "fadeIn 0.5s ease-out",
+                  <h2
+                    style={{
+                      fontSize: isLargeScreen
+                        ? "28px"
+                        : isSmallScreen
+                        ? "20px"
+                        : "24px",
+                      fontWeight: "bold",
+                      background: "linear-gradient(135deg, #E91E63, #9C27B0)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
                     }}
-                  />
-                </Box>
-                {errors.terms && (
-                  <Typography
-                    color="error"
-                    sx={{ mt: 0.5, fontSize: "0.8rem" }}
                   >
-                    {errors.terms}
-                  </Typography>
+                    {formData.service || parlor.name || "Service"}
+                  </h2>
+
+                  <div
+                    style={{
+                      position: "absolute",
+                      top: "4px",
+                      right: "4px",
+                      background: "rgba(233, 30, 99, 0.9)",
+                      color: "#fff",
+                      padding: "3px 6px",
+                      borderRadius: "4px",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "3px",
+                    }}
+                  >
+                    <span style={{ fontSize: "12px" }}>★</span>
+                    <span style={{ fontSize: "12px", fontWeight: "bold" }}>
+                      {parlor.spRating}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Salon Info */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "6px",
+                    marginBottom: "12px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  {parlor.designation && (
+                    <span
+                      style={{
+                        background: "linear-gradient(135deg, #E91E63, #F06292)",
+                        color: "#fff",
+                        padding: "3px 6px",
+                        borderRadius: "4px",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {parlor.designation}
+                    </span>
+                  )}
+                  {formData.duration > 0 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "3px",
+                      }}
+                    >
+                      <span style={{ fontSize: "12px", color: "#666" }}>
+                        ⏰
+                      </span>
+                      <span style={{ fontSize: "12px", color: "#666" }}>
+                        {formData.duration} min
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Style */}
+                {parlor.style && (
+                  <p
+                    style={{
+                      marginBottom: "12px",
+                      color: "#666",
+                      fontSize: "14px",
+                    }}
+                  >
+                    {parlor.style}
+                  </p>
                 )}
 
-                <Modal
-                  open={termsModalOpen}
-                  onClose={handleTermsModalToggle}
-                  sx={{
+                {/* Location */}
+                {parlor.name && (
+                  <>
+                    <h3
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Location
+                    </h3>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <span style={{ fontSize: "16px", color: "#E91E63" }}>
+                        📍
+                      </span>
+                      <span style={{ fontSize: "14px" }}>{parlor.name}</span>
+                    </div>
+                  </>
+                )}
+
+                {/* Additional Services */}
+                {Object.keys(groupedServices).length > 0 && (
+                  <>
+                    <hr style={{ margin: "12px 0", borderColor: "#e0e0e0" }} />
+                    <h3
+                      style={{
+                        fontSize: "18px",
+                        fontWeight: "bold",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      Additional Services
+                    </h3>
+                    <p
+                      style={{
+                        fontSize: "14px",
+                        color: "#666",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      (Additional charges may apply)
+                    </p>
+                    {renderServiceCheckboxes()}
+                  </>
+                )}
+
+                {/* Selected Services */}
+                {formData.relatedServices.length > 0 && (
+                  <div
+                    style={{
+                      marginTop: "12px",
+                      display: "flex",
+                      flexWrap: "wrap",
+                      gap: "6px",
+                    }}
+                  >
+                    {formData.relatedServices.map((service) => (
+                      <div
+                        key={service}
+                        style={{
+                          background:
+                            "linear-gradient(135deg, #E91E63, #F06292)",
+                          color: "#fff",
+                          padding: "3px 6px",
+                          borderRadius: "4px",
+                          fontSize: "12px",
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "3px",
+                        }}
+                      >
+                        {service}
+                        <button
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#fff",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                          }}
+                          onClick={() => handleRemoveService(service)}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Right Section - Booking Panel */}
+            <div
+              style={{
+                borderRadius: "8px",
+                background: "rgba(255,255,255,0.95)",
+                boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
+                padding: isSmallScreen ? "12px" : "16px",
+                width: "100%",
+                flex: isMediumScreen ? "2" : "none",
+                minWidth: 0,
+                position: isMediumScreen ? "sticky" : "static",
+                top: isMediumScreen ? "16px" : "auto",
+                alignSelf: isMediumScreen ? "flex-start" : "auto",
+              }}
+            >
+              {/* Map Placeholder */}
+              {parlor.location && (
+                <div
+                  style={{
+                    borderRadius: "8px",
+                    marginBottom: "12px",
+                    height: isLargeScreen
+                      ? "160px"
+                      : isSmallScreen
+                      ? "120px"
+                      : "140px",
+                    background: "linear-gradient(135deg, #E3F2FD, #BBDEFB)",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
+                    cursor: "pointer",
+                  }}
+                  onClick={() =>
+                    window.open(getGoogleMapsUrl(parlor.location), "_blank")
+                  }
+                >
+                  <div style={{ textAlign: "center" }}>
+                    <span style={{ fontSize: "32px", color: "#1976D2" }}>
+                      🗺️
+                    </span>
+                    <p style={{ fontSize: "12px", color: "#666" }}>
+                      Click to view location
+                    </p>
+                  </div>
+                </div>
+              )}
+              {/* Booking Card */}
+              <div>
+                <h2
+                  style={{
+                    fontSize: isSmallScreen ? "20px" : "24px",
+                    fontWeight: "bold",
+                    marginBottom: "8px",
                   }}
                 >
-                  <Box
-                    sx={{
-                      bgcolor: "#ffffff",
-                      p: 3,
-                      borderRadius: 3,
-                      maxWidth: 450,
-                      maxHeight: "80vh",
-                      overflowY: "auto",
-                      boxShadow: "0 6px 24px rgba(0,0,0,0.12)",
-                      transform: "scale(0.9)",
-                      animation: "modalPop 0.4s ease-out forwards",
-                      "&:hover": { transform: "scale(1)" },
-                      transition: "transform 0.3s ease-in-out",
+                  Book This Service
+                </h2>
+
+                {/* Price */}
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    marginBottom: "12px",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: isLargeScreen
+                        ? "28px"
+                        : isSmallScreen
+                        ? "20px"
+                        : "24px",
+                      fontWeight: "bold",
+                      background: "linear-gradient(135deg, #E91E63, #9C27B0)",
+                      WebkitBackgroundClip: "text",
+                      WebkitTextFillColor: "transparent",
                     }}
                   >
-                    <Typography
-                      variant="h5"
-                      sx={{
-                        mb: 2,
-                        color: "#0e0f0f",
-                        fontWeight: "600",
-                        fontSize: "1.2rem",
+                    ₹{calculateTotalAmount()}
+                  </span>
+                  {formData.duration > 0 && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "3px",
                       }}
                     >
-                      Terms & Conditions
-                    </Typography>
-                    {terms.length > 0 ? (
-                      terms.map((term, index) => (
-                        <Typography
-                          key={index}
-                          sx={{
-                            mb: 1,
-                            fontSize: "0.9rem",
-                            color: "#0e0f0f",
-                          }}
-                        >
-                          {index + 1}. {term.term}
-                        </Typography>
-                      ))
-                    ) : (
-                      <Typography
-                        sx={{
-                          mb: 2,
-                          fontSize: "0.9rem",
-                          color: "#0e0f0f",
+                      <span style={{ fontSize: "12px", color: "#666" }}>
+                        ⏰
+                      </span>
+                      <span style={{ fontSize: "12px", color: "#666" }}>
+                        {formData.duration} min
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Employee Selection */}
+                {manPower.length > 0 && (
+                  <>
+                    <h3
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        marginBottom: "6px",
+                      }}
+                      ref={favoriteEmployeeRef}
+                    >
+                      Select Employee
+                    </h3>
+                    <select
+                      value={formData.favoriteEmployee}
+                      onChange={handleInputChange}
+                      name="favoriteEmployee"
+                      style={{
+                        width: "100%",
+                        padding: "8px",
+                        borderRadius: "4px",
+                        border: "1px solid #E91E63",
+                        fontSize: "14px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      <option value="" disabled>
+                        Choose your preferred stylist
+                      </option>
+                      {manPower.map((employee) => (
+                        <option key={employee._id} value={employee.name}>
+                          {employee.name} ({employee.experience} years exp)
+                        </option>
+                      ))}
+                    </select>
+                    {errors.favoriteEmployee && (
+                      <p
+                        style={{
+                          color: "red",
+                          fontSize: "12px",
+                          marginBottom: "6px",
                         }}
                       >
-                        No terms and conditions available.
-                      </Typography>
+                        {errors.favoriteEmployee}
+                      </p>
                     )}
-                    <Button
-                      variant="contained"
-                      onClick={handleTermsModalToggle}
-                      fullWidth
-                      sx={{
-                        backgroundColor: "#201548",
-                        color: "#ffffff",
-                        fontWeight: "500",
-                        borderRadius: 2,
-                        fontSize: "0.85rem",
-                        padding: "0.5rem 1rem",
-                        "&:hover": {
-                          backgroundColor: "#1a1138",
-                          transform: "translateY(-2px)",
-                          boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
-                        },
-                        transition: "all 0.3s ease",
+                  </>
+                )}
+
+                {/* Date Selection */}
+                <h3
+                  style={{
+                    fontSize: "16px",
+                    fontWeight: "bold",
+                    marginBottom: "6px",
+                  }}
+                  ref={dateRef}
+                >
+                  Select Date
+                </h3>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "6px",
+                    marginBottom: "12px",
+                  }}
+                >
+                  {generateDateOptions().map((dateOption) => (
+                    <button
+                      key={dateOption.value}
+                      style={{
+                        padding: "8px",
+                        borderRadius: "4px",
+                        border:
+                          formData.date === dateOption.value
+                            ? "none"
+                            : "1px solid #E91E63",
+                        background:
+                          formData.date === dateOption.value
+                            ? "linear-gradient(135deg, #E91E63, #F06292)"
+                            : "transparent",
+                        color:
+                          formData.date === dateOption.value
+                            ? "#fff"
+                            : "#E91E63",
+                        cursor: "pointer",
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        textAlign: "center",
+                        flex: "1 1 80px",
+                        maxWidth: "100px",
+                      }}
+                      onClick={() =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          date: dateOption.value,
+                          time: "",
+                        }))
+                      }
+                    >
+                      {dateOption.label}
+                    </button>
+                  ))}
+                </div>
+                {errors.date && (
+                  <p
+                    style={{
+                      color: "red",
+                      fontSize: "12px",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    {errors.date}
+                  </p>
+                )}
+
+                {/* Time Selection */}
+                {availableTimeSlots.length > 0 && (
+                  <>
+                    <h3
+                      style={{
+                        fontSize: "16px",
+                        fontWeight: "bold",
+                        marginBottom: "6px",
+                      }}
+                      ref={timeRef}
+                    >
+                      Select Time
+                    </h3>
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "6px",
+                        marginBottom: "12px",
                       }}
                     >
-                      Close
-                    </Button>
-                  </Box>
-                </Modal>
+                      {availableTimeSlots.map((slot) => {
+                        const isAvailable = isSlotAvailable(
+                          slot,
+                          formData.duration
+                        );
+                        const isSelected = formData.time === slot;
 
-                <Button
-                  variant="contained"
-                  onClick={handleBookSlot}
-                  fullWidth
-                  className="book-slot-button"
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "#ffffff",
-                    border: "1px solid #201548",
-                    color: "#201548",
-                    "&:hover": { backgroundColor: "#201548", color: "#ffffff" },
-                    "&:disabled": {
-                      backgroundColor: "#cccccc",
-                      color: "#888888",
-                    },
-                    fontSize: "0.9rem",
-                    animation: "fadeIn 0.8s ease-out",
+                        return (
+                          <button
+                            key={slot}
+                            disabled={
+                              !isAvailable ||
+                              !formData.date ||
+                              (!formData.favoriteEmployee &&
+                                manPower.length > 0)
+                            }
+                            style={{
+                              padding: "8px",
+                              borderRadius: "4px",
+                              border: isAvailable
+                                ? "1px solid #E91E63"
+                                : "1px solid #ccc",
+                              background: isSelected
+                                ? "linear-gradient(135deg, #E91E63, #F06292)"
+                                : isAvailable
+                                ? "transparent"
+                                : "#f5f5f5",
+                              color: isSelected
+                                ? "#fff"
+                                : isAvailable
+                                ? "#E91E63"
+                                : "#ccc",
+                              cursor: isAvailable ? "pointer" : "not-allowed",
+                              fontSize: "12px",
+                              fontWeight: "bold",
+                              textAlign: "center",
+                              flex: "1 1 80px",
+                              maxWidth: "100px",
+                            }}
+                            onClick={() =>
+                              setFormData((prev) => ({
+                                ...prev,
+                                time: slot,
+                              }))
+                            }
+                          >
+                            {slot}
+                          </button>
+                        );
+                      })}
+                    </div>
+                    {errors.time && (
+                      <p
+                        style={{
+                          color: "red",
+                          fontSize: "12px",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        {errors.time}
+                      </p>
+                    )}
+                  </>
+                )}
+
+                {/* Terms and Conditions */}
+                {terms.length > 0 && (
+                  <div style={{ marginTop: "12px" }} ref={termsRef}>
+                    <label
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "6px",
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={termsAgreed}
+                        onChange={handleTermsChange}
+                        style={{ accentColor: "#E91E63" }}
+                      />
+                      <span style={{ fontSize: "14px" }}>
+                        I agree to the{" "}
+                        <button
+                          style={{
+                            background: "none",
+                            border: "none",
+                            color: "#E91E63",
+                            textDecoration: "underline",
+                            cursor: "pointer",
+                            fontSize: "14px",
+                          }}
+                          onClick={handleTermsModalToggle}
+                        >
+                          Terms & Conditions
+                        </button>
+                      </span>
+                    </label>
+                    {errors.terms && (
+                      <p
+                        style={{
+                          color: "red",
+                          fontSize: "12px",
+                          marginTop: "4px",
+                        }}
+                      >
+                        {errors.terms}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Book Now Button */}
+                <button
+                  style={{
+                    width: "100%",
+                    padding: "10px",
+                    borderRadius: "4px",
+                    border: "none",
+                    background:
+                      Object.keys(parlor).length === 0 ||
+                      formData.duration === 0
+                        ? "#ccc"
+                        : "linear-gradient(135deg, #E91E63, #F06292)",
+                    color: "#fff",
+                    fontSize: "14px",
+                    fontWeight: "bold",
+                    cursor:
+                      Object.keys(parlor).length === 0 ||
+                      formData.duration === 0
+                        ? "not-allowed"
+                        : "pointer",
+                    marginTop: "12px",
+                    transition: "all 0.3s",
                   }}
                   disabled={
                     Object.keys(parlor).length === 0 || formData.duration === 0
                   }
+                  onClick={handleBookSlot}
                 >
-                  Book Slot
-                </Button>
-              </Box>
+                  Book Now
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        )}
+
+        {/* Error Messages */}
+        {errors.api && (
+          <div
+            style={{
+              background: "#f8d7da",
+              color: "#721c24",
+              padding: "12px",
+              borderRadius: "8px",
+              marginTop: "16px",
+              width: "100%",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
+          >
+            {errors.api}
+          </div>
+        )}
+
+        {errors.relatedServices && (
+          <div
+            style={{
+              background: "#f8d7da",
+              color: "#721c24",
+              padding: "12px",
+              borderRadius: "8px",
+              marginTop: "16px",
+              width: "100%",
+              fontSize: "14px",
+              textAlign: "center",
+            }}
+          >
+            {errors.relatedServices}
+          </div>
+        )}
+
+        {/* Terms Modal */}
+        {termsModalOpen && (
+          <div
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0,0,0,0.5)",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              zIndex: 1000,
+            }}
+            onClick={handleTermsModalToggle}
+          >
+            <div
+              style={{
+                background: "#fff",
+                borderRadius: "8px",
+                padding: "16px",
+                width: "90%",
+                maxWidth: "500px",
+                maxHeight: "80vh",
+                overflowY: "auto",
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <h2
+                style={{
+                  fontSize: "20px",
+                  fontWeight: "bold",
+                  marginBottom: "12px",
+                }}
+              >
+                Terms & Conditions
+              </h2>
+              {terms.length > 0 ? (
+                terms.map((term, index) => (
+                  <p
+                    key={index}
+                    style={{ fontSize: "14px", marginBottom: "6px" }}
+                  >
+                    {index + 1}. {term.term}
+                  </p>
+                ))
+              ) : (
+                <p style={{ fontSize: "14px", color: "#666" }}>
+                  No terms and conditions available.
+                </p>
+              )}
+              <button
+                style={{
+                  width: "100%",
+                  padding: "10px",
+                  background: "linear-gradient(135deg, #E91E63, #F06292)",
+                  color: "#fff",
+                  border: "none",
+                  borderRadius: "4px",
+                  cursor: "pointer",
+                  marginTop: "12px",
+                  fontSize: "14px",
+                }}
+                onClick={handleTermsModalToggle}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

@@ -11,14 +11,14 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   display: "none",
   [theme.breakpoints.down("lg")]: {
     display: "block",
-    color: "#201548",
+    color: "#fb646b",
     backgroundColor: "transparent",
-    border: "2px solid #201548",
+    border: "2px solid #fb646b",
     borderRadius: "50%",
     padding: "8px",
     transition: "all 0.3s ease",
     "&:hover": {
-      backgroundColor: "#201548",
+      backgroundColor: "#fb646b",
       color: "#ffffff",
       transform: "scale(1.1)",
       boxShadow: "0 4px 12px rgba(32, 21, 72, 0.4)",
@@ -38,7 +38,7 @@ const DeleteButton = ({ onClick }) => {
         height: "40px",
         borderRadius: "50%",
         backgroundColor: "transparent",
-        border: "2px solid #201548",
+        border: "2px solid #fb646b",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -52,8 +52,8 @@ const DeleteButton = ({ onClick }) => {
         "&:hover": {
           width: "120px",
           borderRadius: "40px",
-          background: "linear-gradient(90deg, #201548, #201548)",
-          borderColor: "#201548",
+          background: "linear-gradient(90deg, #fb646b, #fb646b)",
+          borderColor: "#fb646b",
           color: "#ffffff",
           transform: "scale(1.05)",
           boxShadow: "0 6px 15px rgba(32, 21, 72, 0.4)",
@@ -80,7 +80,7 @@ const DeleteButton = ({ onClick }) => {
           width: "12px",
           transition: "all 0.3s ease",
           "& path": {
-            fill: "#201548",
+            fill: "#fb646b",
           },
         },
         "&:hover .bin-bottom": {
@@ -272,6 +272,10 @@ const ServiceProviderDetails = () => {
     setCurrentPage(1);
   }, [searchQuery, startDateFilter, endDateFilter, serviceProviders]);
 
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber); // or however you're managing pagination state
+  };
+
   // Debounced API call for priority update
   const updatePriorityAPI = useCallback(
     debounce(async (providerId, newPriority) => {
@@ -457,16 +461,16 @@ const ServiceProviderDetails = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "transparent",
-      }}
+        backgroundColor: "#f8cad7",
+            }}
     >
       <Box
         sx={{
           width: "100%",
           maxWidth: "1200px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#f8cad7 !important",
           borderRadius: "12px",
-          p: "24px",
+          p: "24px", 
           boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
           border: "1px solid #e2e8f0",
           margin: "0 auto",
@@ -500,7 +504,7 @@ const ServiceProviderDetails = () => {
               textAlign: "center",
               transition: "all 0.3s ease",
               "&:hover": {
-                color: "#201548",
+                color: "#fb646b",
                 textShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
               },
             }}
@@ -542,7 +546,7 @@ const ServiceProviderDetails = () => {
                   sx={{
                     p: "10px",
                     borderRadius: "8px",
-                    border: "2px solid #201548",
+                    border: "2px solid #fb646b",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
                     backdropFilter: "blur(4px)",
                     fontSize: "0.95rem",
@@ -552,7 +556,7 @@ const ServiceProviderDetails = () => {
                     textAlign: "center",
                     transition: "all 0.3s ease",
                     "&:focus": {
-                      borderColor: "#201548",
+                      borderColor: "#fb646b",
                       boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
                       backgroundColor: "#ffffff",
                     },
@@ -576,7 +580,7 @@ const ServiceProviderDetails = () => {
                   fontWeight: "medium",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    color: "#201548",
+                    color: "#fb646b",
                     transform: "scale(1.05)",
                   },
                 }}
@@ -622,7 +626,7 @@ const ServiceProviderDetails = () => {
                         fontWeight: "medium",
                         transition: "all 0.3s ease",
                         "&:hover": {
-                          color: "#201548",
+                          color: "#fb646b",
                         },
                       }}
                     >
@@ -637,7 +641,7 @@ const ServiceProviderDetails = () => {
                       sx={{
                         p: "10px",
                         borderRadius: "8px",
-                        border: "2px solid #201548",
+                        border: "2px solid #fb646b",
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         backdropFilter: "blur(4px)",
                         fontSize: "0.95rem",
@@ -647,7 +651,7 @@ const ServiceProviderDetails = () => {
                         color: "#0e0f0f",
                         transition: "all 0.3s ease",
                         "&:focus": {
-                          borderColor: "#201548",
+                          borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
                           backgroundColor: "#ffffff",
                         },
@@ -676,7 +680,7 @@ const ServiceProviderDetails = () => {
                         fontWeight: "medium",
                         transition: "all 0.3s ease",
                         "&:hover": {
-                          color: "#201548",
+                          color: "#fb646b",
                         },
                       }}
                     >
@@ -693,7 +697,7 @@ const ServiceProviderDetails = () => {
                       sx={{
                         p: "10px",
                         borderRadius: "8px",
-                        border: "2px solid #201548",
+                        border: "2px solid #fb646b",
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         backdropFilter: "blur(4px)",
                         fontSize: "0.95rem",
@@ -703,7 +707,7 @@ const ServiceProviderDetails = () => {
                         color: "#0e0f0f",
                         transition: "all 0.3s ease",
                         "&:focus": {
-                          borderColor: "#201548",
+                          borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
                           backgroundColor: "#ffffff",
                         },
@@ -722,8 +726,8 @@ const ServiceProviderDetails = () => {
                   sx={{
                     p: "10px 20px",
                     borderRadius: "8px",
-                    border: "2px solid #201548",
-                    background: "#201548",
+                    border: "2px solid #fb646b",
+                    background: "#fb646b",
                     fontSize: "0.95rem",
                     fontWeight: "medium",
                     color: "#fff",
@@ -737,7 +741,7 @@ const ServiceProviderDetails = () => {
                     "&:hover": {
                       ...(searchQuery || startDateFilter || endDateFilter
                         ? {
-                            background: "linear-gradient(90deg, #201548, #201548)",
+                            background: "linear-gradient(90deg, #fb646b, #fb646b)",
                             color: "#ffffff",
                             transform: "scale(1.05)",
                             boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
@@ -755,14 +759,14 @@ const ServiceProviderDetails = () => {
         {error && (
           <Box
             sx={{
-              color: "#201548",
+              color: "#fb646b",
               fontSize: "0.95rem",
               textAlign: "center",
               mb: 2,
               fontWeight: "medium",
               transition: "all 0.3s ease",
               "&:hover": {
-                color: "#201548",
+                color: "#fb646b",
               },
             }}
           >
@@ -785,7 +789,7 @@ const ServiceProviderDetails = () => {
             <Box
               component="thead"
               sx={{
-                background: "linear-gradient(90deg, #201548, #201548)",
+                background: "linear-gradient(90deg, #fb646b, #fb646b)",
                 color: "#ffffff",
               }}
             >
@@ -814,7 +818,7 @@ const ServiceProviderDetails = () => {
                       ...(header === "Actions" ? { width: "150px" } : {}),
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        background: "#201548",
+                        background: "#fb646b",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -837,7 +841,7 @@ const ServiceProviderDetails = () => {
                 return (
                   <tr
                     key={provider._id}
-                    style={{ borderBottom: "1px solid #e2e8f0" }}
+                    style={{backgroundColor: "#ffffff",borderBottom: "1px solid #e2e8f0" }}
                   >
                     <Box
                       component="td"
@@ -978,7 +982,7 @@ const ServiceProviderDetails = () => {
                           style={{
                             display: "inline-block",
                             marginBottom: "4px",
-                            color: "#201548",
+                            color: "#fb646b",
                           }}
                         >
                           <svg
@@ -1084,16 +1088,16 @@ const ServiceProviderDetails = () => {
                           width: "60px",
                           p: "5px",
                           borderRadius: "4px",
-                          border: "1px solid #201548",
+                          border: "1px solid #fb646b",
                           textAlign: "center",
                           fontSize: "0.9rem",
                           "&:focus": {
-                            borderColor: "#201548",
+                            borderColor: "#fb646b",
                             boxShadow: "0 0 5px rgba(32, 21, 72, 0.3)",
                             outline: "none",
                           },
                           "&:hover": {
-                            borderColor: "#201548",
+                            borderColor: "#fb646b",
                           },
                         }}
                       />
@@ -1107,6 +1111,7 @@ const ServiceProviderDetails = () => {
                         display: "flex",
                         justifyContent: "center",
                         backgroundColor: "transparent",
+                        
                       }}
                     >
                       <DeleteButton
@@ -1153,79 +1158,134 @@ const ServiceProviderDetails = () => {
             mt: 3,
           }}
         >
-          <Box
-            component="button"
-            onClick={() => handlePageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            sx={{
-              p: "10px 20px",
-              borderRadius: "8px",
-              border: "2px solid #201548",
-              background: "#201548",
-              color: "#fff",
-              fontSize: "0.95rem",
-              fontWeight: "medium",
-              cursor: currentPage === 1 ? "not-allowed" : "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              "&:hover": {
-                ...(currentPage !== 1
-                  ? {
-                      background: "linear-gradient(90deg, #201548, #201548)",
-                      color: "#ffffff",
-                      transform: "scale(1.05)",
-                      boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
-                    }
-                  : {}),
-              },
-            }}
-          >
-            Previous
-          </Box>
-          <Box
-            component="span"
-            sx={{
-              fontSize: "0.95rem",
-              color: "#0e0f0f",
-              fontWeight: "medium",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                color: "#201548",
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            Page {currentPage} of {totalPages}
-          </Box>
-          <Box
-            component="button"
-            onClick={() => handlePageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            sx={{
-              p: "10px 20px",
-              borderRadius: "8px",
-              border: "2px solid #201548",
-              background: "#201548",
-              color: "#fff",
-              fontSize: "0.95rem",
-              fontWeight: "medium",
-              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              "&:hover": {
-                ...(currentPage !== totalPages
-                  ? {
-                      background: "linear-gradient(90deg, #201548, #201548)",
-                      color: "#ffffff",
-                      transform: "scale(1.05)",
-                      boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
-                    }
-                  : {}),
-              },
-            }}
-          >
-            Next
-          </Box>
+            <Box
+                        component="button"
+                        onClick={() => paginate(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        sx={{
+                          p: '10px 24px',
+                          borderRadius: '30px',
+                          border: 'none',
+                          background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                          color: '#ffffff',
+                          fontSize: '0.9rem',
+                          fontWeight: '600',
+                          cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.4s ease',
+                          boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          letterSpacing: '0.5px',
+                          '&:hover': {
+                            ...(currentPage !== 1
+                              ? {
+                                background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                                color: '#0e0f0f',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                                '&:after': {
+                                  width: '100%',
+                                },
+                              }
+                              : {}),
+                          },
+                          '&:after': {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '0',
+                            height: '3px',
+                            background: '#ffffff',
+                            transition: 'width 0.4s ease',
+                          },
+                          '&:disabled': {
+                            opacity: 0.5,
+                            boxShadow: 'none',
+                          },
+                        }}
+                      >
+                        Previous
+                      </Box>
+                      <Box
+                        component="span"
+                        sx={{
+                          fontSize: '1.1rem',
+                          fontWeight: '600',
+                          color: '#0e0f0f',
+                          textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
+                          letterSpacing: '0.5px',
+                          position: 'relative',
+                          transition: 'transform 0.4s ease',
+                          '&:hover': {
+                            transform: 'scale(1.1)',
+                          },
+                          '&:after': {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: '-4px',
+                            left: 0,
+                            width: '0',
+                            height: '2px',
+                            background: '#fb646b',
+                            transition: 'width 0.4s ease',
+                          },
+                          '&:hover:after': {
+                            width: '100%',
+                          },
+                        }}
+                      >
+                        Page {currentPage} of {totalPages}
+                      </Box>
+                      <Box
+                        component="button"
+                        onClick={() => paginate(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        sx={{
+                          p: '10px 24px',
+                          borderRadius: '30px',
+                          border: 'none',
+                          background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                          color: '#ffffff',
+                          fontSize: '0.9rem',
+                          fontWeight: '600',
+                          cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                          transition: 'all 0.4s ease',
+                          boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                          position: 'relative',
+                          overflow: 'hidden',
+                          letterSpacing: '0.5px',
+                          '&:hover': {
+                            ...(currentPage !== totalPages
+                              ? {
+                                background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                                color: '#0e0f0f',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                                '&:after': {
+                                  width: '100%',
+                                },
+                              }
+                              : {}),
+                          },
+                          '&:after': {
+                            content: '""',
+                            position: 'absolute',
+                            bottom: 0,
+                            left: 0,
+                            width: '0',
+                            height: '3px',
+                            background: '#ffffff',
+                            transition: 'width 0.4s ease',
+                          },
+                          '&:disabled': {
+                            opacity: 0.5,
+                            boxShadow: 'none',
+                          },
+                        }}
+                      >
+                        Next
+                      </Box>
         </Box>
       </Box>
 
@@ -1278,7 +1338,7 @@ const ServiceProviderDetails = () => {
                 textDecoration: "none",
                 mb: 3,
                 "&:hover .delete-icon": {
-                  color: "#201548",
+                  color: "#fb646b",
                   transition: "color 0.3s ease",
                 },
               }}
@@ -1287,7 +1347,7 @@ const ServiceProviderDetails = () => {
                 className="delete-icon"
                 sx={{
                   fontSize: { xs: 48, sm: 56 },
-                  color: "#201548",
+                  color: "#fb646b",
                 }}
               />
             </Box>
@@ -1300,7 +1360,7 @@ const ServiceProviderDetails = () => {
                 mb: 2,
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  color: "#201548",
+                  color: "#fb646b",
                   textShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                 },
               }}
@@ -1317,7 +1377,7 @@ const ServiceProviderDetails = () => {
                 fontWeight: "medium",
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  color: "#201548",
+                  color: "#fb646b",
                 },
               }}
             >
@@ -1345,11 +1405,11 @@ const ServiceProviderDetails = () => {
                   fontSize: "0.95rem",
                   fontWeight: "medium",
                   borderRadius: "8px",
-                  border: "2px solid #201548",
+                  border: "2px solid #fb646b",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #201548, #201548)",
+                    background: "linear-gradient(90deg, #fb646b, #fb646b)",
                     color: "#ffffff",
                     transform: "scale(1.05)",
                     boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
@@ -1363,19 +1423,19 @@ const ServiceProviderDetails = () => {
                 onClick={handleDelete}
                 sx={{
                   flex: { xs: "1 1 100%", sm: "1 1 auto" },
-                  background: "linear-gradient(90deg, #201548, #201548)",
+                  background: "linear-gradient(90deg, #fb646b, #fb646b)",
                   color: "#ffffff",
                   px: 4,
                   py: 1.5,
                   fontSize: "0.95rem",
                   fontWeight: "medium",
                   borderRadius: "8px",
-                  border: "2px solid #201548",
+                  border: "2px solid #fb646b",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #201548, #201548)",
-                    borderColor: "#201548",
+                    background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                    borderColor: "#fb646b",
                     transform: "scale(1.05)",
                     boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                   },

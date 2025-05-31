@@ -56,9 +56,10 @@ const LeadCaptureForm = () => {
       sm: "2rem",
       md: "2.5rem",
     },
-    background: "linear-gradient(45deg, #201548, rgb(51, 34, 109))",
+    background: "#FB646B",
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
+    color: "#FB646B",
   };
 
   // Error messages
@@ -202,95 +203,103 @@ const LeadCaptureForm = () => {
   };
 
   return (
-    <Container maxWidth={false} disableGutters sx={containerStyles}>
-      <Paper
-        elevation={8}
-        sx={{ padding: "2rem", maxWidth: "480px", width: "100%" }}
-      >
-        <Typography variant="h1" sx={titleStyles}>
-          Get 10% Off Your First Booking!
-        </Typography>
-        <AnimatePresence>
-          {submitted ? (
-            couponCode ? (
-              <Box textAlign="center">
-                <Alert severity="success">
-                  {userStatus === "new"
-                    ? "Welcome! Here's your 10% off coupon for your first booking:"
-                    : "Coupon claimed successfully!"}
-                </Alert>
-                <Box
-                  sx={{
-                    mt: 2,
-                    p: 2,
-                    bgcolor: "grey.800",
-                    borderRadius: 1,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 1,
-                  }}
-                >
-                  <Typography variant="h6">{couponCode}</Typography>
-                  <Tooltip title={copySuccess ? "Copied!" : "Copy Coupon"}>
-                    <IconButton
-                      onClick={handleCopyCoupon}
-                      color={copySuccess ? "success" : "primary"}
-                    >
-                      <ContentCopyIcon />
-                    </IconButton>
-                  </Tooltip>
+    <div style={{ backgroundColor: "#f8cad7", minHeight: "100vh" }}>
+      <Container maxWidth={false} disableGutters sx={containerStyles}>
+        <Paper
+          elevation={8}
+          sx={{ padding: "2rem", maxWidth: "480px", width: "100%" }}
+        >
+          <Typography
+            variant="h1"
+            sx={titleStyles}
+            style={{ color: "#FB646B" }}
+          >
+            Get 10% Off Your First Booking!
+          </Typography>
+          <AnimatePresence>
+            {submitted ? (
+              couponCode ? (
+                <Box textAlign="center">
+                  <Alert severity="success">
+                    {userStatus === "new"
+                      ? "Welcome! Here's your 10% off coupon for your first booking:"
+                      : "Coupon claimed successfully!"}
+                  </Alert>
+                  <Box
+                    sx={{
+                      mt: 2,
+                      p: 2,
+                      bgcolor: "grey.800",
+                      borderRadius: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <Typography variant="h6">{couponCode}</Typography>
+                    <Tooltip title={copySuccess ? "Copied!" : "Copy Coupon"}>
+                      <IconButton
+                        onClick={handleCopyCoupon}
+                        color={copySuccess ? "success" : "primary"}
+                      >
+                        <ContentCopyIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </Box>
+                  <Typography sx={{ mt: 2 }}>
+                    Use this code at checkout to get 10% off your first booking!
+                  </Typography>
                 </Box>
-                <Typography sx={{ mt: 2 }}>
-                  Use this code at checkout to get 10% off your first booking!
-                </Typography>
-              </Box>
+              ) : (
+                <Alert severity="info">
+                  {userStatus === "existing"
+                    ? "Thank you! As an existing user, check our current promotions for other great offers!"
+                    : "You have already claimed a coupon. Check your account for details!"}
+                </Alert>
+              )
             ) : (
-              <Alert severity="info">
-                {userStatus === "existing"
-                  ? "Thank you! As an existing user, check our current promotions for other great offers!"
-                  : "You have already claimed a coupon. Check your account for details!"}
-              </Alert>
-            )
-          ) : (
-            <form onSubmit={handleSubmit}>
-              <Box display="flex" flexDirection="column" gap="1.5rem">
-                <TextField
-                  label="Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={(e) => {
-                    let value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
-                    if (value.length === 0 || value[0] !== " ") {
-                      handleChange({ target: { name: "name", value } });
-                    }
-                  }}
-                  onBlur={() => handleBlur("name")}
-                  error={touched.name && !!errors.name}
-                  helperText={touched.name && errors.name}
-                  fullWidth
-                />
-                <TextField
-                  label="Phone Number"
-                  name="phone"
-                  inputProps={{ maxLength: 10 }}
-                  value={formData.phone}
-                  onChange={(e) => {
-                    const numericValue = e.target.value.replace(/[^0-9]/g, "");
-                    handleChange({
-                      target: { name: "phone", value: numericValue },
-                    });
-                  }}
-                  onBlur={() => handleBlur("phone")}
-                  error={touched.phone && !!errors.phone}
-                  helperText={touched.phone && errors.phone}
-                  fullWidth
-                />
-                {errors.submit && (
-                  <Alert severity="error">{errors.submit}</Alert>
-                )}
-                <style>
-                  {`
+              <form onSubmit={handleSubmit}>
+                <Box display="flex" flexDirection="column" gap="1.5rem">
+                  <TextField
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                      if (value.length === 0 || value[0] !== " ") {
+                        handleChange({ target: { name: "name", value } });
+                      }
+                    }}
+                    onBlur={() => handleBlur("name")}
+                    error={touched.name && !!errors.name}
+                    helperText={touched.name && errors.name}
+                    fullWidth
+                  />
+                  <TextField
+                    label="Phone Number"
+                    name="phone"
+                    inputProps={{ maxLength: 10 }}
+                    value={formData.phone}
+                    onChange={(e) => {
+                      const numericValue = e.target.value.replace(
+                        /[^0-9]/g,
+                        ""
+                      );
+                      handleChange({
+                        target: { name: "phone", value: numericValue },
+                      });
+                    }}
+                    onBlur={() => handleBlur("phone")}
+                    error={touched.phone && !!errors.phone}
+                    helperText={touched.phone && errors.phone}
+                    fullWidth
+                  />
+                  {errors.submit && (
+                    <Alert severity="error">{errors.submit}</Alert>
+                  )}
+                  <style>
+                    {`
                     .btn-content {
                       display: flex;
                       align-items: center;
@@ -300,7 +309,7 @@ const LeadCaptureForm = () => {
                       font-weight: 600;
                       font-size: 18px;
                       color: rgb(244,245,247);
-                      background: #201548;
+                      background: #FB646B;
                       transition: all 0.5s ease;
                       border-radius: 50px;
                       box-shadow: 0 5px 15px rgba(32, 21, 72, 0.5);
@@ -310,25 +319,26 @@ const LeadCaptureForm = () => {
                       z-index: 1;
                     }
                   `}
-                </style>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  disabled={isSubmitting}
-                  className="btn-content"
-                >
-                  {isSubmitting ? (
-                    <CircularProgress size={24} />
-                  ) : (
-                    "Claim Your 10% Off"
-                  )}
-                </Button>
-              </Box>
-            </form>
-          )}
-        </AnimatePresence>
-      </Paper>
-    </Container>
+                  </style>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    disabled={isSubmitting}
+                    className="btn-content"
+                  >
+                    {isSubmitting ? (
+                      <CircularProgress size={24} />
+                    ) : (
+                      "Claim Your 10% Off"
+                    )}
+                  </Button>
+                </Box>
+              </form>
+            )}
+          </AnimatePresence>
+        </Paper>
+      </Container>
+    </div>
   );
 };
 

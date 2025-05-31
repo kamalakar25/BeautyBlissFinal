@@ -6,13 +6,19 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Custom CSS for responsive design and button colors
 const customStyles = `
+body {
+    background-color: #f8cad7 !important;
+    margin: 0;
+    min-height: 100vh;
+  }
+
   /* Button colors for section toggle */
   .section-btn {
     transition: all 0.3s ease;
   }
   .section-btn.active {
-    background-color: rgb(31, 21, 73) !important; /* Green for active */
-    border-color: rgb(31, 21, 73) !important;
+    background-color: #fb646b !important; /* Green for active */
+    border-color: #fb646b !important;
     color: white !important;
   }
   .section-btn.inactive {
@@ -23,12 +29,12 @@ const customStyles = `
 
   /* Edit, Delete, Save, and Cancel button styles */
   .edit-btn, .faq-edit-btn {
-    background-color: rgb(31, 21, 73) !important; /* Blue for Edit */
-    border-color: rgb(31, 21, 73) !important;
+    background-color: #fb646b !important; /* Blue for Edit */
+    border-color: #fb646b !important;
     margin-right: 5px !important;
   }
   .delete-btn, .faq-delete-btn {
-    background-color: transparent !important; /* Transparent background */
+    background-color: #f8cad7 !important; /* #f8cad7 background */
     border-color: #dc3545 !important; /* Red border */
     color: #dc3545 !important; /* Red text */
     margin-right: 5px !important;
@@ -38,8 +44,8 @@ const customStyles = `
     color: white !important;
   }
   .save-btn {
-    background-color: rgb(31, 21, 73) !important; /* Green for Save */
-    border-color: rgb(31, 21, 73) !important;
+    background-color: #fb646b !important; /* Green for Save */
+    border-color: #fb646b !important;
     margin-right: 5px !important;
   }
   .cancel-btn {
@@ -230,7 +236,7 @@ const AdminFaqs = () => {
   };
 
   return (
-    <Container className="my-5" style={{ marginTop: '100px' }}>
+     <Container className="my-5 " style={{ marginTop: '100px', backgroundColor: '#f8cad7'}}>
       <h2 className="text-center mb-4" style={{ marginTop: '100px' }}>Admin FAQ & Terms Management</h2>
       <ButtonGroup className="mb-4 d-flex justify-content-center flex-wrap">
         <Button
@@ -255,7 +261,7 @@ const AdminFaqs = () => {
       <Row>
         {activeSection === 'answered' && (
           <Col md={12}>
-            <Card>
+            <Card style={{ backgroundColor: '#f8cad7' }}>
               <Card.Body>
                 <h5>Answered FAQs</h5>
                 {faqs.length === 0 ? (
@@ -263,7 +269,7 @@ const AdminFaqs = () => {
                 ) : (
                   <Accordion>
                     {faqs.slice().reverse().map((faq, index) => (
-                      <Accordion.Item eventKey={index.toString()} key={faq._id}>
+                      <Accordion.Item eventKey={index.toString()} key={faq._id} style={{ backgroundColor: '#f8cad7' }}>
                         <Accordion.Header>
                           {faq.question}{' '}
                           <small className="text-muted ms-2">
@@ -337,13 +343,13 @@ const AdminFaqs = () => {
 
         {activeSection === 'pending' && (
           <Col md={12}>
-            <Card>
-              <Card.Body>
+            <Card style={{ backgroundColor: '#f8cad7' }}>
+              <Card.Body >
                 <h5>User Questions (Pending)</h5>
                 {pendingFaqs.length === 0 ? (
                   <p>No pending questions.</p>
                 ) : (
-                  <ListGroup>
+                  <ListGroup style={{ backgroundColor: '#f8cad7' }}>
                     {pendingFaqs.map((faq) => (
                       <ListGroup.Item key={faq._id}>
                         <div className="faq-item">
@@ -366,7 +372,7 @@ const AdminFaqs = () => {
                           </div>
                           <div className="faq-actions">
                             <Button
-                              style={{ backgroundColor: 'rgb(31, 21, 73)' }}
+                              style={{ backgroundColor: '#fb646b' }}
                               size="sm"
                               className="mt-2"
                               onClick={() => handleAnswerSubmit(faq._id)}
@@ -393,8 +399,8 @@ const AdminFaqs = () => {
 
         {activeSection === 'terms' && (
           <Col md={12}>
-            <Card>
-              <Card.Body>
+            <Card style={{ backgroundColor: '#f8cad7' }}>
+              <Card.Body >
                 <h5>Terms and Conditions</h5>
                 <ListGroup>
                   {terms.map((term) => (
@@ -464,7 +470,7 @@ const AdminFaqs = () => {
                     placeholder="Enter new term"
                   />
                 </Form.Group>
-                <Button className="mt-2" style={{ backgroundColor: 'rgb(31, 21, 73)' }} onClick={handleAddTerm}>
+                <Button className="mt-2" style={{ backgroundColor: '#fb646b' }} onClick={handleAddTerm}>
                   Add Term
                 </Button>
               </Card.Body>

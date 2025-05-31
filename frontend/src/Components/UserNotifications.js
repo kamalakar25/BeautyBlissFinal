@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { NotificationContext } from './NotificationContext.js';
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
+import { NotificationContext } from "./NotificationContext.js";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const UserNotifications = () => {
   const context = useContext(NotificationContext);
-  const { notificationCount = 0, setNotificationCount = () => {}, fetchNotificationCount = () => {} } = context || {};
+  const {
+    notificationCount = 0,
+    setNotificationCount = () => {},
+    fetchNotificationCount = () => {},
+  } = context || {};
   const [notifications, setNotifications] = useState([]);
   const [selectedNotification, setSelectedNotification] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,25 +18,22 @@ const UserNotifications = () => {
 
   useEffect(() => {
     const fetchNotifications = async () => {
-      const email = localStorage.getItem('email');
-      // console.log('UserNotifications: Fetching notifications for email:', email);
+      const email = localStorage.getItem("email");
       try {
-        const res = await axios.get(`${BASE_URL}/api/notifications/notifications/${email}`);
+        const res = await axios.get(
+          `${BASE_URL}/api/notifications/notifications/${email}`
+        );
         const userNotifications = res.data
-          .filter((notif) => notif.recipientType === 'User')
+          .filter((notif) => notif.recipientType === "User")
           .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        // console.log('UserNotifications: Fetched notifications:', userNotifications);
         setNotifications(userNotifications);
-      } catch (error) {
-        // console.error('UserNotifications: Failed to fetch notifications:', error);
-      }
+      } catch (error) {}
     };
 
     fetchNotifications();
     fetchNotificationCount();
 
     const intervalId = setInterval(() => {
-      // console.log('UserNotifications: Periodic fetch of notification count');
       fetchNotificationCount();
     }, 10000);
 
@@ -40,26 +41,26 @@ const UserNotifications = () => {
       setIsMobile(window.innerWidth <= 768);
     };
 
-    window.addEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
     return () => {
       clearInterval(intervalId);
-      window.removeEventListener('resize', handleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, [fetchNotificationCount]);
 
   const handleNotificationClick = async (notification) => {
-    // console.log('UserNotifications: Clicking notification, ID:', notification._id, 'isRead:', notification.isRead);
     setSelectedNotification(notification);
     setIsModalOpen(true);
 
     if (!notification.isRead) {
       try {
-        // console.log('UserNotifications: Marking notification as read, ID:', notification._id);
-        const response = await axios.post(`${BASE_URL}/api/notifications/mark-notification-read`, {
-          email: localStorage.getItem('email'),
-          notificationId: notification._id,
-        });
-        // console.log('UserNotifications: Mark notification response:', response.data);
+        const response = await axios.post(
+          `${BASE_URL}/api/notifications/mark-notification-read`,
+          {
+            email: localStorage.getItem("email"),
+            notificationId: notification._id,
+          }
+        );
 
         setNotifications((prev) =>
           prev.map((notif) =>
@@ -68,12 +69,7 @@ const UserNotifications = () => {
         );
 
         setNotificationCount(response.data.unreadCount);
-        // console.log('UserNotifications: Updated notification count to', response.data.unreadCount);
-      } catch (error) {
-        // console.error('UserNotifications: Failed to mark notification as read:', error);
-      }
-    } else {
-      console.log('UserNotifications: Notification already read, no count update');
+      } catch (error) {}
     }
   };
 
@@ -83,7 +79,7 @@ const UserNotifications = () => {
   };
 
   const handleBackdropClick = (e) => {
-    if (e.target.className.includes('modal')) {
+    if (e.target.className.includes("modal")) {
       closeModal();
     }
   };
@@ -93,19 +89,16 @@ const UserNotifications = () => {
       const date = new Date(createdAt);
       return date.toLocaleString();
     } catch (e) {
-      // console.error('Invalid date format:', createdAt);
-      return 'N/A';
+      return "N/A";
     }
   };
-
-  // console.log('UserNotifications: Rendering with notificationCount =', notificationCount);
 
   return (
     <div
       style={{
-        padding: '2rem',
-        minHeight: '100vh',
-        background: '#f4f7fa',
+        padding: "2rem",
+        minHeight: "100vh",
+        backgroundColor: "rgb(248,202,215)",
       }}
     >
       <style>
@@ -122,22 +115,21 @@ const UserNotifications = () => {
             gap: 1rem;
           }
           .notification-box {
-            background: #ffffff;
             border-radius: 10px;
             padding: 1rem;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeIn 0.5s ease-out;
-            border-left: 4px solid #201548;
+            border-left: 4px solid rgb(245 100 169);
             position: relative;
             display: flex;
             justify-content: space-between;
             align-items: center;
           }
-          .notification-box.unread {
-            border-left: 4px solid #ff6f61;
-            background: #fff5f5;
+         .notification-box.unread {
+            border-left: 4px solid rgb(252, 98, 84);
+            background-color:rgb(226, 120, 110) !important;
           }
           .notification-box:hover {
             transform: translateY(-5px);
@@ -150,7 +142,6 @@ const UserNotifications = () => {
           }
           .notification-content h4 {
             margin: 0;
-            color: #201548;
             font-size: 1.1rem;
             font-weight: 600;
           }
@@ -176,7 +167,6 @@ const UserNotifications = () => {
             z-index: 1000;
           }
           .modal-content {
-            background: #ffffff;
             padding: 2rem;
             border-radius: 12px;
             width: 90%;
@@ -191,21 +181,12 @@ const UserNotifications = () => {
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background: none;
-            border: none;
             font-size: 1.5rem;
             cursor: pointer;
-            color: #555;
             transition: color 0.3s ease;
           }
           .close-btn:hover {
             color: #201548;
-          }
-          .modal-content h3 {
-            margin-bottom: 1.5rem;
-            color: #201548;
-            font-size: 1.5rem;
-            text-align: center;
           }
           .modal-content p {
             margin: 0.5rem 0;
@@ -244,9 +225,6 @@ const UserNotifications = () => {
               padding: 1.5rem;
               width: 95%;
             }
-            .modal-content h3 {
-              font-size: 1.3rem;
-            }
             .modal-content p {
               font-size: 0.9rem;
             }
@@ -264,9 +242,6 @@ const UserNotifications = () => {
             .modal-content {
               padding: 1rem;
             }
-            .modal-content h3 {
-              font-size: 1.2rem;
-            }
             .modal-content p {
               font-size: 0.85rem;
             }
@@ -277,10 +252,10 @@ const UserNotifications = () => {
       <div className="notification-container">
         <h1
           style={{
-            textAlign: 'center',
-            color: '#201548',
-            marginBottom: '2rem',
-            fontSize: '1.8rem',
+            textAlign: "center",
+            color: "rgb(216, 79, 164)",
+            marginBottom: "2rem",
+            fontSize: "1.8rem",
           }}
         >
           Your Notifications
@@ -289,20 +264,33 @@ const UserNotifications = () => {
           notifications.map((notification) => (
             <div
               key={notification._id}
-              className={`notification-box ${notification.isRead ? '' : 'unread'}`}
+              className={`notification-box ${
+                notification.isRead ? "" : "unread"
+              }`}
               onClick={() => handleNotificationClick(notification)}
+              style={{
+                backgroundColor: "rgb(235, 217, 222)",
+              }}
             >
               <div className="notification-content">
-                <h4>{notification.title}</h4>
+                <h4 style={{ color: "rgb(24, 4, 20)" }}>
+                  {notification.title}
+                </h4>
                 <p>{notification.message}</p>
-                {notification.type === 'Booking' && (
+                {notification.type === "Booking" && (
                   <p>
-                    <strong>Booking ID:</strong> {notification.bookingId}
+                    <strong style={{ color: "rgb(24, 4, 20)" }}>
+                      Booking ID:
+                    </strong>{" "}
+                    {notification.bookingId}
                   </p>
                 )}
-                {notification.type === 'NewService' && (
+                {notification.type === "NewService" && (
                   <p>
-                    <strong>Service ID:</strong> {notification.serviceId}
+                    <strong style={{ color: "rgb(24, 4, 20)" }}>
+                      Service ID:
+                    </strong>{" "}
+                    {notification.serviceId}
                   </p>
                 )}
               </div>
@@ -317,46 +305,90 @@ const UserNotifications = () => {
       </div>
 
       {isModalOpen && selectedNotification && (
-       <div className="modal show d-block" onClick={handleBackdropClick} tabIndex="-1" role="dialog">
-       <div className="modal-dialog modal-dialog-centered" role="document" onClick={(e) => e.stopPropagation()}>
-         <div className="modal-content p-3">
-           <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-             <h5 className="modal-title mb-0">{selectedNotification.title}</h5>
-             <button type="button" className="btn-close" aria-label="Close" onClick={closeModal}></button>
-           </div>
-           <div className="modal-body">
-             <p>
-               <strong>Message:</strong> {selectedNotification.message}
-             </p>
-             <p>
-               <strong>Time:</strong> {formatDateTime(selectedNotification.createdAt)}
-             </p>
-             {selectedNotification.type === 'Booking' && (
-               <>
-                 <p>
-                   <strong>Booking ID:</strong> {selectedNotification.bookingId}
-                 </p>
-                 <p>
-                   <strong>User Name:</strong> {selectedNotification.userDetails?.name || 'N/A'}
-                 </p>
-                 <p>
-                   <strong>User Email:</strong> {selectedNotification.userDetails?.email || 'N/A'}
-                 </p>
-                 <p>
-                   <strong>User Phone:</strong> {selectedNotification.userDetails?.phone || 'N/A'}
-                 </p>
-               </>
-             )}
-             {selectedNotification.type === 'NewService' && (
-               <p>
-                 <strong>Service ID:</strong> {selectedNotification.serviceId}
-               </p>
-             )}
-           </div>
-         </div>
-       </div>
-     </div>
-     
+        <div
+          className="modal show d-block"
+          onClick={handleBackdropClick}
+          tabIndex="-1"
+          role="dialog"
+        >
+          <div
+            className="modal-dialog modal-dialog-centered"
+            role="document"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div
+              className="modal-content p-3"
+              style={{ backgroundColor: "rgb(247, 222, 229)" }}
+            >
+              <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
+                <h5
+                  className="modal-title mb-0 text-center"
+                  style={{ color: "rgb(223, 82, 119)" }}
+                >
+                  {selectedNotification.title}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  aria-label="Close"
+                  onClick={closeModal}
+                  style={{
+                    backgroundColor: "rgb(241, 149, 174)",
+                    color: "white",
+                    padding: "5px",
+                    borderRadius: "4px",
+                  }}
+                ></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  <strong style={{ color: "rgb(213 11 139)" }}>Message:</strong>{" "}
+                  {selectedNotification.message}
+                </p>
+                <p>
+                  <strong style={{ color: "rgb(213 11 139)" }}>Time:</strong>{" "}
+                  {formatDateTime(selectedNotification.createdAt)}
+                </p>
+                {selectedNotification.type === "Booking" && (
+                  <>
+                    <p>
+                      <strong style={{ color: "rgb(213 11 139)" }}>
+                        Booking ID:
+                      </strong>{" "}
+                      {selectedNotification.bookingId}
+                    </p>
+                    <p>
+                      <strong style={{ color: "rgb(213 11 139)" }}>
+                        User Name:
+                      </strong>{" "}
+                      {selectedNotification.userDetails?.name || "N/A"}
+                    </p>
+                    <p>
+                      <strong style={{ color: "rgb(213 11 139)" }}>
+                        User Email:
+                      </strong>{" "}
+                      {selectedNotification.userDetails?.email || "N/A"}
+                    </p>
+                    <p>
+                      <strong style={{ color: "rgb(213 11 139)" }}>
+                        User Phone:
+                      </strong>{" "}
+                      {selectedNotification.userDetails?.phone || "N/A"}
+                    </p>
+                  </>
+                )}
+                {selectedNotification.type === "NewService" && (
+                  <p>
+                    <strong style={{ color: "rgb(213 11 139)" }}>
+                      Service ID:
+                    </strong>{" "}
+                    {selectedNotification.serviceId}
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

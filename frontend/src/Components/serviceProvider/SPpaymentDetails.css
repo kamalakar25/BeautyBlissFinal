@@ -4,7 +4,7 @@
 .booking-page {
   min-height: 100vh;
     background: #E6DDEE;
-  padding: 3rem 2rem;
+  /* padding: 3rem 2rem; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -20,7 +20,7 @@
 /* Page Title */
 .page-title {
   font-size: 2.5rem;
-  color: #0e0f0f;
+  color: #fb646b;
   margin-bottom: 2rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -142,7 +142,7 @@
 }
 
 .booking-field strong {
-  color: #201548;
+  color: #a01e43;
   font-weight: 600;
 }
 
@@ -196,12 +196,14 @@
 .table-header {
   padding: 0.75rem;
   text-align: center;
+  background-color: #a01e43;
   /* background: linear-gradient(135deg, #201548 0%, #3a2e7a 100%); */
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   font-size: 0.9rem;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  border: 1px solid #e0e0e0;
 }
 
 .table-row {
@@ -525,7 +527,7 @@
 .pagination-btn {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
-  background: #201548;
+  background: #e42b5f !important;
   color: #ffffff;
   border: none;
   border-radius: 8px;
@@ -535,7 +537,7 @@
 }
 
 .pagination-btn:disabled {
-  background: #e0e0e0;
+  background: #e0e0e0 !important;
   color: #6b7280;
   cursor: not-allowed;
   box-shadow: none;
@@ -620,5 +622,70 @@
   }
   50% {
     transform: scale(1.1);
+  }
+}
+
+/* Alternating row colors for desktop table */
+.bookings-table-desktop tbody tr:nth-child(odd) {
+  background-color: #f195ae;
+}
+
+.bookings-table-desktop tbody tr:nth-child(even) {
+  background-color: #f8cad7;
+}
+
+/* Ensure S.No column matches the row's alternating background color */
+.bookings-table-desktop tbody tr:nth-child(odd) td:first-child {
+  background-color: #f195ae;
+}
+
+.bookings-table-desktop tbody tr:nth-child(even) td:first-child {
+  background-color: #f8cad7;
+}
+
+/* Alternating background colors for mobile booking cards */
+.mobile-bookings-list .booking-card:nth-child(odd) {
+  background-color: #f195ae;
+}
+
+.mobile-bookings-list .booking-card:nth-child(even) {
+  background-color: #f8cad7;
+}
+
+/* Responsive styles for Booking Analytics filter options on small screens */
+@media (max-width: 768px) {
+  .booking-analytics-filters {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+
+  .booking-analytics-filters .date-input-container {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .booking-analytics-filters .date-input-container input {
+    width: 100% !important;
+    max-width: 100% !important;
+    font-size: 0.9rem !important;
+    padding: 8px !important;
+  }
+
+  .booking-analytics-filters .checkbox-group {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+
+  .booking-analytics-filters .checkbox-group .MuiFormControlLabel-root {
+    margin: 0 !important;
+  }
+
+  .booking-analytics-filters .clear-filters-button {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 8px 16px !important;
+    font-size: 0.9rem !important;
   }
 }

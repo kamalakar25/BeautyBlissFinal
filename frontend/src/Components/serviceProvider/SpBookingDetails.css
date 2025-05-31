@@ -1,7 +1,7 @@
 /* Main Container */
 .sp-booking-details {
   min-height: 100vh;
-    background: rgb(215, 232, 250);
+    background: #F8CAD7;
   padding: 3rem 2rem;
   display: flex;
   flex-direction: column;
@@ -235,40 +235,42 @@
 }
 
 .confirm-btn {
-  background: #201548;
+  background: #fb646b;
 }
 
 .confirm-btn:hover {
-  background: #3a2e7a;
+  background: rgb(245, 7, 19);
 }
 
 .view-btn {
-  background: #3498db;
+  background: #fb646b;
 }
 
 .view-btn:hover {
-  background: #2980b9;
+  background: rgb(245, 7, 19);
 }
 
 .complain-btn {
-  background: #e63946;
+  background: rgb(251, 100, 107)
+;
 }
 
 .complain-btn:hover {
-  background: #b91c1c;
+  background: rgb(230, 9, 20)
+;
 }
 
 .collect-btn {
-  background: #2dceae;
+  background: #fb646b;
 }
 
 .collect-btn:hover {
-  background: #27ae90;
+  background: rgb(230, 9, 20);
 }
 
 .action-btn.disabled {
-  background: #e0e0e0;
-  color: #6b7280;
+  background: whitesmoke;
+  color: black;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -411,28 +413,31 @@
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   color: #ffffff;
+  
 }
 
 .submit-btn,
 .close-btn {
-  background: #201548;
+  background: rgb(251, 100, 107);
 }
 
 .submit-btn:hover,
 .close-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(32, 21, 72, 0.3);
-  background: #3a2e7a;
+  background: rgb(251, 100, 107);
 }
 
+
 .cancel-btn {
-  background: #6b7280;
+  background: rgb(251, 100, 107);
+
 }
 
 .cancel-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(107, 114, 128, 0.3);
-  background: #4b5563;
+  background: rgb(199, 23, 31);
 }
 
 .modal-close-btn {
@@ -463,7 +468,7 @@
   align-items: center;
   width: 60px;
   height: 60px;
-  background: linear-gradient(45deg, #201548, #3a2e7a);
+  background: rgb(251, 100, 107);
   border-radius: 50%;
   margin: 0 auto 1rem;
   animation: pulse 1.5s infinite;
@@ -511,7 +516,7 @@
 
 .pagination-btn:disabled {
   background: #e0e0e0;
-  color: #6b7280;
+  color: rgb(251, 100, 107);
   cursor: not-allowed;
   box-shadow: none;
 }

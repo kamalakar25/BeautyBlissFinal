@@ -10,15 +10,15 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   display: "none",
   [theme.breakpoints.down("lg")]: {
     display: "block",
-    color: "#201548",
-    backgroundColor: "transparent",
-    border: "2px solid #201548",
+    color: "#fb646b",
+    backgroundColor: "#f8cad7",
+    border: "2px solid #fb646b",
     borderRadius: "50%",
     padding: "8px",
     transition: "all 0.3s ease",
     "&:hover": {
-      backgroundColor: "#201548",
-      color: "#ffffff",
+      backgroundColor: "#fb646b",
+      color: "#f8cad7",
       transform: "scale(1.1)",
       boxShadow: "0 4px 12px rgba(32, 21, 72, 0.4)",
     },
@@ -36,8 +36,8 @@ const DeleteButton = ({ onClick }) => {
         width: "40px",
         height: "40px",
         borderRadius: "50%",
-        backgroundColor: "transparent",
-        border: "2px solid #201548",
+        backgroundColor: "#f8cad7",
+        border: "2px solid #fb646b",
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -53,11 +53,11 @@ const DeleteButton = ({ onClick }) => {
           borderRadius: "40px",
           background: "linear-gradient(90deg, #dc2626, #b91c1c)",
           borderColor: "#dc2626",
-          color: "#ffffff",
+          color: "#f8cad7",
           transform: "scale(1.05)",
           boxShadow: "0 6px 15px rgba(220, 38, 38, 0.4)",
           "& .svgIcon path": {
-            fill: "#ffffff",
+            fill: "#f8cad7",
           },
           "&:before": {
             opacity: 1,
@@ -69,7 +69,7 @@ const DeleteButton = ({ onClick }) => {
           position: "absolute",
           top: "-15px",
           content: '"Delete"',
-          color: "#ffffff",
+          color: "#f8cad7",
           transition: "all 0.3s ease",
           fontSize: "2px",
           opacity: 0,
@@ -79,7 +79,7 @@ const DeleteButton = ({ onClick }) => {
           width: "12px",
           transition: "all 0.3s ease",
           "& path": {
-            fill: "#201548",
+            fill: "#fb646b",
           },
         },
         "&:hover .bin-bottom": {
@@ -203,6 +203,11 @@ const UserDetails = () => {
     setCurrentPage(1);
   }, [searchQuery, startDateFilter, endDateFilter, users]);
 
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber); // or however you're managing pagination state
+  };
+  
+
   const handleDelete = async () => {
     if (userToDelete) {
       try {
@@ -283,14 +288,14 @@ const UserDetails = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "transparent",
+        backgroundColor: "#f8cad7",
       }}
     >
       <Box
         sx={{
           width: "100%",
           maxWidth: "1200px",
-          backgroundColor: "#ffffff",
+          backgroundColor: "#f8cad7",
           borderRadius: "12px",
           p: "24px",
           boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
@@ -326,7 +331,7 @@ const UserDetails = () => {
               textAlign: "center",
               transition: "all 0.3s ease",
               "&:hover": {
-                color: "#201548",
+                color: "#fb646b",
                 textShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
               },
             }}
@@ -368,7 +373,7 @@ const UserDetails = () => {
                   sx={{
                     p: "10px",
                     borderRadius: "8px",
-                    border: "2px solid #201548",
+                    border: "2px solid #fb646b",
                     backgroundColor: "rgba(255, 255, 255, 0.9)",
                     backdropFilter: "blur(4px)",
                     fontSize: "0.95rem",
@@ -378,9 +383,9 @@ const UserDetails = () => {
                     textAlign: "center",
                     transition: "all 0.3s ease",
                     "&:focus": {
-                      borderColor: "#201548",
+                      borderColor: "#fb646b",
                       boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                      backgroundColor: "#ffffff",
+                      backgroundColor: "#f8cad7",
                     },
                     "&:hover": {
                       transform: "scale(1.02)",
@@ -402,7 +407,7 @@ const UserDetails = () => {
                   fontWeight: "medium",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    color: "#201548",
+                    color: "#fb646b",
                     transform: "scale(1.05)",
                   },
                 }}
@@ -448,7 +453,7 @@ const UserDetails = () => {
                         fontWeight: "medium",
                         transition: "all 0.3s ease",
                         "&:hover": {
-                          color: "#201548",
+                          color: "#fb646b",
                         },
                       }}
                     >
@@ -463,7 +468,7 @@ const UserDetails = () => {
                       sx={{
                         p: "10px",
                         borderRadius: "8px",
-                        border: "2px solid #201548",
+                        border: "2px solid #fb646b",
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         backdropFilter: "blur(4px)",
                         fontSize: "0.95rem",
@@ -473,9 +478,9 @@ const UserDetails = () => {
                         color: "#0e0f0f",
                         transition: "all 0.3s ease",
                         "&:focus": {
-                          borderColor: "#201548",
+                          borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                          backgroundColor: "#ffffff",
+                          backgroundColor: "#f8cad7",
                         },
                         "&:hover": {
                           transform: "scale(1.02)",
@@ -502,7 +507,7 @@ const UserDetails = () => {
                         fontWeight: "medium",
                         transition: "all 0.3s ease",
                         "&:hover": {
-                          color: "#201548",
+                          color: "#fb646b",
                         },
                       }}
                     >
@@ -519,7 +524,7 @@ const UserDetails = () => {
                       sx={{
                         p: "10px",
                         borderRadius: "8px",
-                        border: "2px solid #201548",
+                        border: "2px solid #fb646b",
                         backgroundColor: "rgba(255, 255, 255, 0.9)",
                         backdropFilter: "blur(4px)",
                         fontSize: "0.95rem",
@@ -529,9 +534,9 @@ const UserDetails = () => {
                         color: "#0e0f0f",
                         transition: "all 0.3s ease",
                         "&:focus": {
-                          borderColor: "#201548",
+                          borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                          backgroundColor: "#ffffff",
+                          backgroundColor: "#f8cad7",
                         },
                         "&:hover": {
                           transform: "scale(1.02)",
@@ -548,11 +553,11 @@ const UserDetails = () => {
                   sx={{
                     p: "10px 20px",
                     borderRadius: "8px",
-                    border: "2px solid #201548",
-                    background: "#201548",
+                    border: "2px solid #fb646b",
+                    background: "#fb646b",
                     fontSize: "0.95rem",
                     fontWeight: "medium",
-                    color: "#ffffff",
+                    color: "#ffff",
                     marginTop: "30px !important",
 
                     cursor:
@@ -564,8 +569,8 @@ const UserDetails = () => {
                     "&:hover": {
                       ...(searchQuery || startDateFilter || endDateFilter
                         ? {
-                            background: "linear-gradient(90deg, #201548, #201548)",
-                            color: "#ffffff",
+                            background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                            color: "#f8cad7",
                             transform: "scale(1.05)",
                             boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                           }
@@ -585,7 +590,7 @@ const UserDetails = () => {
             sx={{
               width: "100%",
               borderCollapse: "collapse",
-              backgroundColor: "transparent",
+              backgroundColor: "#f8cad7",
               borderRadius: "10px",
               overflow: "hidden",
               border: "1px solid #e2e8f0",
@@ -595,8 +600,8 @@ const UserDetails = () => {
             <Box
               component="thead"
               sx={{
-                background: "linear-gradient(90deg, #201548, #201548)",
-                color: "#ffffff",
+                background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                color: "#f8cad7",
               }}
             >
               <tr>
@@ -618,11 +623,13 @@ const UserDetails = () => {
                       fontSize: "1rem",
                       fontWeight: "medium",
                       border: "1px solid #e2e8f0",
+                      color: "#0e0f0f",
                       ...(header === "Actions" ? { width: "150px" } : {}),
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        background: "#201548",
+                        background: "#fb646b",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
+
                       },
                     }}
                   >
@@ -649,7 +656,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -668,7 +675,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -687,7 +694,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -706,7 +713,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -725,7 +732,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -744,7 +751,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -759,8 +766,9 @@ const UserDetails = () => {
                       width: "150px",
                       display: "flex",
                       justifyContent: "center",
-                      // border: "1px solid #e2e8f0",
-                      backgroundColor: "transparent",
+                      border: "1px solid #e2e8f0",
+                      // backgroundColor: "#f8cad7",
+                      backgroundColor: "rgba(255, 255, 255, 0.9)",
                     }}
                   >
                     <DeleteButton onClick={() => openDeleteModal(user._id)} />
@@ -783,7 +791,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#f8cad7",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -804,79 +812,134 @@ const UserDetails = () => {
             mt: 3,
           }}
         >
-          <Box
-            component="button"
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            sx={{
-              p: "10px 20px",
-              borderRadius: "8px",
-              border: "2px solid #201548",
-              background: "#201548",
-              color: "#ffff",
-              fontSize: "0.95rem",
-              fontWeight: "medium",
-              cursor: currentPage === 1 ? "not-allowed" : "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              "&:hover": {
-                ...(currentPage !== 1
-                  ? {
-                      background: "linear-gradient(90deg, #201548, #201548)",
-                      color: "#ffffff",
-                      transform: "scale(1.05)",
-                      boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
-                    }
-                  : {}),
-              },
-            }}
-          >
-            Previous
-          </Box>
-          <Box
-            component="span"
-            sx={{
-              fontSize: "0.95rem",
-              color: "#0e0f0f",
-              fontWeight: "medium",
-              transition: "all 0.3s ease",
-              "&:hover": {
-                color: "#201548",
-                transform: "scale(1.05)",
-              },
-            }}
-          >
-            Page {currentPage} of {totalPages}
-          </Box>
-          <Box
-            component="button"
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            sx={{
-              p: "10px 20px",
-              borderRadius: "8px",
-              border: "2px solid #201548",
-              background: "#201548",
-              color: "#fff",
-              fontSize: "0.95rem",
-              fontWeight: "medium",
-              cursor: currentPage === totalPages ? "not-allowed" : "pointer",
-              transition: "all 0.3s ease",
-              boxShadow: "0 2px 8px rgba(0, 0, 0, 0.1)",
-              "&:hover": {
-                ...(currentPage !== totalPages
-                  ? {
-                      background: "linear-gradient(90deg, #201548, #201548)",
-                      color: "#ffffff",
-                      transform: "scale(1.05)",
-                      boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
-                    }
-                  : {}),
-              },
-            }}
-          >
-            Next
-          </Box>
+           <Box
+                       component="button"
+                       onClick={() => paginate(currentPage - 1)}
+                       disabled={currentPage === 1}
+                       sx={{
+                         p: '10px 24px',
+                         borderRadius: '30px',
+                         border: 'none',
+                         background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                         color: '#ffffff',
+                         fontSize: '0.9rem',
+                         fontWeight: '600',
+                         cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                         transition: 'all 0.4s ease',
+                         boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                         position: 'relative',
+                         overflow: 'hidden',
+                         letterSpacing: '0.5px',
+                         '&:hover': {
+                           ...(currentPage !== 1
+                             ? {
+                               background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                               color: '#0e0f0f',
+                               transform: 'translateY(-2px)',
+                               boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                               '&:after': {
+                                 width: '100%',
+                               },
+                             }
+                             : {}),
+                         },
+                         '&:after': {
+                           content: '""',
+                           position: 'absolute',
+                           bottom: 0,
+                           left: 0,
+                           width: '0',
+                           height: '3px',
+                           background: '#ffffff',
+                           transition: 'width 0.4s ease',
+                         },
+                         '&:disabled': {
+                           opacity: 0.5,
+                           boxShadow: 'none',
+                         },
+                       }}
+                     >
+                       Previous
+                     </Box>
+                     <Box
+                       component="span"
+                       sx={{
+                         fontSize: '1.1rem',
+                         fontWeight: '600',
+                         color: '#0e0f0f',
+                         textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
+                         letterSpacing: '0.5px',
+                         position: 'relative',
+                         transition: 'transform 0.4s ease',
+                         '&:hover': {
+                           transform: 'scale(1.1)',
+                         },
+                         '&:after': {
+                           content: '""',
+                           position: 'absolute',
+                           bottom: '-4px',
+                           left: 0,
+                           width: '0',
+                           height: '2px',
+                           background: '#fb646b',
+                           transition: 'width 0.4s ease',
+                         },
+                         '&:hover:after': {
+                           width: '100%',
+                         },
+                       }}
+                     >
+                       Page {currentPage} of {totalPages}
+                     </Box>
+                     <Box
+                       component="button"
+                       onClick={() => paginate(currentPage + 1)}
+                       disabled={currentPage === totalPages}
+                       sx={{
+                         p: '10px 24px',
+                         borderRadius: '30px',
+                         border: 'none',
+                         background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                         color: '#ffffff',
+                         fontSize: '0.9rem',
+                         fontWeight: '600',
+                         cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                         transition: 'all 0.4s ease',
+                         boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
+                         position: 'relative',
+                         overflow: 'hidden',
+                         letterSpacing: '0.5px',
+                         '&:hover': {
+                           ...(currentPage !== totalPages
+                             ? {
+                               background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                               color: '#0e0f0f',
+                               transform: 'translateY(-2px)',
+                               boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
+                               '&:after': {
+                                 width: '100%',
+                               },
+                             }
+                             : {}),
+                         },
+                         '&:after': {
+                           content: '""',
+                           position: 'absolute',
+                           bottom: 0,
+                           left: 0,
+                           width: '0',
+                           height: '3px',
+                           background: '#ffffff',
+                           transition: 'width 0.4s ease',
+                         },
+                         '&:disabled': {
+                           opacity: 0.5,
+                           boxShadow: 'none',
+                         },
+                       }}
+                     >
+                       Next
+                     </Box>
         </Box>
       </Box>
 
@@ -951,7 +1014,7 @@ const UserDetails = () => {
                 mb: 2,
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  color: "#201548",
+                  color: "#fb646b",
                   textShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                 },
               }}
@@ -968,7 +1031,7 @@ const UserDetails = () => {
                 fontWeight: "medium",
                 transition: "all 0.3s ease",
                 "&:hover": {
-                  color: "#201548",
+                  color: "#fb646b",
                 },
               }}
             >
@@ -989,19 +1052,19 @@ const UserDetails = () => {
                 onClick={closeDeleteModal}
                 sx={{
                   flex: { xs: "1 1 100%", sm: "1 1 auto" },
-                  background: "linear-gradient(90deg, #ffffff, #e2e8f0)",
+                  background: "linear-gradient(90deg, #f8cad7, #e2e8f0)",
                   color: "#0e0f0f",
                   px: 4,
                   py: 1.5,
                   fontSize: "0.95rem",
                   fontWeight: "medium",
                   borderRadius: "8px",
-                  border: "2px solid #201548",
+                  border: "2px solid #fb646b",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #201548, #201548)",
-                    color: "#ffffff",
+                    background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                    color: "#f8cad7",
                     transform: "scale(1.05)",
                     boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                   },
@@ -1014,19 +1077,19 @@ const UserDetails = () => {
                 onClick={handleDelete}
                 sx={{
                   flex: { xs: "1 1 100%", sm: "1 1 auto" },
-                  background: "linear-gradient(90deg, #201548, #201548)",
-                  color: "#ffffff",
+                  background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                  color: "#f8cad7",
                   px: 4,
                   py: 1.5,
                   fontSize: "0.95rem",
                   fontWeight: "medium",
                   borderRadius: "8px",
-                  border: "2px solid #201548",
+                  border: "2px solid #fb646b",
                   cursor: "pointer",
                   transition: "all 0.3s ease",
                   "&:hover": {
-                    background: "linear-gradient(90deg, #201548, #201548)",
-                    borderColor: "#201548",
+                    background: "linear-gradient(90deg, #fb646b, #fb646b)",
+                    borderColor: "#fb646b",
                     transform: "scale(1.05)",
                     boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                   },
