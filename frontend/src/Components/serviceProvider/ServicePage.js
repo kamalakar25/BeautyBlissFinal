@@ -852,7 +852,7 @@ const ServicePage = () => {
                     <div className="action-wrapper">
                       <button
                         onClick={() => handleDeleteClick(svc._id)}
-                        className="delete-btn"
+                        className="edit-btn"
                         onMouseEnter={(e) => {
                           e.target.style.backgroundColor = "#8B0000";
                           e.target.style.boxShadow = "0 0 12px #FFA500";
@@ -962,41 +962,8 @@ const ServicePage = () => {
                           }));
                         }}
                       >
-                        <svg
-                          className="delete-icon-small"
-                          viewBox="0 0 16 16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect
-                            x="4"
-                            y="4"
-                            width="8"
-                            height="10"
-                            rx="1"
-                            fill="white"
-                          />
-                          <rect
-                            className="lid"
-                            x="4"
-                            y="2"
-                            width="8"
-                            height="2"
-                            rx="0.5"
-                            fill="white"
-                            style={{ transformOrigin: "4 2" }}
-                          />
-                          <path d="M6 6H7V12H6V6Z" fill="black" />
-                          <path d="M9 6H10V12H9V6Z" fill="black" />
-                        </svg>
-                        {[...Array(3)].map((_, i) => (
-                          <div
-                            key={i}
-                            className="particle"
-                            style={{
-                              top: isMobile ? "10px" : "12px",
-                            }}
-                          />
-                        ))}
+                       <i class="fa fa-trash" aria-hidden="true"></i>
+                        Delete
                       </button>
                       <span
                         className="tooltip"
@@ -1115,7 +1082,7 @@ const ServicePage = () => {
                         <div className="action-wrapper">
                           <button
                             onClick={() => handleDeleteClick(svc._id)}
-                            className="delete-btn"
+                            className="edit-btn"
                             onMouseEnter={(e) => {
                               e.target.style.backgroundColor = "#8B0000";
                               e.target.style.boxShadow = "0 0 12px #FFA500";
@@ -1173,41 +1140,8 @@ const ServicePage = () => {
                               }));
                             }}
                           >
-                            <svg
-                              className="delete-icon-small"
-                              viewBox="0 0 16 16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect
-                                x="4"
-                                y="4"
-                                width="8"
-                                height="10"
-                                rx="1"
-                                fill="black"
-                              />
-                              <rect
-                                className="lid"
-                                x="4"
-                                y="2"
-                                width="8"
-                                height="2"
-                                rx="0.5"
-                                fill="black"
-                                style={{ transformOrigin: "4 2" }}
-                              />
-                              <path d="M6 6H7V12H6V6Z" fill="white" />
-                              <path d="M9 6H10V12H9V6Z" fill="white" />
-                            </svg>
-                            {[...Array(3)].map((_, i) => (
-                              <div
-                                key={i}
-                                className="particle"
-                                style={{
-                                  top: "12px",
-                                }}
-                              />
-                            ))}
+                            {/* <i class="fa fa-trash" aria-hidden="true"></i> */}
+                        Delete
                           </button>
                           <span
                             className="tooltip"

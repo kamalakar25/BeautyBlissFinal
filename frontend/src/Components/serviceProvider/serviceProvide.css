@@ -756,23 +756,23 @@
   background: #FB646B !important;
 }
 
-.delete-btn {
+/* .delete-btn {
   width: 40px;
   height: 40px;
   border-radius: 50%;
   background: #0e0f0f;
   position: relative;
-}
+} */
 
 @media (max-width: 768px) {
   .edit-btn {
     padding: 6px 12px;
     font-size: 0.8rem;
   }
-  .delete-btn {
+  /* .delete-btn {
     width: 35px;
     height: 35px;
-  }
+  } */
 }
 
 .edit-btn:hover,

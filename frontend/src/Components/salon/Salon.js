@@ -329,77 +329,9 @@ const SalonPage = () => {
               },
             }}
           >
-            DISC
-            <span
-              style={{
-                display: 'inline-block',
-                width: 'clamp(60px, 12vw, 80px)',
-                height: 'clamp(30px, 6vw, 35px)',
-                margin: '0 4px',
-                marginTop: '-25px',
-                verticalAlign: 'middle',
-                '@media (min-width: 640px)': {
-                  width: 'clamp(40px, 8vw, 48px)',
-                  height: 'clamp(40px, 8vw, 48px)',
-                },
-                '@media (min-width: 1024px)': {
-                  width: 'clamp(48px, 6vw, 56px)',
-                  height: 'clamp(48px, 6vw, 56px)',
-                },
-              }}
-            >
-              <img
-                src={facial}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '4px double #3B82F6', // Double border for the image
-                  transition: 'transform 0.3s ease', // Smooth hover effect
-                }}
-                onMouseEnter={(e) => (e.target.style.transform = 'scale(1.1)')}
-                onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
-                alt='Facial Treatment'
-              />
-            </span>
-            VER YOUR
+            DISCOVER YOUR
             <br />
-            SIGNATURE GL
-            <span
-              style={{
-                display: 'inline-block',
-                width: 'clamp(60px, 12vw, 80px)',
-                height: 'clamp(30px, 6vw, 35px)',
-                margin: '0 4px',
-                marginTop: '-25px',
-                verticalAlign: 'middle',
-                '@media (min-width: 640px)': {
-                  width: 'clamp(40px, 8vw, 48px)',
-                  height: 'clamp(40px, 8vw, 48px)',
-                },
-                '@media (min-width: 1024px)': {
-                  width: 'clamp(48px, 6vw, 56px)',
-                  height: 'clamp(48px, 6vw, 56px)',
-                },
-              }}
-            >
-              <img
-                src={Salon1}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  objectFit: 'cover',
-                  border: '4px double #3B82F6', // Double border for the image
-                  transition: 'transform 0.3s ease',
-                }}
-                onMouseEnter={(e) => (e.target.style.transform = 'scale(1.1)')}
-                onMouseLeave={(e) => (e.target.style.transform = 'scale(1)')}
-                alt='Salon'
-              />
-            </span>
-            W
+            SIGNATURE GLOW
           </h1>
           <p
             style={{

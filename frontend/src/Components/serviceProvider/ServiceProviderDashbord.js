@@ -548,7 +548,7 @@ const AdminPage = () => {
                     </div>
                     <div className="action-wrapper">
                       <button
-                        className="delete-btn"
+                        className="edit-btn"
                         onClick={() => handleDeleteClick(emp._id)}
                         onMouseEnter={() =>
                           setShowTooltip((prev) => ({
@@ -563,31 +563,7 @@ const AdminPage = () => {
                           }))
                         }
                       >
-                        <svg
-                          className="trash-icon"
-                          viewBox="0 0 16 16"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <rect x="4" y="4" width="8" height="10" rx="1" fill="white" />
-                          <rect
-                            className="lid"
-                            x="4" y="2" width="8" height="2" rx="0.5"
-                            fill="white"
-                          />
-                          <path d="M6 6H7V12H6V6Z" fill="black" />
-                          <path d="M9 6H10V12H9V6Z" fill="black" />
-                          {[...Array(3)].map((_, i) => (
-                            <div
-                              key={i}
-                              className="particle"
-                              style={{
-                                top: '10px',
-                                left: '50%',
-                                transform: 'translateX(-50%)'
-                              }}
-                            />
-                          ))}
-                        </svg>
+                       Delete
                       </button>
                       <span
                         className={`tooltip ${
@@ -675,7 +651,7 @@ const AdminPage = () => {
                         </div>
                         <div className="action-wrapper">
                           <button
-                            className="delete-btn"
+                            className="edit-btn"
                             onClick={() => handleDeleteClick(emp._id)}
                             onMouseEnter={() =>
                               setShowTooltip((prev) => ({
@@ -690,31 +666,7 @@ const AdminPage = () => {
                               }))
                             }
                           >
-                            <svg
-                              className="trash-icon"
-                              viewBox="0 0 16 16"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <rect x="4" y="4" width="8" height="10" rx="1" fill="white" />
-                              <rect
-                                className="lid"
-                                x="4" y="2" width="8" height="2" rx="0.5"
-                                fill="white"
-                              />
-                              <path d="M6 6H7V12H6V6Z" fill="black" />
-                              <path d="M9 6H10V12H9V6Z" fill="black" />
-                              {[...Array(3)].map((_, i) => (
-                                <div
-                                  key={i}
-                                  className="particle"
-                                  style={{
-                                    top: '10px',
-                                    left: '50%',
-                                    transform: 'translateX(-50%)'
-                                  }}
-                                />
-                              ))}
-                            </svg>
+                         Delete
                           </button>
                           <span
                             className={`tooltip ${

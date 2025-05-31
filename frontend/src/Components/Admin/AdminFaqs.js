@@ -1,8 +1,18 @@
-import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Container, Row, Col, Card, Form, Button, ListGroup, Accordion, ButtonGroup } from 'react-bootstrap';
-import { formatDistanceToNow } from 'date-fns';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { formatDistanceToNow } from 'date-fns';
+import { useEffect, useState } from 'react';
+import {
+  Accordion,
+  Button,
+  ButtonGroup,
+  Card,
+  Col,
+  Container,
+  Form,
+  ListGroup,
+  Row,
+} from 'react-bootstrap';
 
 // Custom CSS for responsive design and button colors
 const customStyles = `
@@ -155,7 +165,9 @@ const AdminFaqs = () => {
     if (!answer?.trim()) return;
 
     try {
-      const response = await axios.put(`${BASE_URL}/api/terms/faqs/${faqId}`, { answer });
+      const response = await axios.put(`${BASE_URL}/api/terms/faqs/${faqId}`, {
+        answer,
+      });
       const updatedFaq = response.data;
       setPendingFaqs(pendingFaqs.filter((faq) => faq._id !== faqId));
       setFaqs([...faqs, updatedFaq]);
@@ -168,7 +180,9 @@ const AdminFaqs = () => {
   const handleAddTerm = async () => {
     if (!newTerm.trim()) return;
     try {
-      const res = await axios.post(`${BASE_URL}/api/terms/terms`, { term: newTerm });
+      const res = await axios.post(`${BASE_URL}/api/terms/terms`, {
+        term: newTerm,
+      });
       setTerms([...terms, res.data]);
       setNewTerm('');
     } catch (err) {
@@ -179,7 +193,9 @@ const AdminFaqs = () => {
   const handleEditTerm = async (termId) => {
     if (!editTermText.trim()) return;
     try {
-      const res = await axios.put(`${BASE_URL}/api/terms/terms/${termId}`, { term: editTermText });
+      const res = await axios.put(`${BASE_URL}/api/terms/terms/${termId}`, {
+        term: editTermText,
+      });
       setTerms(terms.map((term) => (term._id === termId ? res.data : term)));
       setEditTermId(null);
       setEditTermText('');
@@ -199,20 +215,26 @@ const AdminFaqs = () => {
       alert('Term deleted successfully');
     } catch (err) {
       console.error('Error deleting term:', err);
-      alert(`Failed to delete term: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Failed to delete term: ${err.response?.data?.message || err.message}`
+      );
     }
   };
 
   const handleEditFaq = async (faqId) => {
     if (!editFaqText.trim()) return;
     try {
-      const res = await axios.put(`${BASE_URL}/api/terms/faqs/${faqId}`, { answer: editFaqText });
+      const res = await axios.put(`${BASE_URL}/api/terms/faqs/${faqId}`, {
+        answer: editFaqText,
+      });
       setFaqs(faqs.map((faq) => (faq._id === faqId ? res.data : faq)));
       setEditFaqId(null);
       setEditFaqText('');
     } catch (err) {
       // console.error('Error editing FAQ:', err);
-      alert(`Failed to edit FAQ: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Failed to edit FAQ: ${err.response?.data?.message || err.message}`
+      );
     }
   };
 
@@ -231,28 +253,41 @@ const AdminFaqs = () => {
       alert('FAQ deleted successfully');
     } catch (err) {
       // console.error('Error deleting FAQ:', err);
-      alert(`Failed to delete FAQ: ${err.response?.data?.message || err.message}`);
+      alert(
+        `Failed to delete FAQ: ${err.response?.data?.message || err.message}`
+      );
     }
   };
 
   return (
-     <Container className="my-5 " style={{ marginTop: '100px', backgroundColor: '#f8cad7'}}>
-      <h2 className="text-center mb-4" style={{ marginTop: '100px' }}>Admin FAQ & Terms Management</h2>
-      <ButtonGroup className="mb-4 d-flex justify-content-center flex-wrap">
+    <Container
+      className='my-5 '
+      style={{ marginTop: '100px', backgroundColor: '#f8cad7' }}
+    >
+      <h2 className='text-center mb-4' style={{ marginTop: '100px' }}>
+        Admin FAQ & Terms Management
+      </h2>
+      <ButtonGroup className='mb-4 d-flex justify-content-center flex-wrap'>
         <Button
-          className={`section-btn ${activeSection === 'answered' ? 'active' : 'inactive'}`}
+          className={`section-btn ${
+            activeSection === 'answered' ? 'active' : 'inactive'
+          }`}
           onClick={() => setActiveSection('answered')}
         >
           Answered FAQs
         </Button>
         <Button
-          className={`section-btn ${activeSection === 'pending' ? 'active' : 'inactive'}`}
+          className={`section-btn ${
+            activeSection === 'pending' ? 'active' : 'inactive'
+          }`}
           onClick={() => setActiveSection('pending')}
         >
           User Questions
         </Button>
         <Button
-          className={`section-btn ${activeSection === 'terms' ? 'active' : 'inactive'}`}
+          className={`section-btn ${
+            activeSection === 'terms' ? 'active' : 'inactive'
+          }`}
           onClick={() => setActiveSection('terms')}
         >
           Terms & Conditions
@@ -268,72 +303,81 @@ const AdminFaqs = () => {
                   <p>No answered FAQs.</p>
                 ) : (
                   <Accordion>
-                    {faqs.slice().reverse().map((faq, index) => (
-                      <Accordion.Item eventKey={index.toString()} key={faq._id} style={{ backgroundColor: '#f8cad7' }}>
-                        <Accordion.Header>
-                          {faq.question}{' '}
-                          <small className="text-muted ms-2">
-                            ({formatTimeAgo(faq.createdAt)})
-                          </small>
-                        </Accordion.Header>
-                        <Accordion.Body>
-                          {editFaqId === faq._id ? (
-                            <Form.Group>
-                              <Form.Control
-                                as="textarea"
-                                rows={2}
-                                value={editFaqText}
-                                onChange={(e) => setEditFaqText(e.target.value)}
-                              />
-                              <div className="faq-actions mt-2">
-                                <Button
-                                  className="save-btn"
-                                  size="sm"
-                                  onClick={() => handleEditFaq(faq._id)}
-                                >
-                                  Save
-                                </Button>
-                                <Button
-                                  className="cancel-btn"
-                                  size="sm"
-                                  onClick={() => setEditFaqId(null)}
-                                >
-                                  Cancel
-                                </Button>
+                    {faqs
+                      .slice()
+                      .reverse()
+                      .map((faq, index) => (
+                        <Accordion.Item
+                          eventKey={index.toString()}
+                          key={faq._id}
+                          style={{ backgroundColor: '#f8cad7' }}
+                        >
+                          <Accordion.Header>
+                            {faq.question}{' '}
+                            <small className='text-muted ms-2'>
+                              ({formatTimeAgo(faq.createdAt)})
+                            </small>
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            {editFaqId === faq._id ? (
+                              <Form.Group>
+                                <Form.Control
+                                  as='textarea'
+                                  rows={2}
+                                  value={editFaqText}
+                                  onChange={(e) =>
+                                    setEditFaqText(e.target.value)
+                                  }
+                                />
+                                <div className='faq-actions mt-2'>
+                                  <Button
+                                    className='save-btn'
+                                    size='sm'
+                                    onClick={() => handleEditFaq(faq._id)}
+                                  >
+                                    Save
+                                  </Button>
+                                  <Button
+                                    className='cancel-btn'
+                                    size='sm'
+                                    onClick={() => setEditFaqId(null)}
+                                  >
+                                    Cancel
+                                  </Button>
+                                </div>
+                              </Form.Group>
+                            ) : (
+                              <div className='faq-item'>
+                                <div className='faq-content'>
+                                  {faq.answer}{' '}
+                                  <small className='faq-time'>
+                                    (Answered {formatTimeAgo(faq.updatedAt)})
+                                  </small>
+                                </div>
+                                <div className='faq-actions'>
+                                  <Button
+                                    className='faq-edit-btn'
+                                    size='sm'
+                                    onClick={() => {
+                                      setEditFaqId(faq._id);
+                                      setEditFaqText(faq.answer);
+                                    }}
+                                  >
+                                    Edit
+                                  </Button>
+                                  <Button
+                                    className='faq-edit-btn'
+                                    size='sm'
+                                    onClick={() => handleDeleteFaq(faq._id)}
+                                  >
+                                    Delete
+                                  </Button>
+                                </div>
                               </div>
-                            </Form.Group>
-                          ) : (
-                            <div className="faq-item">
-                              <div className="faq-content">
-                                {faq.answer}{' '}
-                                <small className="faq-time">
-                                  (Answered {formatTimeAgo(faq.updatedAt)})
-                                </small>
-                              </div>
-                              <div className="faq-actions">
-                                <Button
-                                  className="faq-edit-btn"
-                                  size="sm"
-                                  onClick={() => {
-                                    setEditFaqId(faq._id);
-                                    setEditFaqText(faq.answer);
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button
-                                  className="faq-delete-btn"
-                                  size="sm"
-                                  onClick={() => handleDeleteFaq(faq._id)}
-                                >
-                                  Delete
-                                </Button>
-                              </div>
-                            </div>
-                          )}
-                        </Accordion.Body>
-                      </Accordion.Item>
-                    ))}
+                            )}
+                          </Accordion.Body>
+                        </Accordion.Item>
+                      ))}
                   </Accordion>
                 )}
               </Card.Body>
@@ -344,7 +388,7 @@ const AdminFaqs = () => {
         {activeSection === 'pending' && (
           <Col md={12}>
             <Card style={{ backgroundColor: '#f8cad7' }}>
-              <Card.Body >
+              <Card.Body>
                 <h5>User Questions (Pending)</h5>
                 {pendingFaqs.length === 0 ? (
                   <p>No pending questions.</p>
@@ -352,36 +396,41 @@ const AdminFaqs = () => {
                   <ListGroup style={{ backgroundColor: '#f8cad7' }}>
                     {pendingFaqs.map((faq) => (
                       <ListGroup.Item key={faq._id}>
-                        <div className="faq-item">
-                          <div className="faq-content">
+                        <div className='faq-item'>
+                          <div className='faq-content'>
                             <p>
                               {faq.question}{' '}
-                              <small className="faq-time">
+                              <small className='faq-time'>
                                 ({formatTimeAgo(faq.createdAt)})
                               </small>
                             </p>
                             <Form.Group>
                               <Form.Label>Answer</Form.Label>
                               <Form.Control
-                                as="textarea"
+                                as='textarea'
                                 rows={2}
                                 value={answers[faq._id] || ''}
-                                onChange={(e) => setAnswers({ ...answers, [faq._id]: e.target.value })}
+                                onChange={(e) =>
+                                  setAnswers({
+                                    ...answers,
+                                    [faq._id]: e.target.value,
+                                  })
+                                }
                               />
                             </Form.Group>
                           </div>
-                          <div className="faq-actions">
+                          <div className='faq-actions'>
                             <Button
                               style={{ backgroundColor: '#fb646b' }}
-                              size="sm"
-                              className="mt-2"
+                              size='sm'
+                              className='mt-2'
                               onClick={() => handleAnswerSubmit(faq._id)}
                             >
                               Submit Answer
                             </Button>
                             <Button
-                              className="faq-delete-btn"
-                              size="sm"
+                              className='faq-edit-btn'
+                              size='sm'
                               onClick={() => handleDeleteFaq(faq._id, true)}
                             >
                               Delete
@@ -400,7 +449,7 @@ const AdminFaqs = () => {
         {activeSection === 'terms' && (
           <Col md={12}>
             <Card style={{ backgroundColor: '#f8cad7' }}>
-              <Card.Body >
+              <Card.Body>
                 <h5>Terms and Conditions</h5>
                 <ListGroup>
                   {terms.map((term) => (
@@ -408,21 +457,21 @@ const AdminFaqs = () => {
                       {editTermId === term._id ? (
                         <Form.Group>
                           <Form.Control
-                            type="text"
+                            type='text'
                             value={editTermText}
                             onChange={(e) => setEditTermText(e.target.value)}
                           />
-                          <div className="term-actions mt-2">
+                          <div className='term-actions mt-2'>
                             <Button
-                              className="save-btn"
-                              size="sm"
+                              className='save-btn'
+                              size='sm'
                               onClick={() => handleEditTerm(term._id)}
                             >
                               Save
                             </Button>
                             <Button
-                              className="cancel-btn"
-                              size="sm"
+                              className='cancel-btn'
+                              size='sm'
                               onClick={() => setEditTermId(null)}
                             >
                               Cancel
@@ -430,17 +479,17 @@ const AdminFaqs = () => {
                           </div>
                         </Form.Group>
                       ) : (
-                        <div className="term-item">
-                          <div className="term-content">
+                        <div className='term-item'>
+                          <div className='term-content'>
                             {term.term}{' '}
-                            <small className="term-time">
+                            <small className='term-time'>
                               ({formatTimeAgo(term.createdAt)})
                             </small>
                           </div>
-                          <div className="term-actions">
+                          <div className='term-actions'>
                             <Button
-                              className="edit-btn"
-                              size="sm"
+                              className='edit-btn'
+                              size='sm'
                               onClick={() => {
                                 setEditTermId(term._id);
                                 setEditTermText(term.term);
@@ -449,8 +498,8 @@ const AdminFaqs = () => {
                               Edit
                             </Button>
                             <Button
-                              className="delete-btn"
-                              size="sm"
+                              className='edit-btn'
+                              size='sm'
                               onClick={() => handleDeleteTerm(term._id)}
                             >
                               Delete
@@ -461,16 +510,20 @@ const AdminFaqs = () => {
                     </ListGroup.Item>
                   ))}
                 </ListGroup>
-                <Form.Group className="mt-3">
+                <Form.Group className='mt-3'>
                   <Form.Label>Add New Term</Form.Label>
                   <Form.Control
-                    type="text"
+                    type='text'
                     value={newTerm}
                     onChange={(e) => setNewTerm(e.target.value)}
-                    placeholder="Enter new term"
+                    placeholder='Enter new term'
                   />
                 </Form.Group>
-                <Button className="mt-2" style={{ backgroundColor: '#fb646b' }} onClick={handleAddTerm}>
+                <Button
+                  className='mt-2'
+                  style={{ backgroundColor: '#fb646b' }}
+                  onClick={handleAddTerm}
+                >
                   Add Term
                 </Button>
               </Card.Body>
