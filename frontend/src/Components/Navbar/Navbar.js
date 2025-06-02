@@ -131,7 +131,7 @@ const Navbar = () => {
           </li>
           <li style={{ "--i": 5 }} className="logout-item">
             <div>
-              <label htmlFor="google_translate_element">language</label>
+              <label htmlFor="google_translate_element" style={{fontWeight: "bold", textTransform: "capitalize"}}>language</label>
             </div>
             <div
               id="google_translate_element"
@@ -220,7 +220,12 @@ const Navbar = () => {
             </li>
             <li style={{ "--i": 8 }} className="logout-item">
               <div>
-                <label htmlFor="google_translate_element">language</label>
+                <label
+                  htmlFor="google_translate_element"
+                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
+                >
+                  language
+                </label>
               </div>
               <div
                 id="google_translate_element"
@@ -325,7 +330,12 @@ const Navbar = () => {
             </li>
             <li style={{ "--i": 8 }} className="logout-item">
               <div>
-                <label htmlFor="google_translate_element">language</label>
+                <label
+                  htmlFor="google_translate_element"
+                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
+                >
+                  language
+                </label>
               </div>
               <div
                 id="google_translate_element"
@@ -431,7 +441,12 @@ const Navbar = () => {
             </li>
             <li style={{ "--i": 9 }} className="logout-item">
               <div>
-                <label htmlFor="google_translate_element">language</label>
+                <label
+                  htmlFor="google_translate_element"
+                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
+                >
+                  language
+                </label>
               </div>
               <div
                 id="google_translate_element"

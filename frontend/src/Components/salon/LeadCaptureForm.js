@@ -194,7 +194,7 @@ const LeadCaptureForm = () => {
   };
 
   const containerStyles = {
-    minHeight: "100vh",
+    // minHeight: "100vh",
     width: "100%",
     display: "flex",
     alignItems: "center",
@@ -203,7 +203,7 @@ const LeadCaptureForm = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#f8cad7", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#f8cad7", }}>
       <Container maxWidth={false} disableGutters sx={containerStyles}>
         <Paper
           elevation={8}

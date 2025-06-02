@@ -1134,9 +1134,24 @@ const Product = () => {
       });
   }, []);
 
+  const getActiveService = () => {
+    if (location.state?.service) {
+      return location.state.service;
+    }
+    const path = location.pathname.toLowerCase();
+    if (path.includes("shaving")) return "Shaving";
+    if (path.includes("facial")) return "Facial";
+    if (path.includes("haircolor")) return "HairColor";
+    if (path.includes("haircut")) return "HairCut";
+
+    return "";
+  };
+  
+
   useEffect(() => {
     const newDesignation = getActiveDesignation();
-    const newService = location.state?.service || "";
+    const newService = getActiveService();
+    // const newService = location.state?.service || "";
     setDesignationFilter(newDesignation);
     setServiceFilter(newService);
   }, [location.pathname, location.state]);
