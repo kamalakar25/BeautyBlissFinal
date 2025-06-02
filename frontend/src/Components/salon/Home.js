@@ -2067,6 +2067,7 @@ const Home = () => {
                 justifyContent: 'center',
                 alignItems: 'center',
                 padding: '40px 0',
+                textAlign: "center"
               }}
             >
               <motion.h2

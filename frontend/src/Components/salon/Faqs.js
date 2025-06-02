@@ -102,7 +102,7 @@ const Faq = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#f8cad7", minHeight: "100vh" }}>
+    <div style={{ backgroundColor: "#f8cad7",}}>
       <Container fluid className="my-5">
         <h2 className="text-center mb-4" style={{ color: "#FB646B" }}>
           Frequently Asked Questions
@@ -110,7 +110,7 @@ const Faq = () => {
         <Row>
           <Col md={8} className="mx-auto">
             {faqs.length === 0 ? (
-              <p>No FAQs available.</p>
+              <p style={{textAlign: "center"}}>No FAQs available.</p>
             ) : (
               <>
                 <Accordion>
@@ -133,20 +133,21 @@ const Faq = () => {
                 </Accordion>
                 {/* Pagination Component */}
                 {totalPages > 1 && (
-                  <div className="d-flex justify-content-center mt-4">
-                    <Pagination>
-                      <Pagination.Prev
-                        onClick={() => handlePageChange(currentPage - 1)}
-                        disabled={currentPage === 1}
-                      />
-                      {paginationItems}
-                      <Pagination.Next
-                        onClick={() => handlePageChange(currentPage + 1)}
-                        disabled={currentPage === totalPages}
-                      />
-                    </Pagination>
-                  </div>
-                )}
+  <div className="d-flex justify-content-center mt-4 flex-column flex-md-row align-items-center gap-2">
+    <Pagination>
+      <Pagination.Prev
+        onClick={() => handlePageChange(currentPage - 1)}
+        disabled={currentPage === 1}
+      />
+      {paginationItems}
+      <Pagination.Next
+        onClick={() => handlePageChange(currentPage + 1)}
+        disabled={currentPage === totalPages}
+      />
+    </Pagination>
+  </div>
+)}
+
               </>
             )}
             <Card className="mt-4">
