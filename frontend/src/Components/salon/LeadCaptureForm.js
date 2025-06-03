@@ -203,7 +203,7 @@ const LeadCaptureForm = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#f8cad7", }}>
+    <div style={{ backgroundColor: "#fad9e3", }}>
       <Container maxWidth={false} disableGutters sx={containerStyles}>
         <Paper
           elevation={8}
