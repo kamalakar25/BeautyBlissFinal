@@ -61,6 +61,7 @@ body {
   .cancel-btn {
     background-color: #6c757d !important; /* Gray for Cancel */
     border-color: #6c757d !important;
+    flex: initial;
   }
 
   /* Responsive design for Terms and Conditions and FAQs */
