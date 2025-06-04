@@ -27,6 +27,9 @@ const formatTimeAgo = (date) => {
   }
 };
 
+const BASE_URL = process.env.REACT_APP_API_URL;
+
+
 const Faq = () => {
   const [faqs, setFaqs] = useState([]);
   const [question, setQuestion] = useState("");
@@ -39,7 +42,7 @@ const Faq = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/terms/faqs")
+      .get(`${BASE_URL}/api/terms/faqs`)
       .then((res) => setFaqs(res.data))
       .catch((err) => console.error(err));
   }, []);
@@ -57,7 +60,7 @@ const Faq = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/terms/faqs",
+        `${BASE_URL}/api/terms/faqs`,
         { question },
         { headers: { "user-email": email } }
       );
