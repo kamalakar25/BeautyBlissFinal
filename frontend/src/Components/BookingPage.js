@@ -1066,7 +1066,7 @@ const BookingPage = () => {
       style={{
         padding: "1rem",
         minHeight: "100vh",
-        background: "#f8d7da",
+        background: "#fad9e3",
       }}
     >
       <style>

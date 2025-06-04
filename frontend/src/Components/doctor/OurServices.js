@@ -41,7 +41,7 @@ const OurServices = () => {
     <Box
       sx={{
         minHeight: "100vh",
-        background: "#F8CAD7",
+        background: "#fad9e3",
        
         px: { xs: 2, sm: 4, md: 6 },
         py: { xs: 4, sm: 6, md: 8 },

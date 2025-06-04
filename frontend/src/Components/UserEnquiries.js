@@ -179,7 +179,14 @@ const UserEnquiries = () => {
   };
 
   return (
-    <div style={{ backgroundColor: "#F8CAD7", minHeight: "100vh", color: "#2D2828", fontFamily: "'Roboto', sans-serif" }}>
+    <div
+      style={{
+        backgroundColor: "#fad9e3",
+        minHeight: "100vh",
+        color: "#2D2828",
+        fontFamily: "'Roboto', sans-serif",
+      }}
+    >
       <style>
         {`
           body {
@@ -187,7 +194,7 @@ const UserEnquiries = () => {
             font-family: 'Roboto', sans-serif;
           }
           .container-fluid {
-            background-color: rgb(241,149,174);
+            background-color: #fad9e3;
             padding: 2rem 0;
             border-bottom: 5px solid #FB646B;
           }
@@ -359,28 +366,45 @@ const UserEnquiries = () => {
           <div className="row align-items-center">
             <div className="col-md-6 text-center text-md-start">
               <h1 className="header-title">My Enquiries</h1>
-              <p className="header-subtitle">View and manage your submitted enquiries</p>
+              <p className="header-subtitle">
+                View and manage your submitted enquiries
+              </p>
             </div>
             <div className="col-md-6 d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
               <div className="d-flex gap-4">
                 <Badge
-                  badgeContent={filteredEnquiries.filter((e) => e.status === "new").length}
+                  badgeContent={
+                    filteredEnquiries.filter((e) => e.status === "new").length
+                  }
                   color="error"
                 >
                   <button
-                    className={`status-btn ${statusFilter === "new" ? "active" : ""}`}
-                    onClick={() => setStatusFilter(statusFilter === "new" ? "all" : "new")}
+                    className={`status-btn ${
+                      statusFilter === "new" ? "active" : ""
+                    }`}
+                    onClick={() =>
+                      setStatusFilter(statusFilter === "new" ? "all" : "new")
+                    }
                   >
                     New
                   </button>
                 </Badge>
                 <Badge
-                  badgeContent={filteredEnquiries.filter((e) => e.status === "approved").length}
+                  badgeContent={
+                    filteredEnquiries.filter((e) => e.status === "approved")
+                      .length
+                  }
                   color="warning"
                 >
                   <button
-                    className={`status-btn ${statusFilter === "approved" ? "active" : ""}`}
-                    onClick={() => setStatusFilter(statusFilter === "approved" ? "all" : "approved")}
+                    className={`status-btn ${
+                      statusFilter === "approved" ? "active" : ""
+                    }`}
+                    onClick={() =>
+                      setStatusFilter(
+                        statusFilter === "approved" ? "all" : "approved"
+                      )
+                    }
                   >
                     Responded
                   </button>
@@ -494,16 +518,26 @@ const UserEnquiries = () => {
                     {paginatedEnquiries.map((enquiry) => (
                       <tr key={enquiry.id}>
                         <td className="align-middle">{enquiry.id}</td>
-                        <td className="align-middle">{enquiry.serviceRequested}</td>
+                        <td className="align-middle">
+                          {enquiry.serviceRequested}
+                        </td>
                         <td className="align-middle">{enquiry.spMessage}</td>
                         <td className="align-middle">
                           <div className="d-flex flex-column">
-                            <span className="fw-semibold">{enquiry.shopName}</span>
-                            <small style={{ color: "#2D2828", opacity: 0.7 }}>{enquiry.shopEmail}</small>
+                            <span className="fw-semibold">
+                              {enquiry.shopName}
+                            </span>
+                            <small style={{ color: "#2D2828", opacity: 0.7 }}>
+                              {enquiry.shopEmail}
+                            </small>
                           </div>
                         </td>
-                        <td className="align-middle">{formatDate(enquiry.dateSubmitted)}</td>
-                        <td className="align-middle">{getStatusBadge(enquiry.status)}</td>
+                        <td className="align-middle">
+                          {formatDate(enquiry.dateSubmitted)}
+                        </td>
+                        <td className="align-middle">
+                          {getStatusBadge(enquiry.status)}
+                        </td>
                       </tr>
                     ))}
                   </tbody>

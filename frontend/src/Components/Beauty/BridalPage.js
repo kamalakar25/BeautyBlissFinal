@@ -90,7 +90,7 @@ export default function ServicesPage() {
         px: 2,
         py: 6,
         boxSizing: 'border-box',
-        backgroundColor: '#f8cad7', // Updated background color
+        backgroundColor: '#fad9e3', // Updated background color
       }}
     >
       <Typography

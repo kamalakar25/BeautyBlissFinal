@@ -185,7 +185,7 @@ const Approvals = () => {
         sx={{
           width: '100%',
           maxWidth: '1300px',
-          backgroundColor: '#f8cad7',
+          backgroundColor: '#fad9e3',
           backdropFilter: 'blur(10px)',
           borderRadius: '20px',
           p: '30px',

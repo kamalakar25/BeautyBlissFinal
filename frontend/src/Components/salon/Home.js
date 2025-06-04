@@ -1,48 +1,48 @@
-'use client';
+"use client";
 
-import { IconButton } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import axios from 'axios';
-import { motion } from 'framer-motion';
-import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { IconButton } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 // Import images (you'll need to add your own images for the collage)
 // Placeholder images for the collage (replace with your actual images)
-import collageImage5 from '../Assets/bridal.jpg'; // Bottom row, third image
-import collageImage1 from '../Assets/collageimg1.jpg'; // Top row, first image
-import collageImage2 from '../Assets/collageimg2.avif'; // Top row, second image
-import collageImage3 from '../Assets/collageimg3.avif'; // Bottom row, first image
-import collageImage4 from '../Assets/collageimg4.webp'; // Bottom row, second image
+import collageImage5 from "../Assets/bridal.jpg"; // Bottom row, third image
+import collageImage1 from "../Assets/collageimg1.jpg"; // Top row, first image
+import collageImage2 from "../Assets/collageimg2.avif"; // Top row, second image
+import collageImage3 from "../Assets/collageimg3.avif"; // Bottom row, first image
+import collageImage4 from "../Assets/collageimg4.webp"; // Bottom row, second image
 
-import svg3 from '../Assets/group_1.svg';
-import svg1 from '../Assets/vector.svg';
-import svg2 from '../Assets/vector_1.svg';
+import svg3 from "../Assets/group_1.svg";
+import svg1 from "../Assets/vector.svg";
+import svg2 from "../Assets/vector_1.svg";
 
-import card1 from '../Assets/rectangle_1.png';
-import card2 from '../Assets/rectangle_1_1.png';
-import card3 from '../Assets/rectangle_1_2.png';
-import card4 from '../Assets/rectangle_1_3.png';
+import card1 from "../Assets/rectangle_1.png";
+import card2 from "../Assets/rectangle_1_1.png";
+import card3 from "../Assets/rectangle_1_2.png";
+import card4 from "../Assets/rectangle_1_3.png";
 
-import Girlhair from '../../assets/female-hairdresser.png';
-import Girlhair1 from '../../assets/female-hairdresser1.png';
-import Faq from './Faqs';
-import Footer from './Footer';
-import LeadCaptureForm from './LeadCaptureForm';
+import Girlhair from "../../assets/female-hairdresser.png";
+import Girlhair1 from "../../assets/female-hairdresser1.png";
+import Faq from "./Faqs";
+import Footer from "./Footer";
+import LeadCaptureForm from "./LeadCaptureForm";
 
 const Home = () => {
   const navigate = useNavigate();
   const [enquiryModalOpen, setEnquiryModalOpen] = useState(false);
   const [serviceProviders, setServiceProviders] = useState([]);
-  const [enquiryMessage, setEnquiryMessage] = useState('');
-  const [selectedProvider, setSelectedProvider] = useState('');
+  const [enquiryMessage, setEnquiryMessage] = useState("");
+  const [selectedProvider, setSelectedProvider] = useState("");
   const modalRef = useRef(null);
   const [filteredProviders, setFilteredProviders] = useState([]);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [startDateFilter, setStartDateFilter] = useState('');
-  const [endDateFilter, setEndDateFilter] = useState('');
+  const [searchQuery, setSearchQuery] = useState("");
+  const [startDateFilter, setStartDateFilter] = useState("");
+  const [endDateFilter, setEndDateFilter] = useState("");
   const [addresses, setAddresses] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -50,12 +50,12 @@ const Home = () => {
   const itemsPerPage = 5;
 
   const handleClick = () => {
-    navigate('/salon');
+    navigate("/salon");
     window.scrollTo(0, 0);
   };
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
   }, []);
 
   const BASE_URL = process.env.REACT_APP_API_URL;
@@ -70,7 +70,7 @@ const Home = () => {
         setServiceProviders(providers.reverse());
         setFilteredProviders(providers);
       } catch (error) {
-        setError('Failed to load service providers. Please try again.');
+        setError("Failed to load service providers. Please try again.");
       }
     };
     fetchServiceProviders();
@@ -83,14 +83,14 @@ const Home = () => {
       const query = searchQuery.toLowerCase().trim();
       filtered = filtered.filter((provider) => {
         const fieldsToSearch = [
-          provider.name || '',
-          provider.email || '',
-          provider.phone || '',
-          provider.shopName || '',
-          provider.designation || '',
-          provider.location || '',
-          formatDate(provider.createdAt) || '',
-          formatDate(provider.dob) || '',
+          provider.name || "",
+          provider.email || "",
+          provider.phone || "",
+          provider.shopName || "",
+          provider.designation || "",
+          provider.location || "",
+          formatDate(provider.createdAt) || "",
+          formatDate(provider.dob) || "",
         ];
         return fieldsToSearch.some((field) =>
           field.toLowerCase().includes(query)
@@ -126,28 +126,28 @@ const Home = () => {
   }, [searchQuery, startDateFilter, endDateFilter, serviceProviders]);
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
+    if (!dateString) return "N/A";
     try {
       const date = new Date(dateString);
-      if (isNaN(date.getTime())) return 'Invalid Date';
-      const day = String(date.getDate()).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
+      if (isNaN(date.getTime())) return "Invalid Date";
+      const day = String(date.getDate()).padStart(2, "0");
+      const month = String(date.getMonth() + 1).padStart(2, "0");
       const year = date.getFullYear();
       return `${day}/${month}/${year}`;
     } catch (error) {
-      return 'Invalid Date';
+      return "Invalid Date";
     }
   };
 
   const clearAllFilters = () => {
-    setStartDateFilter('');
-    setEndDateFilter('');
-    setSearchQuery('');
+    setStartDateFilter("");
+    setEndDateFilter("");
+    setSearchQuery("");
     setShowFilters(false);
   };
 
   const parseCoordinates = (location) => {
-    if (!location || typeof location !== 'string') {
+    if (!location || typeof location !== "string") {
       return { latitude: null, longitude: null };
     }
     try {
@@ -183,14 +183,14 @@ const Home = () => {
   };
 
   const handleServiceClick = (service) => {
-    navigate('/products', {
-      state: { designation: 'Salon', service: service },
+    navigate("/products", {
+      state: { designation: "Salon", service: service },
     });
   };
 
   const handleBeautyClick = (service) => {
-    navigate('/products', {
-      state: { designation: 'Beauty_Parler', service: service },
+    navigate("/products", {
+      state: { designation: "Beauty_Parler", service: service },
     });
   };
 
@@ -210,7 +210,7 @@ const Home = () => {
           );
           setServiceProviders(response.data);
         } catch (error) {
-          console.error('Failed to fetch service providers:', error);
+          console.error("Failed to fetch service providers:", error);
         }
       };
       fetchServiceProviders();
@@ -225,35 +225,35 @@ const Home = () => {
     };
 
     if (enquiryModalOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [enquiryModalOpen]);
 
   const FilterToggleButton = styled(IconButton)(({ theme }) => ({
-    display: 'none',
-    [theme.breakpoints.down('lg')]: {
-      display: 'block',
-      color: '#201548',
-      backgroundColor: 'transparent',
-      '&:hover': {
-        backgroundColor: 'rgba(32, 21, 72, 0.1)',
+    display: "none",
+    [theme.breakpoints.down("lg")]: {
+      display: "block",
+      color: "#201548",
+      backgroundColor: "transparent",
+      "&:hover": {
+        backgroundColor: "rgba(32, 21, 72, 0.1)",
       },
     },
   }));
 
   const handleSubmitEnquiry = async () => {
-    const email = localStorage.getItem('email');
+    const email = localStorage.getItem("email");
     if (!email) {
-      alert('Please login to submit an enquiry.');
-      window.location.href = '/login';
+      alert("Please login to submit an enquiry.");
+      window.location.href = "/login";
       return;
     }
     if (!selectedProvider || !enquiryMessage) {
-      alert('Please select a service provider and enter a message.');
+      alert("Please select a service provider and enter a message.");
       return;
     }
 
@@ -265,95 +265,100 @@ const Home = () => {
       });
 
       if (response.status === 201) {
-        alert('Enquiry submitted successfully!');
+        alert("Enquiry submitted successfully!");
         setEnquiryModalOpen(false);
-        setEnquiryMessage('');
-        setSelectedProvider('');
+        setEnquiryMessage("");
+        setSelectedProvider("");
       }
     } catch (error) {
       // console.error("Error submitting enquiry:", error);
-      alert('Failed to submit enquiry. Please try again.');
+      alert("Failed to submit enquiry. Please try again.");
     }
   };
 
   const handleEnquiryClick = () => {
-    navigate('/products', { state: { openEnquiryModal: true } });
-    alert('Please set your location to proceed with the enquiry.');
+    navigate("/products", { state: { openEnquiryModal: true } });
+    alert("Please set your location to proceed with the enquiry.");
   };
 
   return (
     <div
       style={{
-        display: 'flex',
-        flexDirection: 'column',
-        backgroundColor: '#f8cad7',
-        minHeight: '100vh',
-        color: 'rgb(244,245,247)',
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: "#fad9e3",
+        minHeight: "100vh",
+        color: "rgb(244,245,247)",
       }}
     >
       {/* Main Content Section */}
       <main
         style={{
-          backgroundColor: '#f8cad7',
-          padding: '20px',
-          borderRadius: '20px',
-          margin: '10px',
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '20px',
-          justifyContent: 'space-between',
-          alignItems: 'center',
+          backgroundColor: "#fad9e3",
+          padding: "20px",
+          borderRadius: "20px",
+          margin: "10px",
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "20px",
+          justifyContent: "space-between",
+          alignItems: "center",
           // maxHeight: "calc(100vh - 40px)", // Prevents it from growing too large
-          overflow: 'hidden', // Contains content
+          overflow: "hidden", // Contains content
         }}
       >
         {/* Left Section: Text and Button */}
         <div
           style={{
-            flex: '1 1 50%',
-            minWidth: '250px', // Reduced minWidth to allow shrinking at 320px
-            paddingRight: '10px',
+            flex: "1 1 50%",
+            minWidth: "250px", // Reduced minWidth to allow shrinking at 320px
+            paddingRight: "10px",
+            textAlign: "center", // Center text on small screens
           }}
+          className="text-left md:text-left" // Left align on medium and larger screens
         >
           <h1
             style={{
-              fontSize: '48px',
-              fontWeight: 'bold',
-              color: '#000',
-              fontFamily: 'Arial, sans-serif',
-              lineHeight: '1.2',
-              marginBottom: '15px',
+              fontSize: "48px",
+              fontWeight: "bold",
+              color: "#000",
+              fontFamily: "Arial, sans-serif",
+              lineHeight: "1.2",
+              marginBottom: "15px",
             }}
+            className="text-center md:text-left"
           >
             BUILD YOUR DREAM <br /> BODY LIFESTYLE
           </h1>
           <p
             style={{
-              fontSize: '18px',
-              color: '#000',
-              fontFamily: 'Arial, sans-serif',
-              marginBottom: '20px',
+              fontSize: "18px",
+              color: "#000",
+              fontFamily: "Arial, sans-serif",
+              marginBottom: "20px",
             }}
+            className="text-center md:text-left"
           >
             Discover your natural glow with our premium beauty treatments and
             personalized skincare solutions.
           </p>
           <button
             style={{
-              backgroundColor: '#fff',
-              border: '1px solid #000',
-              borderRadius: '20px',
-              padding: '10px 30px',
-              fontSize: '16px',
-              fontFamily: 'Arial, sans-serif',
-              cursor: 'pointer',
-              color: '#000',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '10px',
+              backgroundColor: "#fff",
+              border: "1px solid #000",
+              borderRadius: "20px",
+              padding: "10px 30px",
+              fontSize: "16px",
+              fontFamily: "Arial, sans-serif",
+              cursor: "pointer",
+              color: "#000",
+              display: "flex",
+              alignItems: "center",
+              gap: "10px",
+              margin: "0 auto", // Center button on small screens
             }}
             onClick={() => {
-              navigate('/salon');
+              navigate("/salon");
             }}
           >
             Get started
@@ -363,83 +368,88 @@ const Home = () => {
           {/* Icons and Text Section */}
           <div
             style={{
-              display: 'flex',
-              gap: '10px',
-              marginTop: '20px',
-              flexWrap: 'wrap',
+              display: "flex",
+              gap: "10px",
+              marginTop: "20px",
+              flexWrap: "wrap",
+              justifyContent: "center", // Center items on small screens
             }}
+            className="md:justify-start" // Left align items on medium and larger screens
           >
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
               <img
                 src={svg1}
-                alt='Premium Services Icon'
+                alt="Premium Services Icon"
                 style={{
-                  width: '30px',
-                  height: '30px',
+                  width: "30px",
+                  height: "30px",
                 }}
               />
               <span
                 style={{
-                  fontSize: '14px',
-                  color: '#000',
-                  fontFamily: 'Arial, sans-serif',
+                  fontSize: "14px",
+                  color: "#000",
+                  fontFamily: "Arial, sans-serif",
                 }}
+                className="text-center md:text-left"
               >
                 PREMIUM SERVICES <br /> beauty professionals
               </span>
             </div>
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
               <img
                 src={svg2}
-                alt='Premium Services Icon'
+                alt="Premium Services Icon"
                 style={{
-                  width: '30px',
-                  height: '30px',
+                  width: "30px",
+                  height: "30px",
                 }}
               />
               <span
                 style={{
-                  fontSize: '14px',
-                  color: '#000',
-                  fontFamily: 'Arial, sans-serif',
+                  fontSize: "14px",
+                  color: "#000",
+                  fontFamily: "Arial, sans-serif",
                 }}
+                className="text-center md:text-left"
               >
                 INSTANT BOOKING <br /> no waiting for confirmation
               </span>
             </div>
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px',
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
               }}
             >
               <img
                 src={svg3}
-                alt='Premium Services Icon'
+                alt="Premium Services Icon"
                 style={{
-                  width: '30px',
-                  height: '30px',
+                  width: "30px",
+                  height: "30px",
                 }}
               />
               <span
                 style={{
-                  fontSize: '14px',
-                  color: '#000',
-                  fontFamily: 'Arial, sans-serif',
+                  fontSize: "14px",
+                  color: "#000",
+                  fontFamily: "Arial, sans-serif",
                 }}
+                className="text-center md:text-left"
               >
                 VERIFIED REVIEWS <br /> from clients
               </span>
@@ -450,51 +460,51 @@ const Home = () => {
         {/* Right Section: Image Collage (2 images on top, 3 images on bottom) */}
         <div
           style={{
-            flex: '1 1 40%',
-            minWidth: '250px', // Reduced minWidth to allow shrinking at 320px
-            display: 'grid',
-            gridTemplateRows: '1fr 1fr',
-            gap: '5px',
-            height: '450px',
+            flex: "1 1 40%",
+            minWidth: "250px", // Reduced minWidth to allow shrinking at 320px
+            display: "grid",
+            gridTemplateRows: "1fr 1fr",
+            gap: "5px",
+            height: "450px",
           }}
         >
           {/* Top Row: 2 Images */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr',
-              gap: '5px',
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "5px",
             }}
           >
             <div
               style={{
-                borderRadius: '8px',
-                overflow: 'hidden',
+                borderRadius: "8px",
+                overflow: "hidden",
               }}
             >
               <img
                 src={collageImage1}
-                alt='Collage Image 1'
+                alt="Collage Image 1"
                 style={{
-                  width: '100%',
-                  height: '190px',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "190px",
+                  objectFit: "cover",
                 }}
               />
             </div>
             <div
               style={{
-                borderRadius: '8px',
-                overflow: 'hidden',
+                borderRadius: "8px",
+                overflow: "hidden",
               }}
             >
               <img
                 src={collageImage2}
-                alt='Collage Image 2'
+                alt="Collage Image 2"
                 style={{
-                  width: '100%',
-                  height: '190px',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "190px",
+                  objectFit: "cover",
                 }}
               />
             </div>
@@ -503,56 +513,56 @@ const Home = () => {
           {/* Bottom Row: 3 Images */}
           <div
             style={{
-              display: 'grid',
-              gridTemplateColumns: '1fr 1fr 1fr',
-              gap: '5px',
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: "5px",
             }}
           >
             <div
               style={{
-                borderRadius: '8px',
-                overflow: 'hidden',
+                borderRadius: "8px",
+                overflow: "hidden",
               }}
             >
               <img
                 src={collageImage3}
-                alt='Collage Image 3'
+                alt="Collage Image 3"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                 }}
               />
             </div>
             <div
               style={{
-                borderRadius: '8px',
-                overflow: 'hidden',
+                borderRadius: "8px",
+                overflow: "hidden",
               }}
             >
               <img
                 src={collageImage4}
-                alt='Collage Image 4'
+                alt="Collage Image 4"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                 }}
               />
             </div>
             <div
               style={{
-                borderRadius: '8px',
-                overflow: 'hidden',
+                borderRadius: "8px",
+                overflow: "hidden",
               }}
             >
               <img
                 src={collageImage5}
-                alt='Collage Image 5'
+                alt="Collage Image 5"
                 style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
                 }}
               />
             </div>
@@ -979,12 +989,12 @@ const Home = () => {
   `}
       </style>
       <div
-        className='container-fluid'
+        className="container-fluid"
         style={{
-          backgroundColor: '#f8cad7',
-          minHeight: '100vh',
-          padding: '2rem 0',
-          overflow: 'hidden',
+          backgroundColor: "#fad9e3",
+          // minHeight: '100vh',
+          padding: "2rem 0",
+          overflow: "hidden",
         }}
       >
         <style>
@@ -1826,102 +1836,102 @@ const Home = () => {
     `}
         </style>
 
-        <div className='hero-container'>
+        <div className="hero-container">
           {/* Left Section (Text and Secondary Image) */}
-          <div className='left-section d-flex flex-column'>
-            <div className='text-content'>
-              <h1 className='hero-title'>
+          <div className="left-section d-flex flex-column">
+            <div className="text-content">
+              <h1 className="hero-title">
                 YOUR ONE-STOP
-                <span style={{ color: '#54a3c1' }}>
-                  {' '}
+                <span style={{ color: "#54a3c1" }}>
+                  {" "}
                   BEAUTY <br /> DESTINATION
                 </span>
               </h1>
 
-              <p className='hero-subtitle'>
+              <p className="hero-subtitle">
                 Discover expert services from salon to skincare in one elegant
                 space.
               </p>
 
-              <div className='button-group'>
-                <div className='btn-conteiner'>
-                  <a href='/salon' className='btn-content'>
+              <div className="button-group">
+                <div className="btn-conteiner">
+                  <a href="/salon" className="btn-content">
                     <span>SALON</span>
                   </a>
                 </div>
 
-                <div className='btn-conteiner'>
-                  <a href='/beauty' className='btn-content'>
+                <div className="btn-conteiner">
+                  <a href="/beauty" className="btn-content">
                     <span>BEAUTY</span>
                   </a>
                 </div>
 
-                <div className='btn-conteiner'>
-                  <a href='/skincare' className='btn-content'>
+                <div className="btn-conteiner">
+                  <a href="/skincare" className="btn-content">
                     <span>DOCTOR</span>
                   </a>
                 </div>
 
-                <div className='btn-conteiner'>
-                  <button onClick={handleEnquiryClick} className='btn-content'>
+                <div className="btn-conteiner">
+                  <button onClick={handleEnquiryClick} className="btn-content">
                     <span>ENQUIRY</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <div className='image-container d-flex flex-row justify-content-end'>
+            <div className="image-container d-flex flex-row justify-content-end">
               <img
                 src={Girlhair1}
-                alt='Salon Interior'
-                className='secondary-image img-fluid'
+                alt="Salon Interior"
+                className="secondary-image img-fluid"
               />
             </div>
           </div>
 
           {/* Right Section (Primary Image Only) */}
-          <div className='right-section'>
+          <div className="right-section">
             <img
               src={Girlhair}
-              alt='Beauty Services'
-              className='primary-image d-none d-lg-block img-fluid'
+              alt="Beauty Services"
+              className="primary-image d-none d-lg-block img-fluid"
             />
           </div>
         </div>
       </div>
-      <div className='container-fluid px-0'>
+      <div className="container-fluid px-0">
         <div
-          className='container-fluid'
+          className="container-fluid"
           style={{
-            backgroundColor: '#f8cad7', // Light pink background matching the image
+            backgroundColor: "#fad9e3", // Light pink background matching the image
 
-            minHeight: '100vh',
+            // minHeight: '100vh',
           }}
         >
-          <div className='row align-items-center'>
-            <div className='col-12 text-center'>
+          <div className="row align-items-center">
+            <div className="col-12 text-center">
               <motion.h2
-                className='section-title mb-3'
+                className="section-title mb-3"
                 initial={{ opacity: 0, y: -20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.8 }}
                 style={{
-                  color: '#0e0f0f',
-                  fontWeight: '600',
-                  fontSize: '2rem',
-                  textTransform: 'uppercase',
+                  color: "#0e0f0f",
+                  fontWeight: "600",
+                  fontSize: "2rem",
+                  textTransform: "uppercase",
                 }}
               >
                 PREMIUM SALON SERVICES
               </motion.h2>
               <motion.p
-                className='mb-5'
+                className="mb-5"
                 style={{
-                  color: '#0e0f0f',
-                  margin: '0 auto 40px',
-                  fontSize: '1rem',
-                  textTransform: 'uppercase',
+                  color: "#0e0f0f",
+                  margin: "0 auto 40px",
+                  fontSize: "1rem",
+                  textTransform: "uppercase",
                 }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -1932,66 +1942,66 @@ const Home = () => {
                 QUALITY PRODUCTS FOR YOUR PERFECT LOOK.
               </motion.p>
 
-              <div className='row justify-content-center'>
+              <div className="row justify-content-center">
                 {[
                   {
-                    title: 'Precision Haircuts',
+                    title: "Precision Haircuts",
                     description:
-                      'Tailored cuts to suit your style and face shape, crafted by master stylists.',
+                      "Tailored cuts to suit your style and face shape, crafted by master stylists.",
                     image: card1, // Replace with actual image path
                   },
                   {
-                    title: 'Balayage & Highlights',
+                    title: "Balayage & Highlights",
                     description:
-                      'Vibrant, hand-painted color for a natural, glowing finish.',
+                      "Vibrant, hand-painted color for a natural, glowing finish.",
                     image: card2, // Replace with actual image path
                   },
                   {
-                    title: 'Facial',
+                    title: "Facial",
                     description:
-                      'Rejuvenate your skin with customized facials for a radiant, glowing complexion.',
+                      "Rejuvenate your skin with customized facials for a radiant, glowing complexion.",
                     image: card3, // Replace with actual image path
                   },
                   {
-                    title: 'Precision Haircuts',
+                    title: "Precision Haircuts",
                     description:
-                      'Tailored cuts to suit your style and face shape, crafted by our master stylists.',
+                      "Tailored cuts to suit your style and face shape, crafted by our master stylists.",
                     image: card4, // Replace with actual image path
                   },
                 ].map((service, i) => (
-                  <div key={i} className='col-md-3 col-sm-12 mb-4'>
+                  <div key={i} className="col-md-3 col-sm-12 mb-4">
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: false, amount: 0.3 }}
                       transition={{ duration: 0.5, delay: i * 0.1 }}
                       style={{
-                        backgroundColor: '#f195ae', // Light pink card background
-                        borderRadius: '15px',
-                        textAlign: 'center',
-                        boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-                        overflow: 'hidden', // Ensure image doesn't overflow the card
-                        height: '350px', // Fixed height for the entire card
-                        display: 'flex', // Use flexbox to control internal layout
-                        flexDirection: 'column', // Stack image and content vertically
+                        backgroundColor: "#f0afc1", // Light pink card background
+                        borderRadius: "15px",
+                        textAlign: "center",
+                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+                        overflow: "hidden", // Ensure image doesn't overflow the card
+                        height: "350px", // Fixed height for the entire card
+                        display: "flex", // Use flexbox to control internal layout
+                        flexDirection: "column", // Stack image and content vertically
                       }}
                     >
                       <div
                         style={{
-                          width: '100%',
-                          height: '220px', // Fixed height for image section
-                          position: 'relative',
+                          width: "100%",
+                          height: "220px", // Fixed height for image section
+                          position: "relative",
                         }}
                       >
                         <img
                           src={service.image}
                           alt={service.title}
                           style={{
-                            width: '100%',
-                            height: '100%', // Ensure the image takes the full height of the container
-                            objectFit: 'cover', // Cover the entire area, cropping if needed
-                            borderRadius: '10px 10px 0 0', // Round only the top corners
-                            position: 'absolute',
+                            width: "100%",
+                            height: "100%", // Ensure the image takes the full height of the container
+                            objectFit: "cover", // Cover the entire area, cropping if needed
+                            borderRadius: "10px 10px 0 0", // Round only the top corners
+                            position: "absolute",
                             top: 0,
                             left: 0,
                           }}
@@ -1999,35 +2009,35 @@ const Home = () => {
                       </div>
                       <div
                         style={{
-                          padding: '15px',
-                          flex: '1 1 auto', // Allow content to grow and fill remaining space
-                          display: 'flex', // Use flexbox to manage title and description
-                          flexDirection: 'column', // Stack title and description
-                          justifyContent: 'space-between', // Distribute space evenly
-                          overflow: 'hidden', // Prevent content from overflowing
+                          padding: "15px",
+                          flex: "1 1 auto", // Allow content to grow and fill remaining space
+                          display: "flex", // Use flexbox to manage title and description
+                          flexDirection: "column", // Stack title and description
+                          justifyContent: "space-between", // Distribute space evenly
+                          overflow: "hidden", // Prevent content from overflowing
                         }}
                       >
                         <h4
                           style={{
-                            color: '#0e0f0f',
-                            fontWeight: '600',
-                            fontSize: '1.2rem',
-                            marginBottom: '10px',
-                            textTransform: 'uppercase',
+                            color: "#0e0f0f",
+                            fontWeight: "600",
+                            fontSize: "1.2rem",
+                            marginBottom: "10px",
+                            textTransform: "uppercase",
                           }}
                         >
                           {service.title}
                         </h4>
                         <p
                           style={{
-                            color: '#0e0f0f',
-                            fontSize: '0.9rem',
-                            textTransform: 'uppercase',
-                            overflow: 'hidden', // Hide excess text
-                            textOverflow: 'ellipsis', // Add ellipsis for truncated text
-                            display: '-webkit-box',
+                            color: "#0e0f0f",
+                            fontSize: "0.9rem",
+                            textTransform: "uppercase",
+                            overflow: "hidden", // Hide excess text
+                            textOverflow: "ellipsis", // Add ellipsis for truncated text
+                            display: "-webkit-box",
                             WebkitLineClamp: 3, // Limit to 3 lines of text
-                            WebkitBoxOrient: 'vertical', // Required for line clamping
+                            WebkitBoxOrient: "vertical", // Required for line clamping
                             margin: 0, // Remove default margin for consistency
                           }}
                         >
@@ -2043,60 +2053,60 @@ const Home = () => {
         </div>
 
         <section
-          id='beauty'
+          id="beauty"
           style={{
-            background: '#f8cad7',
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            overflowX: 'hidden',
-            padding: '60px 0',
+            background: "#fad9e3",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            overflowX: "hidden",
+            padding: "60px 0",
           }}
         >
           <div
-            className='container-fluid py-4'
+            className="container-fluid py-4"
             style={{
-              background: '#f8cad7',
-              padding: '0px',
+              background: "#fad9e3",
+              padding: "0px",
             }}
           >
             {/* Heading and Subheading */}
             <div
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                padding: '40px 0',
-                textAlign: "center"
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "40px 0",
+                textAlign: "center",
               }}
             >
               <motion.h2
-                className='section-title mb-2'
+                className="section-title mb-2"
                 initial={{ opacity: 0, y: -20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.8 }}
                 style={{
-                  fontSize: '2.8rem',
-                  fontWeight: '800',
-                  color: '#000000', // Black color as in the image
-                  letterSpacing: '-0.01em',
-                  marginBottom: '8px',
+                  fontSize: "2.8rem",
+                  fontWeight: "800",
+                  color: "#000000", // Black color as in the image
+                  letterSpacing: "-0.01em",
+                  marginBottom: "8px",
                 }}
               >
                 Luxury Beauty Treatments
               </motion.h2>
 
               <motion.p
-                className='lead mb-5'
+                className="lead mb-5"
                 style={{
-                  fontSize: '1.1rem',
-                  color: '#000000', // Black color as in the image
-                  maxWidth: '550px',
-                  margin: '0 auto',
-                  fontWeight: '400',
-                  lineHeight: '1.4',
-                  opacity: '0.9',
+                  fontSize: "1.1rem",
+                  color: "#000000", // Black color as in the image
+                  maxWidth: "550px",
+                  margin: "0 auto",
+                  fontWeight: "400",
+                  lineHeight: "1.4",
+                  opacity: "0.9",
                 }}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -2108,78 +2118,78 @@ const Home = () => {
             </div>
 
             {/* Cards Section */}
-            <div className='row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 p-3 justify-content-center'>
+            <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 p-3 justify-content-center">
               {[
                 {
-                  name: 'Bridal',
-                  title: 'Bridal Makeup',
-                  text: 'Flawless makeup for your big day.',
-                  img: 'https://queensinstyle.com/assets/images/logo-3.png',
+                  name: "Bridal",
+                  title: "Bridal Makeup",
+                  text: "Flawless makeup for your big day.",
+                  img: "https://queensinstyle.com/assets/images/logo-3.png",
                   delay: 0.1,
                 },
                 {
-                  name: 'HairCut',
-                  title: 'Haircut',
-                  text: 'Perfect nails with vibrant gel colors.',
-                  img: 'https://cdn.pixabay.com/photo/2012/04/13/18/16/haircut-33130_640.png',
+                  name: "HairCut",
+                  title: "Haircut",
+                  text: "Perfect nails with vibrant gel colors.",
+                  img: "https://cdn.pixabay.com/photo/2012/04/13/18/16/haircut-33130_640.png",
                   delay: 0.2,
                 },
                 {
-                  name: 'Waxing',
-                  title: 'Waxing',
-                  text: 'Creative designs to showcase your style.',
-                  img: 'https://images.vexels.com/media/users/3/321110/isolated/preview/c221075ca31010635bca0be5654ae2f1-wax-jar-with-spatula.png',
+                  name: "Waxing",
+                  title: "Waxing",
+                  text: "Creative designs to showcase your style.",
+                  img: "https://images.vexels.com/media/users/3/321110/isolated/preview/c221075ca31010635bca0be5654ae2f1-wax-jar-with-spatula.png",
                   delay: 0.3,
                 },
                 {
-                  name: 'Pedicure',
-                  title: 'Spa Pedicures',
-                  text: 'Relaxing treatments for soft, pampered feet.',
-                  img: 'https://png.pngtree.com/png-vector/20230924/ourmid/pngtree-pedicure-and-manicure-toe-png-image_9990440.png',
+                  name: "Pedicure",
+                  title: "Spa Pedicures",
+                  text: "Relaxing treatments for soft, pampered feet.",
+                  img: "https://png.pngtree.com/png-vector/20230924/ourmid/pngtree-pedicure-and-manicure-toe-png-image_9990440.png",
                   delay: 0.4,
                 },
               ].map((card, idx) => (
                 <motion.div
-                  className='col'
+                  className="col"
                   key={idx}
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: false, amount: 0.3 }}
                   onClick={() => handleBeautyClick(card.name)}
                   transition={{ delay: card.delay, duration: 0.8 }}
-                  style={{ maxWidth: '250px' }} // Adjusted card width to match image
+                  style={{ maxWidth: "250px" }} // Adjusted card width to match image
                 >
                   <div
-                    className='card shadow-sm rounded-3 border-0'
+                    className="card shadow-sm rounded-3 border-0"
                     style={{
-                      backgroundColor: '#ffffff',
-                      padding: '20px',
-                      textAlign: 'center',
+                      backgroundColor: "#ffffff",
+                      padding: "20px",
+                      textAlign: "center",
                     }}
                   >
-                    <div className='text-center pt-3'>
+                    <div className="text-center pt-3">
                       <img
-                        src={card.img || '/placeholder.svg'}
+                        src={card.img || "/placeholder.svg"}
                         alt={card.title}
-                        className='mx-auto'
+                        className="mx-auto"
                         style={{
-                          width: '80px',
-                          height: '80px',
-                          objectFit: 'contain',
-                          transition: 'all 0.5s ease',
+                          width: "80px",
+                          height: "80px",
+                          objectFit: "contain",
+                          transition: "all 0.5s ease",
                         }}
                       />
                     </div>
-                    <div className='card-body text-center'>
+                    <div className="card-body text-center">
                       <h5
-                        className='card-title fw-bold'
-                        style={{ fontSize: '1.1rem', color: '#1e90ff' }} // Blue color for titles as in the image
+                        className="card-title fw-bold"
+                        style={{ fontSize: "1.1rem", color: "#1e90ff" }} // Blue color for titles as in the image
                       >
                         {card.title}
                       </h5>
                       <p
-                        className='card-text'
-                        style={{ fontSize: '0.9rem', color: '#000000' }} // Black text for descriptions
+                        className="card-text"
+                        style={{ fontSize: "0.9rem", color: "#000000" }} // Black text for descriptions
                       >
                         {card.text}
                       </p>
@@ -2192,80 +2202,80 @@ const Home = () => {
         </section>
 
         <section
-          className=''
-          id='skincare'
-          style={{ background: '#f8cad7', padding: '60px 0' }}
+          className=""
+          id="skincare"
+          style={{ background: "#fad9e3", padding: "60px 0" }}
         >
-          <div className='container' style={{ backgroundColor: '#FFEBF1' }}>
-            <div className='row align-items-center py-5'>
+          <div className="container" style={{ backgroundColor: "#fad9e3" }}>
+            <div className="row align-items-center py-5">
               <motion.div
-                className='col-md-6 text-center mb-4 mb-md-0'
+                className="col-md-6 text-center mb-4 mb-md-0"
                 initial={{ opacity: 0, x: -50 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.8 }}
               >
                 <div
-                  className='position-relative d-flex justify-content-center'
-                  style={{ height: '400px', marginLeft: '50px' }}
+                  className="position-relative d-flex justify-content-center"
+                  style={{ height: "400px", marginLeft: "20px" }}
                 >
                   <motion.div
-                    className='position-absolute img-wrapper'
-                    style={{ top: '0', left: '0' }}
+                    className="position-absolute img-wrapper"
+                    style={{ top: "0", left: "0" }}
                     whileHover={{ scale: 1.05, zIndex: 10 }}
                     transition={{ duration: 0.3 }}
                   >
                     <img
-                      src='https://plus.unsplash.com/premium_photo-1674739375749-7efe56fc8bbb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2tpbiUyMGNhcmV8ZW58MHx8MHx8fDA%3D'
-                      alt='Skincare Services 1'
-                      className='img-fluid rounded shadow custom-img'
+                      src="https://plus.unsplash.com/premium_photo-1674739375749-7efe56fc8bbb?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8c2tpbiUyMGNhcmV8ZW58MHx8MHx8fDA%3D"
+                      alt="Skincare Services 1"
+                      className="img-fluid rounded shadow custom-img"
                       style={{
-                        width: '300px',
-                        height: '362px',
-                        objectFit: 'cover',
-                        borderRadius: '15px',
-                        border: '2px solid #201548',
-                        boxShadow: '0 10px 20px rgba(32, 21, 72, 0.2)',
+                        width: "300px",
+                        height: "362px",
+                        objectFit: "cover",
+                        borderRadius: "15px",
+                        border: "2px solid #201548",
+                        boxShadow: "0 10px 20px rgba(32, 21, 72, 0.2)",
                       }}
                     />
                   </motion.div>
                   <motion.div
-                    className='position-absolute img-wrapper'
-                    style={{ top: '40px', left: '80px' }}
+                    className="position-absolute img-wrapper"
+                    style={{ top: "40px", left: "80px" }}
                     whileHover={{ scale: 1.05, zIndex: 10 }}
                     transition={{ duration: 0.3 }}
                   >
                     <img
-                      src='https://healthwire.pk/wp-content/uploads/2022/06/skin-care-tips-for-summer.jpg'
-                      alt='Skincare Services 2'
-                      className='img-fluid rounded shadow custom-img'
+                      src="https://healthwire.pk/wp-content/uploads/2022/06/skin-care-tips-for-summer.jpg"
+                      alt="Skincare Services 2"
+                      className="img-fluid rounded shadow custom-img"
                       style={{
-                        width: '300px',
-                        height: '362px',
-                        objectFit: 'cover',
-                        borderRadius: '15px',
-                        border: '2px solid #201548',
-                        boxShadow: '0 10px 20px rgba(32, 21, 72, 0.2)',
+                        width: "300px",
+                        height: "362px",
+                        objectFit: "cover",
+                        borderRadius: "15px",
+                        border: "2px solid #201548",
+                        boxShadow: "0 10px 20px rgba(32, 21, 72, 0.2)",
                       }}
                     />
                   </motion.div>
                   <motion.div
-                    className='position-absolute img-wrapper'
-                    style={{ top: '80px', left: '160px' }}
+                    className="position-absolute img-wrapper"
+                    style={{ top: "80px", left: "160px" }}
                     whileHover={{ scale: 1.05, zIndex: 10 }}
                     transition={{ duration: 0.3 }}
                   >
                     <img
-                      src='https://images.pexels.com/photos/3757657/pexels-photo-3757657.jpeg?auto=compress&cs=tinysrgb&w=600'
-                      alt='Skincare Services 3'
-                      className='img-fluid rounded shadow custom-img'
+                      src="https://images.pexels.com/photos/3757657/pexels-photo-3757657.jpeg?auto=compress&cs=tinysrgb&w=600"
+                      alt="Skincare Services 3"
+                      className="img-fluid rounded shadow custom-img"
                       style={{
-                        width: '300px',
-                        height: '362px',
-                        objectFit: 'cover',
-                        borderRadius: '15px',
-                        border: '2px solid #201548',
-                        boxShadow: '0 10px 20px rgba(32, 21, 72, 0.2)',
+                        width: "300px",
+                        height: "362px",
+                        objectFit: "cover",
+                        borderRadius: "15px",
+                        border: "2px solid #201548",
+                        boxShadow: "0 10px 20px rgba(32, 21, 72, 0.2)",
                       }}
                     />
                   </motion.div>
@@ -2273,50 +2283,56 @@ const Home = () => {
               </motion.div>
 
               <motion.div
-                className='col-md-6 text-start'
+                className="col-md-6 text-center text-md-start mt-3"
                 initial={{ opacity: 0, x: 0 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
                 <h2
-                  className='section-title mb-3'
-                  style={{ textAlign: 'left', color: '#FB646B' }}
+                  className="section-title text-center text-md-start"
+                  style={{ color: "#FB646B" }}
                 >
                   Radiant Skincare
                 </h2>
-                <h3 className='fw-bold mb-4' style={{ color: '#0e0f0f' }}>
+                <h3
+                  className="fw-bold mb-4 text-center text-md-start"
+                  style={{ color: "#0e0f0f" }}
+                >
                   Transform your skin with Beauty Bliss
                 </h3>
-                <p className='lead mb-4' style={{ color: '#0e0f0f' }}>
+                <p
+                  className="lead mb-4 text-center text-md-start"
+                  style={{ color: "#0e0f0f" }}
+                >
                   At Beauty Bliss, our expert skincare treatments rejuvenate and
                   nourish your skin, helping you achieve a flawless, glowing
                   complexion with personalized care.
                 </p>
-                <ul className='list-unstyled'>
+                <ul className="list-unstyled">
                   <motion.li
-                    className='d-flex align-items-start mb-3'
+                    className="d-flex align-items-start mb-3 justify-content-center justify-content-md-start"
                     initial={{ opacity: 0, x: 0 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.3 }}
                     transition={{ delay: 0.3, duration: 0.5 }}
                     style={{
-                      color: 'black',
-                      padding: '12px 15px',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(32, 21, 72, 0.1)',
-                      transition: 'all 0.3s ease',
+                      color: "black",
+                      padding: "12px 15px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(32, 21, 72, 0.1)",
+                      transition: "all 0.3s ease",
                     }}
                     whileHover={{
-                      boxShadow: '0 5px 15px rgba(32, 21, 72, 0.1)',
+                      boxShadow: "0 5px 15px rgba(32, 21, 72, 0.1)",
                       translateY: -3,
                     }}
                   >
                     <span
                       style={{
-                        color: '#201548',
-                        marginRight: '10px',
-                        fontWeight: 'bold',
+                        color: "#201548",
+                        marginRight: "10px",
+                        fontWeight: "bold",
                       }}
                     >
                       ✔️
@@ -2324,28 +2340,28 @@ const Home = () => {
                     Customized facials tailored to your skin type
                   </motion.li>
                   <motion.li
-                    className='d-flex align-items-start mb-3'
+                    className="d-flex align-items-start mb-3 justify-content-center justify-content-md-start"
                     initial={{ opacity: 0, x: 0 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.3 }}
                     transition={{ delay: 0.4, duration: 0.5 }}
                     style={{
-                      color: 'black',
-                      padding: '12px 15px',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(32, 21, 72, 0.1)',
-                      transition: 'all 0.3s ease',
+                      color: "black",
+                      padding: "12px 15px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(32, 21, 72, 0.1)",
+                      transition: "all 0.3s ease",
                     }}
                     whileHover={{
-                      boxShadow: '0 5px 15px rgba(32, 21, 72, 0.1)',
+                      boxShadow: "0 5px 15px rgba(32, 21, 72, 0.1)",
                       translateY: -3,
                     }}
                   >
                     <span
                       style={{
-                        color: '#201548',
-                        marginRight: '10px',
-                        fontWeight: 'bold',
+                        color: "#201548",
+                        marginRight: "10px",
+                        fontWeight: "bold",
                       }}
                     >
                       ✔️
@@ -2353,28 +2369,28 @@ const Home = () => {
                     Advanced treatments for lasting hydration
                   </motion.li>
                   <motion.li
-                    className='d-flex align-items-start mb-3'
+                    className="d-flex align-items-start mb-3 justify-content-center justify-content-md-start"
                     initial={{ opacity: 0, x: 0 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: false, amount: 0.3 }}
                     transition={{ delay: 0.5, duration: 0.5 }}
                     style={{
-                      color: 'black',
-                      padding: '12px 15px',
-                      borderRadius: '8px',
-                      border: '1px solid rgba(32, 21, 72, 0.1)',
-                      transition: 'all 0.3s ease',
+                      color: "black",
+                      padding: "12px 15px",
+                      borderRadius: "8px",
+                      border: "1px solid rgba(32, 21, 72, 0.1)",
+                      transition: "all 0.3s ease",
                     }}
                     whileHover={{
-                      boxShadow: '0 5px 15px rgba(32, 21, 72, 0.1)',
+                      boxShadow: "0 5px 15px rgba(32, 21, 72, 0.1)",
                       translateY: -3,
                     }}
                   >
                     <span
                       style={{
-                        color: '#201548',
-                        marginRight: '10px',
-                        fontWeight: 'bold',
+                        color: "#201548",
+                        marginRight: "10px",
+                        fontWeight: "bold",
                       }}
                     >
                       ✔️
@@ -2389,93 +2405,93 @@ const Home = () => {
       </div>
       {enquiryModalOpen && (
         <div
-          className='position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center'
+          className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center"
           style={{
-            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
             zIndex: 1050,
           }}
         >
           <motion.div
             ref={modalRef}
-            className='bg-white rounded-4 shadow-lg p-4 mx-3'
+            className="bg-white rounded-4 shadow-lg p-4 mx-3"
             style={{
-              maxWidth: '600px',
-              width: '100%',
-              maxHeight: '90vh',
-              overflowY: 'auto',
+              maxWidth: "600px",
+              width: "100%",
+              maxHeight: "90vh",
+              overflowY: "auto",
             }}
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.3 }}
           >
-            <div className='d-flex justify-content-between align-items-center mb-4'>
-              <h3 className='m-0' style={{ color: '#201548' }}>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h3 className="m-0" style={{ color: "#201548" }}>
                 Service Enquiry
               </h3>
               <button
-                className='btn border-0'
+                className="btn border-0"
                 onClick={() => setEnquiryModalOpen(false)}
-                style={{ color: '#201548' }}
+                style={{ color: "#201548" }}
               >
-                <i className='bi bi-x-lg'></i>
+                <i className="bi bi-x-lg"></i>
               </button>
             </div>
 
-            <div className='mb-4'>
+            <div className="mb-4">
               <label
-                htmlFor='serviceProvider'
-                className='form-label fw-semibold text-dark'
+                htmlFor="serviceProvider"
+                className="form-label fw-semibold text-dark"
               >
                 Select Service Provider
               </label>
               <select
-                id='serviceProvider'
-                className='form-select'
+                id="serviceProvider"
+                className="form-select"
                 value={selectedProvider}
                 onChange={(e) => setSelectedProvider(e.target.value)}
               >
-                <option value='' disabled>
+                <option value="" disabled>
                   -- Select a service provider --
                 </option>
                 {serviceProviders.map((provider) => (
                   <option key={provider._id} value={provider.email}>
-                    {provider.shopName} - {provider.designation} (Rating:{' '}
+                    {provider.shopName} - {provider.designation} (Rating:{" "}
                     {provider.spRating})
                   </option>
                 ))}
               </select>
             </div>
 
-            <div className='mb-4'>
+            <div className="mb-4">
               <label
-                htmlFor='enquiryMessage'
-                className='form-label fw-semibold text-dark'
+                htmlFor="enquiryMessage"
+                className="form-label fw-semibold text-dark"
               >
                 Your Message
               </label>
               <textarea
-                id='enquiryMessage'
-                className='form-control'
-                rows='5'
+                id="enquiryMessage"
+                className="form-control"
+                rows="5"
                 placeholder="Please describe what services you're interested in..."
                 value={enquiryMessage}
                 onChange={(e) => setEnquiryMessage(e.target.value)}
               ></textarea>
             </div>
 
-            <div className='d-flex gap-3 justify-content-end'>
+            <div className="d-flex gap-3 justify-content-end">
               <button
-                className='btn btn-outline-secondary'
+                className="btn btn-outline-secondary"
                 onClick={() => setEnquiryModalOpen(false)}
               >
                 Cancel
               </button>
               <button
-                className='btn'
+                className="btn"
                 style={{
-                  backgroundColor: '#201548',
-                  color: 'white',
-                  transition: 'all 0.3s ease',
+                  backgroundColor: "#201548",
+                  color: "white",
+                  transition: "all 0.3s ease",
                 }}
                 onClick={handleSubmitEnquiry}
               >

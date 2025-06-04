@@ -199,7 +199,7 @@ const SpNotifications = () => {
       style={{
         padding: "2rem",
         minHeight: "100vh",
-        backgroundColor: "rgb(248,202,215)",
+        backgroundColor: "#fad9e3",
       }}
     >
       <style>

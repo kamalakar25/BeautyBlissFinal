@@ -18,32 +18,43 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-               style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
-    
+              style={{
+                color: "#54A3C1",
+                position: "relative",
+                fontFamily: "Playfair Display SC",
+              }}
             >
               Contact Us
             </h4>
-            <p className="mb-2" style={{ color: "#0E0F0F", 
-              fontFamily:"font family/Font 2",
-              fontWeight:"font weight/400",
-
-            }}>
-              <i className="bi bi-geo-alt me-2"></i>Lb nagar vanasthalipuram
-              hyderabad 500070
+            <p
+              className="mb-2"
+              style={{
+                color: "#0E0F0F",
+                fontFamily: "font family/Font 2",
+                fontWeight: "font weight/400",
+              }}
+            >
+              <i className="bi bi-geo-alt me-2"></i>ABC
             </p>
-            <p className="mb-2" style={{ color: "#0E0F0F", 
-              fontFamily:"font family/Font 2",
-              fontWeight:"font weight/400",
-
-            }}>
-              <i className="bi bi-telephone me-2"></i> (+91) 9777733220
+            <p
+              className="mb-2"
+              style={{
+                color: "#0E0F0F",
+                fontFamily: "font family/Font 2",
+                fontWeight: "font weight/400",
+              }}
+            >
+              <i className="bi bi-telephone me-2"></i> 9876543211
             </p>
-            <p className="mb-2" style={{ color: "#0E0F0F", 
-              fontFamily:"font family/Font 2",
-              fontWeight:"font weight/400",
-
-            }}>
-              <i className="bi bi-envelope me-2"></i> beautybliss@gmail.com
+            <p
+              className="mb-2"
+              style={{
+                color: "#0E0F0F",
+                fontFamily: "font family/Font 2",
+                fontWeight: "font weight/400",
+              }}
+            >
+              <i className="bi bi-envelope me-2"></i> abc@gmail.com
             </p>
           </motion.div>
 
@@ -57,7 +68,11 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-              style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
+              style={{
+                color: "#54A3C1",
+                position: "relative",
+                fontFamily: "Playfair Display SC",
+              }}
             >
               Quick Links
             </h4>
@@ -69,7 +84,7 @@ const Footer = () => {
                   color: "#54A3C1",
                   transition: "all 0.3s ease",
                   fontWeight: "font weight/400",
-                  fontFamily:"font family/Font 2"
+                  fontFamily: "font family/Font 2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
@@ -89,8 +104,7 @@ const Footer = () => {
                   color: "#54A3C1",
                   transition: "all 0.3s ease",
                   fontWeight: "font weight/400",
-                   fontFamily:"font family/Font 2"
-              
+                  fontFamily: "font family/Font 2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
@@ -110,8 +124,7 @@ const Footer = () => {
                   color: "#54A3C1",
                   transition: "all 0.3s ease",
                   fontWeight: "font weight/400",
-                   fontFamily:"font family/Font 2"
-              
+                  fontFamily: "font family/Font 2",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.transform = "translateX(5px)";
@@ -137,8 +150,11 @@ const Footer = () => {
           >
             <h4
               className="fw-bold mb-4"
-              style={{ color: "#54A3C1", position: "relative" ,fontFamily:"Playfair Display SC" ,}}
-    
+              style={{
+                color: "#54A3C1",
+                position: "relative",
+                fontFamily: "Playfair Display SC",
+              }}
             >
               Follow Us
             </h4>
@@ -199,11 +215,14 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="text-center mt-5" style={{ color: "#0E0F0F", 
-              fontFamily:"font family/Font 2",
-              fontWeight:"font weight/400",
-
-            }}>
+        <div
+          className="text-center mt-5"
+          style={{
+            color: "#0E0F0F",
+            fontFamily: "font family/Font 2",
+            fontWeight: "font weight/400",
+          }}
+        >
           <p className="mb-0">
             ©️ {new Date().getFullYear()} BeautyBliss. All rights reserved.
           </p>

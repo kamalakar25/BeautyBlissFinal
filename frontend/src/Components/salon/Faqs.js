@@ -27,6 +27,9 @@ const formatTimeAgo = (date) => {
   }
 };
 
+const BASE_URL = process.env.REACT_APP_API_URL;
+
+
 const Faq = () => {
   const [faqs, setFaqs] = useState([]);
   const [question, setQuestion] = useState("");
@@ -39,7 +42,7 @@ const Faq = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/terms/faqs")
+      .get(`${BASE_URL}/api/terms/faqs`)
       .then((res) => setFaqs(res.data))
       .catch((err) => console.error(err));
   }, []);
@@ -57,7 +60,7 @@ const Faq = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/terms/faqs",
+        `${BASE_URL}/api/terms/faqs`,
         { question },
         { headers: { "user-email": email } }
       );
@@ -102,7 +105,7 @@ const Faq = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#f8cad7",}}>
+    <div style={{ backgroundColor: "#fad9e3" }}>
       <Container fluid className="my-5">
         <h2 className="text-center mb-4" style={{ color: "#FB646B" }}>
           Frequently Asked Questions
@@ -110,7 +113,7 @@ const Faq = () => {
         <Row>
           <Col md={8} className="mx-auto">
             {faqs.length === 0 ? (
-              <p style={{textAlign: "center"}}>No FAQs available.</p>
+              <p style={{ textAlign: "center" }}>No FAQs available.</p>
             ) : (
               <>
                 <Accordion>
@@ -132,6 +135,22 @@ const Faq = () => {
                   ))}
                 </Accordion>
                 {/* Pagination Component */}
+                {/* {totalPages > 1 && (
+                  <div className="d-flex justify-content-center mt-4 flex-column flex-md-row align-items-center gap-2">
+                    <Pagination>
+                      <Pagination.Prev
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                      />
+                      {paginationItems}
+                      <Pagination.Next
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                      />
+                    </Pagination>
+                  </div>
+                )} */}
+
                 {totalPages > 1 && (
   <div className="d-flex justify-content-center mt-4 flex-column flex-md-row align-items-center gap-2">
     <Pagination>
@@ -139,15 +158,18 @@ const Faq = () => {
         onClick={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
       />
-      {paginationItems}
+      {/* {paginationItems} */}
+       <span className="text-muted">
+      {currentPage} of {totalPages}
+    </span>
       <Pagination.Next
         onClick={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       />
     </Pagination>
+   
   </div>
 )}
-
               </>
             )}
             <Card className="mt-4">

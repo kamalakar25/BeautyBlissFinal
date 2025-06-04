@@ -202,7 +202,7 @@ const Enquiries = () => {
   return (
     <div
       style={{
-        backgroundColor: "#F8CAD7",
+        backgroundColor: "#fad9e3",
         minHeight: "100vh",
         color: "#2D2828",
       }}
@@ -226,57 +226,60 @@ const Enquiries = () => {
             </div>
             <div className="col-md-6 d-flex justify-content-center justify-content-md-end mt-3 mt-md-0">
               <div className="d-flex gap-4">
-  <Badge
-    badgeContent={
-      filteredEnquiries.filter((e) => e.status === "new").length
-    }
-    color="error"
-  >
-    <button
-      className={`btn ${
-        statusFilter === "new"
-          ? "btn-custom"
-          : "btn-outline-custom"
-      }`}
-      onClick={() =>
-        setStatusFilter(statusFilter === "new" ? "all" : "new")
-      }
-      style={{
-        backgroundColor: statusFilter === "new" ? "#fb646b" : "transparent",
-        color: statusFilter === "new" ? "#fff" : "#fb646b",
-        borderColor: "#fb646b",
-      }}
-    >
-      New
-    </button>
-  </Badge>
-  <Badge
-    badgeContent={
-      filteredEnquiries.filter((e) => e.status === "approved").length
-    }
-    color="warning"
-  >
-    <button
-      className={`btn ${
-        statusFilter === "approved"
-          ? "btn-custom"
-          : "btn-outline-custom"
-      }`}
-      onClick={() =>
-        setStatusFilter(
-          statusFilter === "approved" ? "all" : "approved"
-        )
-      }
-      style={{
-        backgroundColor: statusFilter === "approved" ? "#fb646b" : "transparent",
-        color: statusFilter === "approved" ? "#fff" : "#fb646b",
-        borderColor: "#fb646b",
-      }}
-    >
-      Approved
-    </button>
-  </Badge>
-</div>
+                <Badge
+                  badgeContent={
+                    filteredEnquiries.filter((e) => e.status === "new").length
+                  }
+                  color="error"
+                >
+                  <button
+                    className={`btn ${
+                      statusFilter === "new"
+                        ? "btn-custom"
+                        : "btn-outline-custom"
+                    }`}
+                    onClick={() =>
+                      setStatusFilter(statusFilter === "new" ? "all" : "new")
+                    }
+                    style={{
+                      backgroundColor:
+                        statusFilter === "new" ? "#fb646b" : "transparent",
+                      color: statusFilter === "new" ? "#fff" : "#fb646b",
+                      borderColor: "#fb646b",
+                    }}
+                  >
+                    New
+                  </button>
+                </Badge>
+                <Badge
+                  badgeContent={
+                    filteredEnquiries.filter((e) => e.status === "approved")
+                      .length
+                  }
+                  color="warning"
+                >
+                  <button
+                    className={`btn ${
+                      statusFilter === "approved"
+                        ? "btn-custom"
+                        : "btn-outline-custom"
+                    }`}
+                    onClick={() =>
+                      setStatusFilter(
+                        statusFilter === "approved" ? "all" : "approved"
+                      )
+                    }
+                    style={{
+                      backgroundColor:
+                        statusFilter === "approved" ? "#fb646b" : "transparent",
+                      color: statusFilter === "approved" ? "#fff" : "#fb646b",
+                      borderColor: "#fb646b",
+                    }}
+                  >
+                    Approved
+                  </button>
+                </Badge>
+              </div>
             </div>
           </div>
         </div>
@@ -288,7 +291,10 @@ const Enquiries = () => {
         <div className="row mb-4">
           <div className="col-md-6 mb-3 mb-md-0">
             <div className="input-group">
-              <span className="input-group-text" style={{ backgroundColor: "#FFEBF1", borderColor: "#FB646B" }}>
+              <span
+                className="input-group-text"
+                style={{ backgroundColor: "#FFEBF1", borderColor: "#FB646B" }}
+              >
                 <SearchIcon style={{ color: "#fb646b" }} />
               </span>
               <input
@@ -406,15 +412,25 @@ const Enquiries = () => {
                   </thead>
                   <tbody>
                     {paginatedEnquiries.map((enquiry) => (
-                      <tr key={enquiry.id} style={{ backgroundColor: "#FFEBF1" }}>
+                      <tr
+                        key={enquiry.id}
+                        style={{ backgroundColor: "#FFEBF1" }}
+                      >
                         <td className="align-middle">{enquiry.id}</td>
                         <td className="align-middle">
                           <div className="d-flex flex-column">
-                            <span className="fw-semibold" style={{ color: "#2D2828" }}>
+                            <span
+                              className="fw-semibold"
+                              style={{ color: "#2D2828" }}
+                            >
                               {enquiry.customerName}
                             </span>
-                            <small style={{ color: "#2D2828" }}>{enquiry.customerEmail}</small>
-                            <small style={{ color: "#2D2828" }}>{enquiry.customerPhone}</small>
+                            <small style={{ color: "#2D2828" }}>
+                              {enquiry.customerEmail}
+                            </small>
+                            <small style={{ color: "#2D2828" }}>
+                              {enquiry.customerPhone}
+                            </small>
                           </div>
                         </td>
                         <td className="align-middle">
@@ -432,10 +448,15 @@ const Enquiries = () => {
                             <span>{enquiry.message}</span>
                           </div>
                         </td>
-                        <td className="align-middle" style={{ color: "#2D2828" }}>
+                        <td
+                          className="align-middle"
+                          style={{ color: "#2D2828" }}
+                        >
                           {formatDate(enquiry.dateSubmitted)}
                         </td>
-                        <td className="align-middle">{getStatusBadge(enquiry.status)}</td>
+                        <td className="align-middle">
+                          {getStatusBadge(enquiry.status)}
+                        </td>
                         <td className="align-middle text-end">
                           <div className="btn-group">
                             {enquiry.status === "new" && (
@@ -443,7 +464,10 @@ const Enquiries = () => {
                                 <button
                                   className="btn btn-sm btn-outline-custom"
                                   onClick={() => handleReply(enquiry)}
-                                  style={{ borderColor: "#fb646b", color: "#fb646b" }}
+                                  style={{
+                                    borderColor: "#fb646b",
+                                    color: "#fb646b",
+                                  }}
                                 >
                                   <ReplyIcon fontSize="small" />
                                 </button>
@@ -453,7 +477,10 @@ const Enquiries = () => {
                               <button
                                 className="btn btn-sm btn-outline-custom"
                                 onClick={() => handleDelete(enquiry.id)}
-                                style={{ borderColor: "#fb646b", color: "#fb646b" }}
+                                style={{
+                                  borderColor: "#fb646b",
+                                  color: "#fb646b",
+                                }}
                               >
                                 <DeleteIcon fontSize="small" />
                               </button>
@@ -486,7 +513,10 @@ const Enquiries = () => {
                 >
                   Previous
                 </button>
-                <span className="pagination-info mx-3" style={{ color: "#2D2828" }}>
+                <span
+                  className="pagination-info mx-3"
+                  style={{ color: "#2D2828" }}
+                >
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
@@ -494,7 +524,8 @@ const Enquiries = () => {
                   disabled={currentPage === totalPages}
                   className="pagination-btn"
                   style={{
-                    backgroundColor: currentPage === totalPages ? "#e5e7eb" : "#fb646b",
+                    backgroundColor:
+                      currentPage === totalPages ? "#e5e7eb" : "#fb646b",
                     color: "#fff",
                     borderColor: "#fb646b",
                   }}
@@ -557,13 +588,20 @@ const Enquiries = () => {
 
             <div className="mb-4">
               <h5 style={{ color: "#2D2828" }}>Original Message</h5>
-              <div className="p-3 rounded mb-3" style={{ backgroundColor: "#f1f5f9", color: "#2D2828" }}>
+              <div
+                className="p-3 rounded mb-3"
+                style={{ backgroundColor: "#f1f5f9", color: "#2D2828" }}
+              >
                 {selectedEnquiry.message}
               </div>
             </div>
 
             <div className="mb-4">
-              <label htmlFor="replyMessage" className="form-label fw-semibold" style={{ color: "#2D2828" }}>
+              <label
+                htmlFor="replyMessage"
+                className="form-label fw-semibold"
+                style={{ color: "#2D2828" }}
+              >
                 Your Reply
               </label>
               <textarea

@@ -150,7 +150,7 @@ const RevenuePage = () => {
         sx={{
           width: '100%',
           maxWidth: '1200px',
-          backgroundColor: '#f8cad7',
+          backgroundColor: '#fad9e3',
           borderRadius: '12px',
           p: '24px',
           boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',

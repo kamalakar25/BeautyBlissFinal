@@ -11,14 +11,14 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   [theme.breakpoints.down("lg")]: {
     display: "block",
     color: "#fb646b",
-    backgroundColor: "#f8cad7",
+    backgroundColor: "#fad9e3",
     border: "2px solid #fb646b",
     borderRadius: "50%",
     padding: "8px",
     transition: "all 0.3s ease",
     "&:hover": {
       backgroundColor: "#fb646b",
-      color: "#f8cad7",
+      color: "#fad9e3",
       transform: "scale(1.1)",
       boxShadow: "0 4px 12px rgba(32, 21, 72, 0.4)",
     },
@@ -36,7 +36,7 @@ const DeleteButton = ({ onClick }) => {
         width: "40px",
         height: "40px",
         borderRadius: "50%",
-        backgroundColor: "#f8cad7",
+        backgroundColor: "#fad9e3",
         border: "2px solid #fb646b",
         display: "flex",
         flexDirection: "column",
@@ -53,11 +53,11 @@ const DeleteButton = ({ onClick }) => {
           borderRadius: "40px",
           background: "linear-gradient(90deg, #dc2626, #b91c1c)",
           borderColor: "#dc2626",
-          color: "#f8cad7",
+          color: "#fad9e3",
           transform: "scale(1.05)",
           boxShadow: "0 6px 15px rgba(220, 38, 38, 0.4)",
           "& .svgIcon path": {
-            fill: "#f8cad7",
+            fill: "#fad9e3",
           },
           "&:before": {
             opacity: 1,
@@ -69,7 +69,7 @@ const DeleteButton = ({ onClick }) => {
           position: "absolute",
           top: "-15px",
           content: '"Delete"',
-          color: "#f8cad7",
+          color: "#fad9e3",
           transition: "all 0.3s ease",
           fontSize: "2px",
           opacity: 0,
@@ -288,14 +288,14 @@ const UserDetails = () => {
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        backgroundColor: "#f8cad7",
+        backgroundColor: "#fad9e3",
       }}
     >
       <Box
         sx={{
           width: "100%",
           maxWidth: "1200px",
-          backgroundColor: "#f8cad7",
+          backgroundColor: "#fad9e3",
           borderRadius: "12px",
           p: "24px",
           boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
@@ -385,7 +385,7 @@ const UserDetails = () => {
                     "&:focus": {
                       borderColor: "#fb646b",
                       boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                      backgroundColor: "#f8cad7",
+                      backgroundColor: "#fad9e3",
                     },
                     "&:hover": {
                       transform: "scale(1.02)",
@@ -480,7 +480,7 @@ const UserDetails = () => {
                         "&:focus": {
                           borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                          backgroundColor: "#f8cad7",
+                          backgroundColor: "#fad9e3",
                         },
                         "&:hover": {
                           transform: "scale(1.02)",
@@ -536,7 +536,7 @@ const UserDetails = () => {
                         "&:focus": {
                           borderColor: "#fb646b",
                           boxShadow: "0 0 10px rgba(32, 21, 72, 0.3)",
-                          backgroundColor: "#f8cad7",
+                          backgroundColor: "#fad9e3",
                         },
                         "&:hover": {
                           transform: "scale(1.02)",
@@ -570,7 +570,7 @@ const UserDetails = () => {
                       ...(searchQuery || startDateFilter || endDateFilter
                         ? {
                             background: "linear-gradient(90deg, #fb646b, #fb646b)",
-                            color: "#f8cad7",
+                            color: "#fad9e3",
                             transform: "scale(1.05)",
                             boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                           }
@@ -590,7 +590,7 @@ const UserDetails = () => {
             sx={{
               width: "100%",
               borderCollapse: "collapse",
-              backgroundColor: "#f8cad7",
+              backgroundColor: "#fad9e3",
               borderRadius: "10px",
               overflow: "hidden",
               border: "1px solid #e2e8f0",
@@ -601,7 +601,7 @@ const UserDetails = () => {
               component="thead"
               sx={{
                 background: "linear-gradient(90deg, #fb646b, #fb646b)",
-                color: "#f8cad7",
+                color: "#fad9e3",
               }}
             >
               <tr>
@@ -656,7 +656,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -675,7 +675,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -694,7 +694,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -713,7 +713,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -732,7 +732,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -751,7 +751,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -767,7 +767,7 @@ const UserDetails = () => {
                       display: "flex",
                       justifyContent: "center",
                       border: "1px solid #e2e8f0",
-                      // backgroundColor: "#f8cad7",
+                      // backgroundColor: "#fad9e3",
                       backgroundColor: "rgba(255, 255, 255, 0.9)",
                     }}
                   >
@@ -791,7 +791,7 @@ const UserDetails = () => {
                       backdropFilter: "blur(4px)",
                       transition: "all 0.3s ease",
                       "&:hover": {
-                        backgroundColor: "#f8cad7",
+                        backgroundColor: "#fad9e3",
                         boxShadow: "0 2px 8px rgba(32, 21, 72, 0.2)",
                       },
                     }}
@@ -1052,7 +1052,7 @@ const UserDetails = () => {
                 onClick={closeDeleteModal}
                 sx={{
                   flex: { xs: "1 1 100%", sm: "1 1 auto" },
-                  background: "linear-gradient(90deg, #f8cad7, #e2e8f0)",
+                  background: "linear-gradient(90deg, #fad9e3, #e2e8f0)",
                   color: "#0e0f0f",
                   px: 4,
                   py: 1.5,
@@ -1064,7 +1064,7 @@ const UserDetails = () => {
                   transition: "all 0.3s ease",
                   "&:hover": {
                     background: "linear-gradient(90deg, #fb646b, #fb646b)",
-                    color: "#f8cad7",
+                    color: "#fad9e3",
                     transform: "scale(1.05)",
                     boxShadow: "0 4px 12px rgba(32, 21, 72, 0.3)",
                   },
@@ -1078,7 +1078,7 @@ const UserDetails = () => {
                 sx={{
                   flex: { xs: "1 1 100%", sm: "1 1 auto" },
                   background: "linear-gradient(90deg, #fb646b, #fb646b)",
-                  color: "#f8cad7",
+                  color: "#fad9e3",
                   px: 4,
                   py: 1.5,
                   fontSize: "0.95rem",

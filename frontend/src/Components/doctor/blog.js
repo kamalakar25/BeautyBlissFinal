@@ -175,7 +175,7 @@ const BlogCardsWithDropdown = () => {
 
   return (
     <Box sx={{
-      background: '#F8CAD7',
+      background: '#fad9e3',
       py: 8,
       minHeight: '100vh',
       px: { xs: 1.5, sm: 3, md: 5 },

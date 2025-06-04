@@ -729,7 +729,7 @@ const BookSlot = () => {
     <div
       style={{
         minHeight: "100vh",
-        background: "linear-gradient(135deg, #FCE4EC, #F8BBD9, #E1BEE7)",
+        background: "#fad9e3",
         padding: isSmallScreen ? "12px" : "16px",
         fontFamily: "Arial, sans-serif",
         boxSizing: "border-box",

@@ -287,7 +287,7 @@ const SalonPage = () => {
   return (
     <Box
       sx={{
-        backgroundColor: colors.background,
+        // backgroundColor: colors.background,
         color: colors.text,
         fontFamily: "'Poppins', sans-serif",
         overflowX: "hidden",
@@ -296,7 +296,7 @@ const SalonPage = () => {
       {/* Hero Carousel */}
       <div
         style={{
-          backgroundColor: "rgb(248,202,215)", // Soft pink background
+          backgroundColor: "#fad9e3", // Soft pink background
           minHeight: "100vh",
           display: "flex",
           flexDirection: "row",
@@ -381,7 +381,7 @@ const SalonPage = () => {
               e.target.style.transform = "translateY(0)";
             }}
             onClick={() =>
-              navigate("/products", { state: { designation: "Salon", } })
+              navigate("/products", { state: { designation: "Salon" } })
             }
           >
             Explore now
@@ -798,7 +798,10 @@ const SalonPage = () => {
                         }}
                         onClick={() =>
                           navigate("/products", {
-                            state: { designation: "Salon", service: card.service },
+                            state: {
+                              designation: "Salon",
+                              service: card.service,
+                            },
                           })
                         }
                       >

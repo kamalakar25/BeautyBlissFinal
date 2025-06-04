@@ -21,7 +21,7 @@ const Transformation = () => {
   return (
     <Box
       sx={{
-        background: "#F8CAD7",
+        background: "#fad9e3",
         minHeight: "100vh",
         py: { xs: 4, sm: 6 },
         px: { xs: 2, sm: 4 },

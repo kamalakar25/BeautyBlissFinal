@@ -161,17 +161,18 @@ const PaymentCallback = () => {
       doc.setFillColor(204, 204, 204);
       doc.roundedRect(x + 1, y + 1, width, height, radius, radius, "F");
       doc.setFillColor(230, 240, 250);
-      doc.roundedRect(x, y, width, height, radius, radius, "F");
+      doc.setDrawColor(240, 98, 146); // Pink border (#f06292)
+      doc.roundedRect(x, y, width, height, radius, radius, "FD");
     };
 
     const drawTableRow = (y, cols, isHeader = false) => {
       const colWidths = [80, 30, 30, 30];
       let x = margin + 5;
       doc.setLineWidth(0.2);
-      doc.setDrawColor(108, 117, 125);
+      doc.setDrawColor(240, 98, 146); // Pink border (#f06292)
 
       if (isHeader) {
-        doc.setFillColor(232, 236, 239);
+        doc.setFillColor(248, 187, 208); // Light pink for header (#f8bbd0)
         doc.rect(margin + 5, y - 5, pageWidth - 2 * (margin + 5), 8, "F");
       }
 
@@ -184,7 +185,7 @@ const PaymentCallback = () => {
     };
 
     // Header
-    doc.setFillColor(42, 64, 102);
+    doc.setFillColor(240, 98, 146); // Pink header (#f06292)
     doc.rect(0, 0, pageWidth, 30, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(20);
@@ -231,7 +232,7 @@ const PaymentCallback = () => {
 
     customerDetails.forEach((item) => {
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(0, 128, 128);
+      doc.setTextColor(240, 98, 146); // Pink for labels (#f06292)
       doc.text(`${item.label}:`, margin + 5, yPosition);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(26, 26, 26);
@@ -247,7 +248,7 @@ const PaymentCallback = () => {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.setTextColor(0, 128, 128);
+    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
     doc.text("Service Details", margin + 5, yPosition);
     yPosition += 8;
 
@@ -277,9 +278,9 @@ const PaymentCallback = () => {
 
     if (paymentStatus?.couponCode) {
       doc.text(
-        `Coupon: ${paymentStatus.couponCode} (-${(
+        `Coupon: ${paymentStatus.couponCode} (-${
           paymentStatus.discountAmount || 0
-        )})`,
+        })`,
         margin + 5,
         yPosition
       );
@@ -288,25 +289,25 @@ const PaymentCallback = () => {
 
     doc.setFont("helvetica", "bold");
     doc.text(
-      `Total: ${paymentStatus?.currency || "INR"} ${(
+      `Total: ${paymentStatus?.currency || "INR"} ${
         paymentStatus?.total_amount || 0
-      )}`,
+      }`,
       pageWidth - margin - 50,
       yPosition
     );
     yPosition += 8;
     doc.text(
-      `Discount: ${paymentStatus?.currency || "INR"} ${(
+      `Discount: ${paymentStatus?.currency || "INR"} ${
         paymentStatus?.discountAmount || 0
-      )}`,
+      }`,
       pageWidth - margin - 50,
       yPosition
     );
     yPosition += 8;
     doc.text(
-      `Final Amount: ${paymentStatus?.currency || "INR"} ${(
+      `Final Amount: ${paymentStatus?.currency || "INR"} ${
         paymentStatus?.amount || 0
-      )}`,
+      }`,
       pageWidth - margin - 50,
       yPosition
     );
@@ -318,7 +319,7 @@ const PaymentCallback = () => {
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.setTextColor(0, 128, 128);
+    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
     doc.text("Payment Summary", margin + 5, yPosition);
     yPosition += 8;
 
@@ -329,9 +330,9 @@ const PaymentCallback = () => {
     const paymentDetails = [
       {
         label: "Amount Paid",
-        value: `${paymentStatus?.currency || "INR"} ${(
+        value: `${paymentStatus?.currency || "INR"} ${
           paymentStatus?.amount || 0
-        )}`,
+        }`,
       },
       { label: "Payment Method", value: paymentStatus?.Payment_Mode || "N/A" },
       { label: "Transaction ID", value: paymentStatus?.transactionId || "N/A" },
@@ -351,9 +352,9 @@ const PaymentCallback = () => {
       });
       paymentDetails.push({
         label: "Discount",
-        value: `${paymentStatus?.currency || "INR"} ${(
+        value: `${paymentStatus?.currency || "INR"} ${
           paymentStatus?.discountAmount || 0
-        )}`,
+        }`,
       });
     }
 
@@ -366,7 +367,7 @@ const PaymentCallback = () => {
 
     paymentDetails.forEach((item) => {
       doc.setFont("helvetica", "bold");
-      doc.setTextColor(0, 128, 128);
+      doc.setTextColor(240, 98, 146); // Pink for labels (#f06292)
       doc.text(`${item.label}:`, margin + 5, yPosition);
       doc.setFont("helvetica", "normal");
       doc.setTextColor(26, 26, 26);
@@ -382,12 +383,28 @@ const PaymentCallback = () => {
     yPosition += 10;
 
     // Terms and Conditions
-    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, 60, 5);
+    // Calculate dynamic height for Terms & Conditions box
+    let termsHeight = 18; // Base height for title (10mm padding + 8mm for title)
+    if (terms.length > 0) {
+      terms.forEach((term) => {
+        const formattedTerm = `${term.term}`;
+        const wrappedText = doc.splitTextToSize(
+          formattedTerm,
+          pageWidth - 2 * (margin + 10)
+        );
+        termsHeight += wrappedText.length * (lineSpacing - 2) + 2;
+      });
+    } else {
+      termsHeight += lineSpacing; // For "No terms" message
+    }
+    termsHeight += 10; // Bottom padding
+
+    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, termsHeight, 5);
     yPosition += 10;
 
     doc.setFont("helvetica", "bold");
     doc.setFontSize(12);
-    doc.setTextColor(0, 128, 128);
+    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
     doc.text("Terms & Conditions", margin + 5, yPosition);
     yPosition += 8;
 
@@ -413,12 +430,12 @@ const PaymentCallback = () => {
       yPosition += lineSpacing;
     }
 
-    yPosition += 10;
+    yPosition += 20; // Increased spacing (20mm) before footer to prevent overlap
 
     // Footer
-    doc.setFillColor(224, 247, 250);
+    doc.setFillColor(248, 187, 208); // Light pink footer (#f8bbd0)
     doc.rect(0, yPosition, pageWidth, 25, "F");
-    doc.setFillColor(200, 240, 245, 0.5);
+    doc.setFillColor(252, 228, 236, 0.5); // Lighter pink for second layer (#fce4ec)
     doc.rect(0, yPosition + 12.5, pageWidth, 12.5, "F");
 
     doc.setFillColor(26, 26, 26);
@@ -460,7 +477,7 @@ const PaymentCallback = () => {
         p: { xs: 2, sm: 3, md: 4 },
         width: "100%", // Ensure full width
         minHeight: "100vh", // Ensure full viewport height
-        bgcolor: "#f8bbd0", // Background color
+        bgcolor: "#fad9e3", // Background color
         display: "flex",
         flexDirection: "column",
         position: "relative", // Ensure layout control
@@ -715,7 +732,8 @@ const PaymentCallback = () => {
                   }}
                 >
                   <Typography sx={{ color: "#000000" }}>
-                    <strong>Parlor:</strong> {paymentStatus.parlor.name || "N/A"}
+                    <strong>Parlor:</strong>{" "}
+                    {paymentStatus.parlor.name || "N/A"}
                   </Typography>
                   <Typography sx={{ color: "#000000" }}>
                     <strong>Customer:</strong> {paymentStatus.name || "N/A"}
@@ -745,7 +763,7 @@ const PaymentCallback = () => {
                   <Typography sx={{ color: "#000000" }}>
                     <strong>Total Amount:</strong>{" "}
                     {paymentStatus.currency || "INR"}{" "}
-                    {(paymentStatus.total_amount || 0)}
+                    {paymentStatus.total_amount || 0}
                   </Typography>
                   {paymentStatus.couponCode && (
                     <>
@@ -756,14 +774,14 @@ const PaymentCallback = () => {
                       <Typography sx={{ color: "#000000" }}>
                         <strong>Discount:</strong>{" "}
                         {paymentStatus.currency || "INR"}{" "}
-                        {(paymentStatus.discountAmount || 0)}
+                        {paymentStatus.discountAmount || 0}
                       </Typography>
                     </>
                   )}
                   <Typography sx={{ color: "#000000" }}>
                     <strong>Amount Paid:</strong>{" "}
                     {paymentStatus.currency || "INR"}{" "}
-                    {(paymentStatus.amount || 0)}
+                    {paymentStatus.amount || 0}
                   </Typography>
                   <Typography sx={{ color: "#000000" }}>
                     <strong>Payment Method:</strong>{" "}

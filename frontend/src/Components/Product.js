@@ -1251,7 +1251,7 @@ const Product = () => {
   return (
     <Box
       sx={{
-        backgroundColor: "#F8CAD7", // Background color
+        backgroundColor: "#fad9e3", // Background color
         minHeight: "100vh",
         py: { xs: 5, sm: 6 },
       }}
@@ -1259,7 +1259,7 @@ const Product = () => {
       <Container
         maxWidth="xl"
         sx={{
-          backgroundColor: "#F8CAD7", // Container color
+          backgroundColor: "#fad9e3", // Container color
           px: { xs: 2.5, sm: 3.5 },
           py: { xs: 3, sm: 4 },
           borderRadius: "16px",
@@ -1332,7 +1332,7 @@ const Product = () => {
             animationDuration: "1s",
             fontSize: { xs: "1.6rem", sm: "2rem", md: "2.5rem" },
             textTransform: "uppercase",
-            color: "#FB646B"
+            color: "#FB646B",
           }}
         >
           Our Services

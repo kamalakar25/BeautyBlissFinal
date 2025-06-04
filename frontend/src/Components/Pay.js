@@ -525,42 +525,42 @@ const Pay = () => {
     <Box
       sx={{
         p: { xs: 2, sm: 4 },
-        width: '100%',
-        backgroundColor: '#f8bbd0',
-        display: 'flex',
-        flexDirection: 'column',
+        width: "100%",
+        backgroundColor: "#fad9e3",
+        display: "flex",
+        flexDirection: "column",
         gap: 3,
-        minHeight: '100vh',
-        position: 'relative',
-        boxSizing: 'border-box',
+        minHeight: "100vh",
+        position: "relative",
+        boxSizing: "border-box",
       }}
     >
       {/* Loading Overlay */}
       {loading && (
         <Box
           sx={{
-            position: 'fixed', // Fixed to cover the entire viewport
+            position: "fixed", // Fixed to cover the entire viewport
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            backgroundColor: 'rgba(255, 255, 255, 0.8)', // Semi-transparent white background
-            display: 'flex',
-            alignItems: 'center', // Center vertically
-            justifyContent: 'center', // Center horizontally
+            backgroundColor: "rgba(255, 255, 255, 0.8)", // Semi-transparent white background
+            display: "flex",
+            alignItems: "center", // Center vertically
+            justifyContent: "center", // Center horizontally
             zIndex: 2000, // Ensure it overlays everything
-            flexDirection: 'column', // Stack elements vertically
+            flexDirection: "column", // Stack elements vertically
             gap: 3, // Increased spacing between elements
           }}
         >
           {/* Beauty Bliss Title */}
           <Typography
             sx={{
-              color: '#f06292', // Pink text
-              fontSize: '2.5rem', // Larger font size for the title
+              color: "#f06292", // Pink text
+              fontSize: "2.5rem", // Larger font size for the title
               fontWeight: 700, // Extra bold
               fontFamily: "'Montserrat', sans-serif",
-              textAlign: 'center',
+              textAlign: "center",
             }}
           >
             Beauty Bliss
@@ -569,9 +569,9 @@ const Pay = () => {
           {/* Loading Spinner */}
           <CircularProgress
             sx={{
-              color: '#f06292', // Pink spinner
-              width: '50px !important', // Match the size in the image
-              height: '50px !important',
+              color: "#f06292", // Pink spinner
+              width: "50px !important", // Match the size in the image
+              height: "50px !important",
               thickness: 5, // Thicker spinner to match the image
             }}
           />
@@ -579,12 +579,12 @@ const Pay = () => {
           {/* Hold On Message */}
           <Typography
             sx={{
-              color: '#f06292', // Pink text
-              fontSize: '1.2rem', // Slightly smaller than the title
+              color: "#f06292", // Pink text
+              fontSize: "1.2rem", // Slightly smaller than the title
               fontWeight: 500, // Medium weight
               fontFamily: "'Montserrat', sans-serif",
-              textAlign: 'center',
-              maxWidth: '300px', // Limit width for better readability
+              textAlign: "center",
+              maxWidth: "300px", // Limit width for better readability
             }}
           >
             Hold on, your payment will complete soon
@@ -593,15 +593,15 @@ const Pay = () => {
       )}
 
       {/* Title */}
-      <Box sx={{ textAlign: 'center', mb: 2 }}>
+      <Box sx={{ textAlign: "center", mb: 2 }}>
         <h2
-          className='fw-bold animate_animated animate_fadeInDown'
+          className="fw-bold animate_animated animate_fadeInDown"
           style={{
-            animationDuration: '0.8s',
-            fontSize: { xs: '1.5rem', sm: '2rem' },
-            letterSpacing: '1.2px',
+            animationDuration: "0.8s",
+            fontSize: { xs: "1.5rem", sm: "2rem" },
+            letterSpacing: "1.2px",
             fontWeight: 600,
-            color: '#000000',
+            color: "#000000",
             fontFamily: "'Montserrat', sans-serif",
           }}
         >
@@ -612,36 +612,36 @@ const Pay = () => {
       {/* Main Content */}
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: { xs: 'column', sm: 'row' },
+          display: "flex",
+          flexDirection: { xs: "column", sm: "row" },
           gap: 3,
-          flexWrap: 'wrap',
-          maxWidth: '1200px',
-          mx: 'auto',
-          width: '100%',
+          flexWrap: "wrap",
+          maxWidth: "1200px",
+          mx: "auto",
+          width: "100%",
         }}
       >
         {/* Left Column: Progress Navigation, Booking Summary, and Payment Options */}
         <Box
           sx={{
             flex: 1,
-            minWidth: { xs: '100%', sm: '50%' },
-            display: 'flex',
-            flexDirection: 'column',
+            minWidth: { xs: "100%", sm: "50%" },
+            display: "flex",
+            flexDirection: "column",
             gap: 3,
             p: { xs: 2, sm: 4 },
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           }}
         >
           {/* Progress Navigation (Horizontal, Aligned Left) */}
-          <Box sx={{ mb: 2, maxWidth: '400px', alignSelf: 'flex-start' }}>
+          <Box sx={{ mb: 2, maxWidth: "400px", alignSelf: "flex-start" }}>
             <Stepper
               activeStep={1}
               alternativeLabel
               sx={{
-                '& .MuiStepLabel-label': {
+                "& .MuiStepLabel-label": {
                   fontFamily: "'Montserrat', sans-serif",
-                  fontSize: { xs: '0.8rem', sm: '1rem' },
+                  fontSize: { xs: "0.8rem", sm: "1rem" },
                 },
               }}
             >
@@ -649,21 +649,21 @@ const Pay = () => {
                 <Step key={label}>
                   <StepLabel
                     sx={{
-                      '& .MuiStepLabel-label': {
-                        color: index <= 1 ? '#f06292' : '#999',
+                      "& .MuiStepLabel-label": {
+                        color: index <= 1 ? "#f06292" : "#999",
                         fontWeight: index <= 1 ? 600 : 400,
                       },
-                      '& .MuiStepIcon-root': {
-                        color: index <= 1 ? '#f06292' : '#ccc',
-                        '&.Mui-completed': {
-                          color: '#f06292',
+                      "& .MuiStepIcon-root": {
+                        color: index <= 1 ? "#f06292" : "#ccc",
+                        "&.Mui-completed": {
+                          color: "#f06292",
                         },
-                        '&.Mui-active': {
-                          color: '#f06292',
+                        "&.Mui-active": {
+                          color: "#f06292",
                         },
                       },
-                      '& .MuiStepIcon-text': {
-                        fill: '#ffffff',
+                      "& .MuiStepIcon-text": {
+                        fill: "#ffffff",
                       },
                     }}
                   >
@@ -677,20 +677,20 @@ const Pay = () => {
           {/* Booking Summary */}
           <Box>
             <Typography
-              variant='h6'
+              variant="h6"
               sx={{
-                color: '#000000',
+                color: "#000000",
                 mb: 2,
                 fontWeight: 600,
-                fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                fontSize: { xs: "1.2rem", sm: "1.5rem" },
               }}
             >
               Booking Summary
             </Typography>
             <Box
               sx={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 2fr',
+                display: "grid",
+                gridTemplateColumns: "1fr 2fr",
                 gap: 1,
                 p: 2,
                 borderRadius: 2,
@@ -698,120 +698,120 @@ const Pay = () => {
             >
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Parlor:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                {parlor?.name || 'N/A'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                {parlor?.name || "N/A"}
               </Typography>
 
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Service:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                {service || 'N/A'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                {service || "N/A"}
               </Typography>
 
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Date:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                {date || 'N/A'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                {date || "N/A"}
               </Typography>
 
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Time:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                {time || 'N/A'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                {time || "N/A"}
               </Typography>
 
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Employee:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                {favoriteEmployee || 'N/A'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                {favoriteEmployee || "N/A"}
               </Typography>
 
               <Typography
                 sx={{
-                  color: '#000000',
-                  fontSize: '0.9rem',
-                  fontWeight: 'bold',
+                  color: "#000000",
+                  fontSize: "0.9rem",
+                  fontWeight: "bold",
                 }}
               >
                 Total Amount:
               </Typography>
-              <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
-                ₹{totalAmount || '0.00'}
+              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                ₹{totalAmount || "0.00"}
               </Typography>
 
               {applyCoupon && coupon && (
                 <>
                   <Typography
                     sx={{
-                      color: '#000000',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
+                      color: "#000000",
+                      fontSize: "0.9rem",
+                      fontWeight: "bold",
                     }}
                   >
                     Coupon Applied:
                   </Typography>
-                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
                     {coupon.code} ({(coupon.discount * 100).toFixed(0)}% off)
                   </Typography>
 
                   <Typography
                     sx={{
-                      color: '#000000',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
+                      color: "#000000",
+                      fontSize: "0.9rem",
+                      fontWeight: "bold",
                     }}
                   >
                     Discount:
                   </Typography>
-                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
                     ₹{discountAmount.toFixed(2)}
                   </Typography>
 
                   <Typography
                     sx={{
-                      color: '#000000',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
+                      color: "#000000",
+                      fontSize: "0.9rem",
+                      fontWeight: "bold",
                     }}
                   >
                     Final Amount:
                   </Typography>
-                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
                     ₹{finalAmount.toFixed(2)}
                   </Typography>
                 </>
@@ -821,17 +821,17 @@ const Pay = () => {
                 <>
                   <Typography
                     sx={{
-                      color: '#000000',
-                      fontSize: '0.9rem',
-                      fontWeight: 'bold',
+                      color: "#000000",
+                      fontSize: "0.9rem",
+                      fontWeight: "bold",
                     }}
                   >
                     Payment Amount:
                   </Typography>
-                  <Typography sx={{ color: '#000000', fontSize: '0.9rem' }}>
+                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
                     ₹{calculatePaymentAmount().toFixed(2)}
-                    {paymentAmountOption === '25%' &&
-                      ' (25% Now + Cash on Delivery)'}
+                    {paymentAmountOption === "25%" &&
+                      " (25% Now + Cash on Delivery)"}
                   </Typography>
                 </>
               )}
@@ -841,17 +841,17 @@ const Pay = () => {
           {/* Select Payment Amount */}
           <Box>
             <Typography
-              variant='h6'
+              variant="h6"
               sx={{
-                color: '#000000',
+                color: "#000000",
                 mb: 2,
                 fontWeight: 600,
-                fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                fontSize: { xs: "1.2rem", sm: "1.5rem" },
               }}
             >
               Select Payment Amount
             </Typography>
-            <Box sx={{ maxWidth: '400px' }}>
+            <Box sx={{ maxWidth: "400px" }}>
               <RadioGroup
                 value={paymentAmountOption}
                 onChange={handlePaymentAmountChange}
@@ -859,8 +859,8 @@ const Pay = () => {
                 sx={{ mb: 2 }}
               >
                 <FormControlLabel
-                  style={{ color: '#000000' }}
-                  value='25%'
+                  style={{ color: "#000000" }}
+                  value="25%"
                   control={<Radio />}
                   label={`Pay 25% Now (₹${(finalAmount * 0.25).toFixed(
                     2
@@ -868,8 +868,8 @@ const Pay = () => {
                   disabled={loading}
                 />
                 <FormControlLabel
-                  style={{ color: '#000000' }}
-                  value='full'
+                  style={{ color: "#000000" }}
+                  value="full"
                   control={<Radio />}
                   label={`Pay Full Amount (₹${finalAmount})`}
                   disabled={loading}
@@ -879,21 +879,21 @@ const Pay = () => {
               <Box sx={{ mb: 2 }}>
                 <TextField
                   fullWidth
-                  label='Coupon Code'
-                  name='couponCode'
+                  label="Coupon Code"
+                  name="couponCode"
                   value={couponCode}
                   onChange={handleCouponChange}
                   sx={{
-                    maxWidth: '400px',
-                    '& .MuiOutlinedInput-root': {
-                      '&:hover fieldset': { borderColor: '#f06292' },
-                      '&.Mui-focused fieldset': { borderColor: '#f06292' },
-                      backgroundColor: '#ffffff',
+                    maxWidth: "400px",
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": { borderColor: "#f06292" },
+                      "&.Mui-focused fieldset": { borderColor: "#f06292" },
+                      backgroundColor: "#ffffff",
                     },
-                    '& .MuiInputLabel-root.Mui-focused': { color: '#f06292' },
-                    '& .MuiInputBase-input': {
-                      fontSize: '0.9rem',
-                      color: '#000000',
+                    "& .MuiInputLabel-root.Mui-focused": { color: "#f06292" },
+                    "& .MuiInputBase-input": {
+                      fontSize: "0.9rem",
+                      color: "#000000",
                     },
                   }}
                   error={!!couponError}
@@ -905,35 +905,35 @@ const Pay = () => {
               {coupon && (
                 <Box sx={{ mb: 2 }}>
                   <Button
-                    variant='outlined'
+                    variant="outlined"
                     onClick={handleApplyCoupon}
                     sx={{
-                      color: '#000000',
-                      borderColor: '#000000',
-                      '&:hover': { borderColor: '#f06292', color: '#f06292' },
-                      width: 'fit-content',
+                      color: "#000000",
+                      borderColor: "#000000",
+                      "&:hover": { borderColor: "#f06292", color: "#f06292" },
+                      width: "fit-content",
                     }}
                     disabled={loading}
                   >
                     {applyCoupon
-                      ? 'Remove Coupon'
+                      ? "Remove Coupon"
                       : `Apply Coupon (${coupon.code})`}
                   </Button>
                 </Box>
               )}
 
               {couponError.includes(
-                'Would you like to redeem a new coupon?'
+                "Would you like to redeem a new coupon?"
               ) && (
                 <Box sx={{ mb: 2 }}>
                   <Button
-                    variant='contained'
+                    variant="contained"
                     onClick={redeemCoupon}
                     sx={{
-                      backgroundColor: '#f06292',
-                      color: '#ffffff',
-                      '&:hover': { backgroundColor: '#ec407a' },
-                      width: 'fit-content',
+                      backgroundColor: "#f06292",
+                      color: "#ffffff",
+                      "&:hover": { backgroundColor: "#ec407a" },
+                      width: "fit-content",
                     }}
                     disabled={loading}
                   >
@@ -946,10 +946,10 @@ const Pay = () => {
                 <Typography
                   sx={{
                     mb: 2,
-                    color: '#000000',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    '&:hover': { color: '#f06292' },
+                    color: "#000000",
+                    fontSize: "0.9rem",
+                    cursor: "pointer",
+                    "&:hover": { color: "#f06292" },
                   }}
                   onClick={handleOpenModal}
                 >
@@ -959,50 +959,50 @@ const Pay = () => {
               )}
 
               {error && (
-                <Alert severity='error' sx={{ mb: 2, maxWidth: '400px' }}>
+                <Alert severity="error" sx={{ mb: 2, maxWidth: "400px" }}>
                   {error}
                 </Alert>
               )}
 
               {couponError &&
                 !couponError.includes(
-                  'Would you like to redeem a new coupon?'
+                  "Would you like to redeem a new coupon?"
                 ) && (
-                  <Alert severity='error' sx={{ mb: 2, maxWidth: '400px' }}>
+                  <Alert severity="error" sx={{ mb: 2, maxWidth: "400px" }}>
                     {couponError}
                   </Alert>
                 )}
 
               {showSuccess && (
-                <Alert severity='success' sx={{ mb: 2, maxWidth: '400px' }}>
+                <Alert severity="success" sx={{ mb: 2, maxWidth: "400px" }}>
                   Payment option selected successfully!
                 </Alert>
               )}
 
               <Box
-                sx={{ display: 'flex', gap: 2, justifyContent: 'flex-start' }}
+                sx={{ display: "flex", gap: 2, justifyContent: "flex-start" }}
               >
                 <Button
-                  variant='outlined'
+                  variant="outlined"
                   onClick={() => navigate(-1)}
                   sx={{
-                    color: '#000000',
-                    borderColor: '#000000',
-                    '&:hover': { borderColor: '#f06292', color: '#f06292' },
-                    padding: '8px 16px',
+                    color: "#000000",
+                    borderColor: "#000000",
+                    "&:hover": { borderColor: "#f06292", color: "#f06292" },
+                    padding: "8px 16px",
                   }}
                   disabled={loading}
                 >
                   Back
                 </Button>
                 <Button
-                  variant='contained'
+                  variant="contained"
                   onClick={handleConfirm}
                   sx={{
-                    backgroundColor: '#f06292',
-                    color: '#ffffff',
-                    '&:hover': { backgroundColor: '#ec407a' },
-                    padding: '8px 16px',
+                    backgroundColor: "#f06292",
+                    color: "#ffffff",
+                    "&:hover": { backgroundColor: "#ec407a" },
+                    padding: "8px 16px",
                   }}
                   disabled={loading}
                 >
@@ -1018,19 +1018,19 @@ const Pay = () => {
         <Box
           sx={{
             flex: 1,
-            minWidth: { xs: '100%', sm: '45%' },
+            minWidth: { xs: "100%", sm: "45%" },
             p: { xs: 2, sm: 4 },
-            display: { xs: 'none', sm: 'flex' },
-            alignItems: 'center',
-            justifyContent: 'center',
+            display: { xs: "none", sm: "flex" },
+            alignItems: "center",
+            justifyContent: "center",
           }}
         >
           <img
             src={image}
-            alt='Parlor Booking'
+            alt="Parlor Booking"
             style={{
-              maxWidth: '100%',
-              height: 'auto',
+              maxWidth: "100%",
+              height: "auto",
             }}
           />
         </Box>
@@ -1040,11 +1040,11 @@ const Pay = () => {
       <Modal
         open={openModal}
         onClose={handleCloseModal}
-        aria-labelledby='terms-modal-title'
+        aria-labelledby="terms-modal-title"
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
         <motion.div
@@ -1055,11 +1055,11 @@ const Pay = () => {
         >
           <Box
             sx={{
-              bgcolor: '#ffffff',
+              bgcolor: "#ffffff",
               p: 4,
               maxWidth: 500,
-              width: '90%',
-              position: 'relative',
+              width: "90%",
+              position: "relative",
               fontFamily: "'Montserrat', sans-serif",
               boxShadow: 3,
               borderRadius: 2,
@@ -1068,27 +1068,27 @@ const Pay = () => {
             <IconButton
               onClick={handleCloseModal}
               sx={{
-                position: 'absolute',
+                position: "absolute",
                 top: 8,
                 right: 8,
-                color: '#f06292',
+                color: "#f06292",
               }}
             >
               <CloseIcon />
             </IconButton>
             <Typography
-              id='terms-modal-title'
-              variant='h6'
+              id="terms-modal-title"
+              variant="h6"
               sx={{
-                color: '#000000',
+                color: "#000000",
                 mb: 3,
                 fontWeight: 600,
-                textAlign: 'center',
+                textAlign: "center",
               }}
             >
               Terms & Conditions
             </Typography>
-            <Box sx={{ color: '#333333', fontSize: '0.9rem' }}>
+            <Box sx={{ color: "#333333", fontSize: "0.9rem" }}>
               <Typography sx={{ mb: 2 }}>
                 By proceeding with the payment, you agree to the following
                 terms:
@@ -1096,7 +1096,7 @@ const Pay = () => {
               {terms.length > 0 ? (
                 <ul>
                   {terms.map((term, index) => (
-                    <li key={index} style={{ marginBottom: '10px' }}>
+                    <li key={index} style={{ marginBottom: "10px" }}>
                       {term.description || term.term}
                     </li>
                   ))}
@@ -1111,14 +1111,14 @@ const Pay = () => {
               onClick={handleCloseModal}
               sx={{
                 mt: 3,
-                bgcolor: '#f06292',
-                color: '#ffffff',
+                bgcolor: "#f06292",
+                color: "#ffffff",
                 px: 4,
                 py: 1,
                 fontWeight: 500,
-                '&:hover': { bgcolor: '#ec407a' },
-                display: 'block',
-                mx: 'auto',
+                "&:hover": { bgcolor: "#ec407a" },
+                display: "block",
+                mx: "auto",
               }}
             >
               Close

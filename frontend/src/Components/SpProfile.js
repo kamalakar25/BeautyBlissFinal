@@ -453,10 +453,7 @@ const SpProfile = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center", // Center vertically
-        background: {
-          xs: "linear-gradient(135deg, #F8CAD7 0%, #FFEBF1 100%)", // Original gradient for smaller screens
-          2560: "#E6F3FA", // Light blue background for 2560px
-        },
+        background: "#fad9e3",
         height: "auto", // Your existing height setting
         width: { xs: "100%", 2560: "fit-content" }, // Your existing width
         maxWidth: { 2560: 700 }, // Your existing maxWidth

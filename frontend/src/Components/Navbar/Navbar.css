@@ -5,7 +5,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 10px 20px;
-  background-color: #FFEBF1;
+  background-color: #fad9e3;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -155,7 +155,7 @@ body > .skiptranslate,
     display: none;
     flex-direction: column;
     width: 100%;
-    background: #fff;
+    background: #fad9e3;
     position: absolute;
     top: 60px;
     left: 0;

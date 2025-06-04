@@ -85,7 +85,7 @@ const BridalShowcase = () => {
         px: { xs: 2, sm: 3, md: 4 },
         py: { xs: 6, sm: 8 },
         boxSizing: "border-box",
-        backgroundColor: '#f8cad7',
+        backgroundColor: '#fad9e3',
         minHeight: "100vh",
         position: "relative",
         "&:before": {

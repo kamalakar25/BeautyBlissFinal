@@ -144,7 +144,7 @@ const BannerSplitHover = () => {
       overflowX: 'hidden', 
       width: '100%', 
       maxWidth: '100vw', 
-      backgroundColor: '#f8cad7',
+      backgroundColor: '#fad9e3',
       // backgroundImage: 'radial-gradient(circle at 15% 50%, rgba(245, 243, 255, 0.8) 0%, rgba(255,255,255,1) 50%)'
     }}>
       {/* Banner Section */}
