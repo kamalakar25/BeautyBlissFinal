@@ -1003,61 +1003,61 @@ const AdminFaqs = () => {
           </>
         )}
       </div>
-      <div
-        className="fab"
-        ref={fabRef}
-        onClick={() => {
-          if (activeSection === "terms") {
-            openModal("addTerm");
-          } else if (activeSection === "pending" && pendingFaqs.length > 0) {
-            openModal("answerFaq", {
-              id: pendingFaqs[0]._id,
-              answer: pendingFaqs[0].answer,
-            });
-          } else if (activeSection === "pending" && pendingFaqs.length === 0) {
-            showToast("No pending FAQs to answer.", "info");
-          } else if (activeSection === "answered") {
-            showToast("No actions available for answered FAQs.", "info");
-          } else {
-            setShowFabMenu(!showFabMenu);
-          }
-        }}
-        role="button"
-        aria-label="Open action menu"
-      >
-        +
-      </div>
-      <Overlay target={fabRef.current} show={showFabMenu} placement="top-end">
-        {({ placement, ...props }) => (
-          <div {...props} className={`fab-menu ${showFabMenu ? "show" : ""}`}>
-            {activeSection === "terms" && (
-              <div
-                className="fab-menu-item"
-                onClick={() => openModal("addTerm")}
-                role="button"
-                aria-label="Add new term"
-              >
-                Add Term
-              </div>
-            )}
-            {activeSection === "pending" && pendingFaqs.length > 0 && (
-              <div
-                className="fab-menu-item"
-                onClick={() =>
-                  openModal("answerFaq", {
-                    id: pendingFaqs[0]._id,
-                    answer: pendingFaqs[0].answer,
-                  })
-                }
-                role="button"
-                aria-label="Answer first pending FAQ"
-              >
-                Answer
-              </div>
-            )}
-          </div>
-        )}
-      </Overlay>
+     {(activeSection === "pending" || activeSection === "terms") && (
+      <>
+        <div
+          className="fab"
+          ref={fabRef}
+          onClick={() => {
+            if (activeSection === "terms") {
+              openModal("addTerm");
+            } else if (activeSection === "pending" && pendingFaqs.length > 0) {
+              openModal("answerFaq", {
+                id: pendingFaqs[0]._id,
+                answer: pendingFaqs[0].answer,
+              });
+            } else if (activeSection === "pending" && pendingFaqs.length === 0) {
+              showToast("No pending FAQs to answer.", "info");
+            }
+          }}
+          role="button"
+          aria-label="Open action menu"
+        >
+          +
+        </div>
+        <Overlay target={fabRef.current} show={showFabMenu} placement="top-end">
+          {({ placement, ...props }) => (
+            <div {...props} className={`fab-menu ${showFabMenu ? "show" : ""}`}>
+              {activeSection === "terms" && (
+                <div
+                  className="fab-menu-item"
+                  onClick={() => openModal("addTerm")}
+                  role="button"
+                  aria-label="Add new term"
+                >
+                  Add Term
+                </div>
+              )}
+              {activeSection === "pending" && pendingFaqs.length > 0 && (
+                <div
+                  className="fab-menu-item"
+                  onClick={() =>
+                    openModal("answerFaq", {
+                      id: pendingFaqs[0]._id,
+                      answer: pendingFaqs[0].answer,
+                    })
+                  }
+                  role="button"
+                  aria-label="Answer first pending FAQ"
+                >
+                  Answer
+                </div>
+              )}
+            </div>
+          )}
+        </Overlay>
+      </>
+    )}
       <Modal show={showModal} onHide={() => setShowModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>
