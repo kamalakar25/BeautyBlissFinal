@@ -1039,7 +1039,7 @@ const ServicePage = () => {
                                 }
                               >
                                 <Edit className="edit-icon" />
-                                <span className="edit-btn-text">Edit</span>
+                                {/* <span className="edit-btn-text">Edit</span> */}
                               </button>
                               <span
                                 className="tooltip"
@@ -1097,7 +1097,7 @@ const ServicePage = () => {
                                 }}
                               >
                                 <Delete className="edit-icon" />
-                                <span className="edit-btn-text">Delete</span>
+                                {/* <span className="edit-btn-text">Delete</span> */}
                               </button>
                               <span
                                 className="tooltip"
@@ -1142,7 +1142,7 @@ const ServicePage = () => {
               )}
             </Box>
           ) : (
-            <Box className="desktop-services" sx={{ overflowX: "auto", width: "100%" }}>
+            <Box className="desktop-services" sx={{ overflowX: "hidden", width: "100%" }}>
               <Box
                 component="table"
                 className="services-table"
@@ -1247,7 +1247,7 @@ const ServicePage = () => {
                                 }
                               >
                                 <Edit className="edit-icon" />
-                                <span className="edit-btn-text">Edit</span>
+                                {/* <span className="edit-btn-text">Edit</span> */}
                               </button>
                               <span
                                 className="tooltip"
@@ -1287,7 +1287,7 @@ const ServicePage = () => {
                                 }}
                               >
                                 <Delete className="edit-icon" />
-                                <span className="edit-btn-text">Delete</span>
+                                {/* <span className="edit-btn-text">Delete</span> */}
                               </button>
                               <span
                                 className="tooltip"

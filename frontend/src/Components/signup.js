@@ -663,13 +663,14 @@ function SignupForm() {
   return (
     <Box
       sx={{
-        minHeight: "100vh",
+        // minHeight: "100vh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        background: "linear-gradient(135deg, #ffe6e9 0%, #ffd1d6 100%)",
-        padding: { xs: 3, sm: 4 },
-        pt: { xs: "80px", sm: "100px" },
+        // background: "linear-gradient(135deg, #ffe6e9 0%, #ffd1d6 100%)",
+        padding: { xs: 0, sm: 2 },
+        // pt: { xs: "80px", sm: "100px" },
+        pb: { xs: 2, sm: 4 },
         overflow: "auto",
       }}
     >
@@ -683,7 +684,7 @@ function SignupForm() {
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: 1,
+            // gap: 1,
             width: { xs: "100%", sm: "480px" },
             maxWidth: "520px",
             animation: `${fadeIn} 0.6s ease-out`,
@@ -698,6 +699,7 @@ function SignupForm() {
                   fontWeight: 600,
                   fontSize: { xs: "1.3rem", sm: "1.5rem" },
                   color: "#333333",
+                  textAlign: "center",
                 }}
               >
                 Create an Account
@@ -710,7 +712,8 @@ function SignupForm() {
                   fontSize: { xs: "1.1rem", sm: "1.2rem" },
                   color: "#666666",
                   mt: "4px",
-                  mb: "5px"
+                  mb: "5px",
+                  textAlign: "center",
                 }}
               >
                 Signup Here

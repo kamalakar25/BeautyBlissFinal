@@ -31,12 +31,11 @@ const customStyles = `
 }
 
 .custom-tab-nav .nav-link {
-      color: #a509ff;
+  color: #a509ff;
   padding: 8px 12px;
   font-weight: 500;
   border-radius: 8px;
   transition: all 0.3s ease;
-  // background-color: #f8f9fa;
   font-size: 0.9rem;
 }
 
@@ -99,7 +98,6 @@ body {
 
 .desktop-nav-link.active {
   background: linear-gradient(135deg, #fb646b, #fb646b);
-  // color: #ffffff;
   font-weight: 600;
 }
 
@@ -108,7 +106,23 @@ body {
 }
 
 /* Floating Action Button */
-
+.fab {
+  position: fixed;
+  bottom: 70px;
+  right: 15px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #fb646b, #fb646b);
+  color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  transition: transform 0.2s ease;
+  font-size: 1.5rem;
+}
 
 .fab:active {
   transform: scale(0.95);
@@ -120,16 +134,17 @@ body {
   right: 10px;
   background: #ffffff;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   padding: 0.5rem;
   z-index: 1000;
-  transform: scale(0);
-  transform-origin: bottom right;
-  transition: transform 0.2s ease;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0.2s ease, opacity 0.2s ease;
 }
 
 .fab-menu.show {
-  transform: scale(1);
+  visibility: visible;
+  opacity: 1;
 }
 
 .fab-menu-item {
@@ -140,6 +155,8 @@ body {
   cursor: pointer;
   font-size: 0.9rem;
 }
+
+.fਮ
 
 .fab-menu-item:hover {
   background: #fad9e3;
@@ -155,7 +172,6 @@ body {
   width: 100%;
   max-width: 100%;
   border-left: solid 4px #fb646b;
-  
 }
 
 .card-content {
@@ -251,12 +267,16 @@ body {
 
 .modal-header {
   background: linear-gradient(135deg, #fb646b, #fb646b);
-  color: #ffffff;
+  color: #ffffff !important;
   border-radius: 12px 12px 0 0;
 }
 
 .modal-dialog {
   margin: 0.5rem;
+}
+
+.modal-title {
+  color: #ffffff !important;
 }
 
 /* Action buttons */
@@ -298,7 +318,7 @@ body {
 
 .form-control:focus {
   border-color: #fb646b;
-  box-shadow: 0 0 0 0 3px rgba(251,100,107,0.2);
+  box-shadow: 0 0 0 3px rgba(251,100,107,0.2);
 }
 
 /* Time text */
@@ -318,12 +338,27 @@ body {
   position: fixed;
   top: 15px;
   right: 15px;
-  background: #ffffff;
   border-radius: 8px;
   padding: 0.75rem;
   box-shadow: 0 2px 8px rgba(0,0,0,0.2);
   z-index: 1002;
+  min-width: 200px;
   animation: slideIn 0.3s ease, slideOut 0.3s ease 2.7s;
+}
+
+.toast.success {
+  background: #d4edda;
+  color: #155724;
+}
+
+.toast.error {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.toast.info {
+  background: #d1ecf1;
+  color: #0c5460;
 }
 
 .no-data {
@@ -359,8 +394,6 @@ body {
     max-width: 900px;
     padding: 0 1.5rem;
   }
-
- 
 
   .custom-tab-nav {
     padding: 10px 0;
@@ -400,6 +433,15 @@ body {
 
   .action-btn, .form-control {
     font-size: 1rem;
+  }
+
+  .fab {
+    bottom: 80px;
+    right: 25px;
+    width: 56px;
+    height: 56px;
+    font-size: 1.8rem;
+    background: linear-gradient(135deg, #fb646b, #f9869d);
   }
 }
 
@@ -450,29 +492,6 @@ body {
   }
 }
 
-
-
-
-/* Base FAB style (visible on all screens) */
-.fab {
-  position: fixed;
-  bottom: 70px;
-  right: 15px;
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #fb646b, #fb646b);
-  color: #ffffff;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-  z-index: 1001;
-  transition: transform 0.2s ease;
-  font-size: 1.5rem;
-}
-
-/* ⬇️ Style for small screens only (<768px) */
 @media (max-width: 767px) {
   .fab {
     bottom: 60px;
@@ -482,19 +501,6 @@ body {
     font-size: 1.2rem;
   }
 }
-
-/* ⬆️ Style override for large screens (≥768px) */
-@media (min-width: 768px) {
-  .fab {
-    bottom: 80px;
-    right: 25px;
-    width: 56px;
-    height: 56px;
-    font-size: 1.8rem;
-    background: linear-gradient(135deg, #fb646b, #f9869d); /* Optional enhancement */
-  }
-}
-
 `;
 
 // Inject custom styles
@@ -533,7 +539,11 @@ const AdminFaqs = () => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState("");
   const [modalData, setModalData] = useState({});
-  const [toast, setToast] = useState({ show: false, message: "", type: "success" });
+  const [toast, setToast] = useState({
+    show: false,
+    message: "",
+    type: "success",
+  });
   const [openFaqId, setOpenFaqId] = useState(null);
   const fabRef = useRef(null);
 
@@ -560,7 +570,7 @@ const AdminFaqs = () => {
   }, []);
 
   const showToast = (message, type) => {
-    setToast({ show: true, message, type });
+    setToast({ show: true, message, type: type || "success" });
     setTimeout(() => setToast({ show: false, message: "", type: "" }), 3000);
   };
 
@@ -575,7 +585,10 @@ const AdminFaqs = () => {
       const response = await axios.put(
         `${BASE_URL}/api/terms/faqs/${modalData.id}`,
         { answer },
-        { headers: { "user-email": localStorage.getItem("email") || "" }, timeout: 5000 }
+        {
+          headers: { "user-email": localStorage.getItem("email") || "" },
+          timeout: 5000,
+        }
       );
       const updatedFaq = response.data;
       setPendingFaqs(pendingFaqs.filter((faq) => faq._id !== modalData.id));
@@ -602,7 +615,10 @@ const AdminFaqs = () => {
       const res = await axios.post(
         `${BASE_URL}/api/terms/terms`,
         { term },
-        { headers: { "user-email": localStorage.getItem("email") || "" }, timeout: 5000 }
+        {
+          headers: { "user-email": localStorage.getItem("email") || "" },
+          timeout: 5000,
+        }
       );
       setTerms([...terms, res.data]);
       setNewTerm("");
@@ -627,7 +643,10 @@ const AdminFaqs = () => {
       const res = await axios.put(
         `${BASE_URL}/api/terms/terms/${editTermId}`,
         { term },
-        { headers: { "user-email": localStorage.getItem("email") || "" }, timeout: 5000 }
+        {
+          headers: { "user-email": localStorage.getItem("email") || "" },
+          timeout: 5000,
+        }
       );
       setTerms(terms.map((t) => (t._id === editTermId ? res.data : t)));
       setEditTermId(null);
@@ -671,7 +690,10 @@ const AdminFaqs = () => {
       const res = await axios.put(
         `${BASE_URL}/api/terms/faqs/${editFaqId}`,
         { answer },
-        { headers: { "user-email": localStorage.getItem("email") || "" }, timeout: 5000 }
+        {
+          headers: { "user-email": localStorage.getItem("email") || "" },
+          timeout: 5000,
+        }
       );
       setFaqs(faqs.map((f) => (f._id === editFaqId ? res.data : f)));
       setEditFaqId(null);
@@ -740,9 +762,7 @@ const AdminFaqs = () => {
   return (
     <Container fluid className="admin-container">
       {toast.show && (
-        <div className="toast" style={{ background: toast.type === "success" ? "#d4edda" : "#f8d7da" }}>
-          {toast.message}
-        </div>
+        <div className={`toast ${toast.type}`}>{toast.message}</div>
       )}
       <div className="content-area">
         <Nav variant="tabs" className="custom-tab-nav justify-content-center">
@@ -777,7 +797,10 @@ const AdminFaqs = () => {
             </Nav.Link>
           </Nav.Item>
         </Nav>
-        <h2 className="mb-4 text-center" style={{ color: "#0e0f0f", fontWeight: 600 }}>
+        <h2
+          className="mb-4 text-center"
+          style={{ color: "#0e0f0f", fontWeight: 600 }}
+        >
           FAQ & Terms Management
         </h2>
         {isLoading && <ProgressBar now={100} animated className="mb-3" />}
@@ -788,53 +811,66 @@ const AdminFaqs = () => {
                 {faqs.length === 0 ? (
                   <p className="no-data">No answered FAQs.</p>
                 ) : (
-                  faqs.slice().reverse().map((faq) => (
-                    <Card key={faq._id}>
-                      <div
-                        className={`faq-question ${openFaqId === faq._id ? 'active' : ''}`}
-                        onClick={() => toggleFaq(faq._id)}
-                        onKeyDown={(e) => handleKeyPress(e, faq._id)}
-                        role="button"
-                        tabIndex={0}
-                        aria-expanded={openFaqId === faq._id}
-                        aria-controls={`faq-answer-${faq._id}`}
-                      >
-                        <span>{faq.question}</span>
-                        <span>{openFaqId === faq._id ? '−' : '+'}</span>
-                      </div>
-                      <div
-                        id={`faq-answer-${faq._id}`}
-                        className={`faq-answer ${openFaqId === faq._id ? 'open' : ''}`}
-                      >
-                        <div className="faq-answer-content">
-                          <div className="faq-answer-text">
-                            <p className="mb-1">{faq.answer}</p>
-                            <p className="time-text">
-                              Created: {formatTimeAgo(faq.createdAt)} | Updated: {formatTimeAgo(faq.updatedAt)}
-                            </p>
-                          </div>
-                          <div className="faq-answer-actions">
-                            <div
-                              className="faq-action-btn edit-icon"
-                              onClick={() => openModal("editFaq", { id: faq._id, answer: faq.answer })}
-                              role="button"
-                              aria-label="Edit FAQ"
-                            >
-                              ✏️
+                  faqs
+                    .slice()
+                    .reverse()
+                    .map((faq) => (
+                      <Card key={faq._id}>
+                        <div
+                          className={`faq-question ${
+                            openFaqId === faq._id ? "active" : ""
+                          }`}
+                          onClick={() => toggleFaq(faq._id)}
+                          onKeyDown={(e) => handleKeyPress(e, faq._id)}
+                          role="button"
+                          tabIndex={0}
+                          aria-expanded={openFaqId === faq._id}
+                          aria-controls={`faq-answer-${faq._id}`}
+                        >
+                          <span>{faq.question}</span>
+                          <span>{openFaqId === faq._id ? "−" : "+"}</span>
+                        </div>
+                        <div
+                          id={`faq-answer-${faq._id}`}
+                          className={`faq-answer ${
+                            openFaqId === faq._id ? "open" : ""
+                          }`}
+                        >
+                          <div className="faq-answer-content">
+                            <div className="faq-answer-text">
+                              <p className="mb-1">{faq.answer}</p>
+                              <p className="time-text">
+                                Created: {formatTimeAgo(faq.createdAt)} |
+                                Updated: {formatTimeAgo(faq.updatedAt)}
+                              </p>
                             </div>
-                            <div
-                              className="faq-action-btn delete-icon"
-                              onClick={() => handleDeleteFaq(faq._id)}
-                              role="button"
-                              aria-label="Delete FAQ"
-                            >
-                              🗑️
+                            <div className="faq-answer-actions">
+                              <div
+                                className="faq-action-btn edit-icon"
+                                onClick={() =>
+                                  openModal("editFaq", {
+                                    id: faq._id,
+                                    answer: faq.answer,
+                                  })
+                                }
+                                role="button"
+                                aria-label="Edit FAQ"
+                              >
+                                ✏️
+                              </div>
+                              <div
+                                className="faq-action-btn delete-icon"
+                                onClick={() => handleDeleteFaq(faq._id)}
+                                role="button"
+                                aria-label="Delete FAQ"
+                              >
+                                🗑️
+                              </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    </Card>
-                  ))
+                      </Card>
+                    ))
                 )}
               </>
             )}
@@ -846,7 +882,9 @@ const AdminFaqs = () => {
                   pendingFaqs.map((faq) => (
                     <Card key={faq._id}>
                       <div
-                        className={`faq-question ${openFaqId === faq._id ? 'active' : ''}`}
+                        className={`faq-question ${
+                          openFaqId === faq._id ? "active" : ""
+                        }`}
                         onClick={() => toggleFaq(faq._id)}
                         onKeyDown={(e) => handleKeyPress(e, faq._id)}
                         role="button"
@@ -855,15 +893,19 @@ const AdminFaqs = () => {
                         aria-controls={`faq-answer-${faq._id}`}
                       >
                         <span>{faq.question}</span>
-                        <span>{openFaqId === faq._id ? '−' : '+'}</span>
+                        <span>{openFaqId === faq._id ? "−" : "+"}</span>
                       </div>
                       <div
                         id={`faq-answer-${faq._id}`}
-                        className={`faq-answer ${openFaqId === faq._id ? 'open' : ''}`}
+                        className={`faq-answer ${
+                          openFaqId === faq._id ? "open" : ""
+                        }`}
                       >
                         <div className="faq-answer-content">
                           <div className="faq-answer-text">
-                            <p className="mb-1">{faq.answer || 'No answer provided yet.'}</p>
+                            <p className="mb-1">
+                              {faq.answer || "No answer provided yet."}
+                            </p>
                             <p className="time-text">
                               Created: {formatTimeAgo(faq.createdAt)}
                             </p>
@@ -871,7 +913,12 @@ const AdminFaqs = () => {
                           <div className="faq-answer-actions">
                             <div
                               className="faq-action-btn edit-icon"
-                              onClick={() => openModal("answerFaq", { id: faq._id, answer: faq.answer })}
+                              onClick={() =>
+                                openModal("answerFaq", {
+                                  id: faq._id,
+                                  answer: faq.answer,
+                                })
+                              }
                               role="button"
                               aria-label="Answer FAQ"
                             >
@@ -909,16 +956,25 @@ const AdminFaqs = () => {
                     >
                       <div className="card-content">
                         <p className="mb-0">{term.term}</p>
-                        <p className="time-text mb-0">{formatTimeAgo(term.createdAt)}</p>
+                        <p className="time-text mb-0">
+                          {formatTimeAgo(term.createdAt)}
+                        </p>
                       </div>
-                      <div className={`faq-answer ${openFaqId === term._id ? 'open' : ''}`}>
+                      <div
+                        className={`faq-answer ${
+                          openFaqId === term._id ? "open" : ""
+                        }`}
+                      >
                         <div className="faq-answer-content">
                           <div className="faq-answer-actions">
                             <div
                               className="faq-action-btn edit-icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                openModal("editTerm", { id: term._id, term: term.term });
+                                openModal("editTerm", {
+                                  id: term._id,
+                                  term: term.term,
+                                });
                               }}
                               role="button"
                               aria-label="Edit term"
@@ -947,19 +1003,33 @@ const AdminFaqs = () => {
           </>
         )}
       </div>
-      <div 
-  className="fab"  // <-- removed d-md-none
-  ref={fabRef}
-  onClick={() => setShowFabMenu(!showFabMenu)}
-  role="button"
-  aria-label="Open action menu"
->
-  +
-</div>
-
-      <Overlay target={fabRef.current} show={showFabMenu} placement="top">
+      <div
+        className="fab"
+        ref={fabRef}
+        onClick={() => {
+          if (activeSection === "terms") {
+            openModal("addTerm");
+          } else if (activeSection === "pending" && pendingFaqs.length > 0) {
+            openModal("answerFaq", {
+              id: pendingFaqs[0]._id,
+              answer: pendingFaqs[0].answer,
+            });
+          } else if (activeSection === "pending" && pendingFaqs.length === 0) {
+            showToast("No pending FAQs to answer.", "info");
+          } else if (activeSection === "answered") {
+            showToast("No actions available for answered FAQs.", "info");
+          } else {
+            setShowFabMenu(!showFabMenu);
+          }
+        }}
+        role="button"
+        aria-label="Open action menu"
+      >
+        +
+      </div>
+      <Overlay target={fabRef.current} show={showFabMenu} placement="top-end">
         {({ placement, ...props }) => (
-          <div {...props} className={`fab-menu ${showFabMenu ? 'show' : ''}`}>
+          <div {...props} className={`fab-menu ${showFabMenu ? "show" : ""}`}>
             {activeSection === "terms" && (
               <div
                 className="fab-menu-item"
@@ -973,7 +1043,12 @@ const AdminFaqs = () => {
             {activeSection === "pending" && pendingFaqs.length > 0 && (
               <div
                 className="fab-menu-item"
-                onClick={() => openModal("answerFaq", { id: pendingFaqs[0]._id, answer: pendingFaqs[0].answer })}
+                onClick={() =>
+                  openModal("answerFaq", {
+                    id: pendingFaqs[0]._id,
+                    answer: pendingFaqs[0].answer,
+                  })
+                }
                 role="button"
                 aria-label="Answer first pending FAQ"
               >
@@ -1015,18 +1090,29 @@ const AdminFaqs = () => {
           )}
           {(modalType === "answerFaq" || modalType === "editFaq") && (
             <Form.Group>
-              <Form.Label>{modalType === "answerFaq" ? "Answer" : "Edit Answer"}</Form.Label>
+              <Form.Label>
+                {modalType === "answerFaq" ? "Answer" : "Edit Answer"}
+              </Form.Label>
               <Form.Control
                 as="textarea"
                 rows={3}
-                value={modalType === "answerFaq" ? answers[modalData.id] || "" : editFaqText}
+                value={
+                  modalType === "answerFaq"
+                    ? answers[modalData.id] || ""
+                    : editFaqText
+                }
                 onChange={(e) =>
                   modalType === "answerFaq"
-                    ? setAnswers((prev) => ({ ...prev, [modalData.id]: e.target.value }))
+                    ? setAnswers((prev) => ({
+                        ...prev,
+                        [modalData.id]: e.target.value,
+                      }))
                     : setEditFaqText(e.target.value)
                 }
                 disabled={isLoading}
-                aria-label={modalType === "answerFaq" ? "FAQ answer" : "Edit FAQ answer"}
+                aria-label={
+                  modalType === "answerFaq" ? "FAQ answer" : "Edit FAQ answer"
+                }
               />
             </Form.Group>
           )}

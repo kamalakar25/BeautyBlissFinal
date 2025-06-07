@@ -56,7 +56,7 @@ const SuccessMessage = ({ message, onClose, screenWidth }) => {
 const AdminPage = () => {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const employeesPerPage = 1;
+  const employeesPerPage = 5;
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -542,19 +542,19 @@ const AdminPage = () => {
                   className={`accordion-content ${expandedEmployee === emp._id ? 'expanded' : ''}`}
                 >
                   <div className="employee-field">
-                    <strong className="field-label">Phone:</strong>
+                    <strong className="field-label text-white">Phone:</strong>
                     <span className="field-value">{emp.phone}</span>
                   </div>
                   <div className="employee-field">
-                    <strong className="field-label">Salary:</strong>
+                    <strong className="field-label text-white">Salary:</strong>
                     <span className="field-value">₹{emp.salary}</span>
                   </div>
                   <div className="employee-field">
-                    <strong className="field-label">Experience:</strong>
+                    <strong className="field-label text-white">Experience:</strong>
                     <span className="field-value">{emp.experience}</span>
                   </div>
                   <div className="employee-field">
-                    <strong className="field-label">Actions:</strong>
+                    <strong className="field-label text-white">Actions:</strong>
                     <div className="action-buttons">
                       <div className="action-wrapper">
                         <button

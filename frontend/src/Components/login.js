@@ -332,12 +332,12 @@ const Login = () => {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
+        minHeight: 'calc(100vh - 120px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        background: 'linear-gradient(135deg, #ffe6e9 0%, #ffd1d6 100%)',
+        // background: 'linear-gradient(135deg, #ffe6e9 0%, #ffd1d6 100%)',
         position: 'relative',
         top: 0,
         left: 0,
@@ -352,7 +352,7 @@ const Login = () => {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'rgba(255, 255, 255, 0.1)',
+          // background: 'rgba(255, 255, 255, 0.1)',
           zIndex: 1,
         },
       }}
@@ -368,9 +368,9 @@ const Login = () => {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '20px',
+            // gap: '20px',
             animation: `${formAnimation} 0.5s ease-in-out`,
-            py: 4,
+            // py: 4,
           }}
         >
           <motion.div variants={childVariants}>
@@ -394,6 +394,7 @@ const Login = () => {
                   fontSize: { xs: '1.1rem', sm: '1.2rem' },
                   color: '#666666',
                   mt: '4px',
+                  textAlign: 'center',
                 }}
               >
                 Please login

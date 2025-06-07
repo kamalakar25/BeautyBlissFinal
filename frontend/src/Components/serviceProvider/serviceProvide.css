@@ -704,7 +704,7 @@
 
 .accordion-content.expanded {
   max-height: 500px;
-  padding: 10px 0;
+  /* padding: 10px 0; */
 }
 
 .service-field {

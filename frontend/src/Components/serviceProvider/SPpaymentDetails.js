@@ -545,7 +545,7 @@ const BookingPage = () => {
       sx={{
         minHeight: "100vh",
         width: "100vw",
-        p: { xs: "20px 10px", sm: "0px" },
+        // p: { xs: "20px 10px", sm: "0px" },
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
@@ -555,11 +555,11 @@ const BookingPage = () => {
       <Box
         sx={{
           width: "100%",
-          backgroundColor: "#fad9e3",
+          // backgroundColor: "#fad9e3",
           borderRadius: "12px",
-          p: "24px",
-          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
-          border: "1px solid #e2e8f0",
+          p: "12px",
+          // boxShadow: "0 4px 16px rgba(0, 0, 0, 0.1)",
+          // border: "1px solid #e2e8f0",
           margin: "0 auto",
           transition: "all 0.3s ease",
           animation: "fadeIn 0.5s ease-out",
@@ -909,7 +909,7 @@ const BookingPage = () => {
           <>
             <div className="bookings-table">
               {isMobile ? (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '0 10px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '10px 10px' }}>
                   {currentItems.length > 0 ? (
                     currentItems.map((booking, index) => {
                       const isExpanded = expandedCards.has(indexOfFirstItem + index);
