@@ -105,7 +105,7 @@ const Faq = () => {
   }
 
   return (
-    <div style={{ backgroundColor: "#fad9e3" }}>
+    <div style={{ backgroundColor: "transparent" }}>
       <Container fluid className="my-5">
         <h2 className="text-center mb-4" style={{ color: "#FB646B" }}>
           Frequently Asked Questions

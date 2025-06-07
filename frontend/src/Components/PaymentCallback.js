@@ -1,937 +1,741 @@
-import React, { useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+"use client"
+
+import { useState, useEffect } from "react"
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom"
 import {
-  Box,
-  Typography,
-  Alert,
-  CircularProgress,
-  Button,
-  Divider,
-  Step,
-  StepLabel,
-  Stepper,
-} from "@mui/material";
-import axios from "axios";
-import { jsPDF } from "jspdf";
+  Loader2,
+  Download,
+  RefreshCw,
+  Home,
+  CheckCircle,
+  XCircle,
+  Clock,
+  Receipt,
+  Calendar,
+  CreditCard,
+  Hash,
+  MapPin,
+  Phone,
+  Mail,
+  ArrowLeft,
+  Share2,
+  Copy,
+  Check,
+} from "lucide-react"
+import axios from "axios"
+import { jsPDF } from "jspdf"
+import "./PaymentCallback.css"
 
 // Define BASE_URL for API calls
-const BASE_URL = process.env.REACT_APP_API_URL;
-
-// Updated Color Palette (kept as-is from your old code)
-const theme = {
-  primary: "#ffffff", // Background color
-  secondary: "rgba(255, 255, 255, 0.8)", // Semi-transparent white for loading
-  accent: "#201548", // Button colors, highlighted text, links
-  textPrimary: "#0e0f0f", // Primary text color
-  textSecondary: "#4d4d4d", // Secondary text color (slightly lighter for contrast)
-  error: "#EF5350", // Soft Red for errors
-  success: "#4CAF50", // Green for success
-  transparent: "rgba(255, 255, 255, 0.2)", // Semi-transparent white for Receipt
-};
+const BASE_URL = process.env.REACT_APP_API_URL
 
 const PaymentCallback = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
-  const query = new URLSearchParams(location.search);
-  const orderId = query.get("order_id");
-  const [paymentStatus, setPaymentStatus] = useState(location.state || null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const [retryCount, setRetryCount] = useState(0);
-  const [terms, setTerms] = useState([]);
-  const maxRetries = 5;
-  const retryDelay = 3000;
+  const navigate = useNavigate()
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  const orderId = searchParams.get("order_id")
+
+  const [paymentStatus, setPaymentStatus] = useState(location.state || null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const [retryCount, setRetryCount] = useState(0)
+  const [terms, setTerms] = useState([])
+  const [copied, setCopied] = useState(false)
+  const maxRetries = 5
+  const retryDelay = 3000
 
   // Define steps for progress navigation
-  const steps = ["Booking Slot", "Billing", "Confirmation"];
+  const steps = ["Booking", "Payment", "Confirmation"]
 
   const verifyPayment = async (orderId) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/api/razorpay/verify?order_id=${orderId}`
-      );
-      return response.data.data;
+      const response = await axios.get(`${BASE_URL}/api/razorpay/verify?order_id=${orderId}`)
+      return response.data.data
     } catch (err) {
-      throw err;
+      throw err
     }
-  };
+  }
 
   // Fetch terms and conditions
   useEffect(() => {
     const fetchTerms = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/api/terms/terms`);
-        const uniqueTerms = Array.from(
-          new Set(response.data.map((item) => item.term))
-        ).map((term) => response.data.find((item) => item.term === term));
-        setTerms(uniqueTerms);
+        const response = await axios.get(`${BASE_URL}/api/terms/terms`)
+        const uniqueTerms = Array.from(new Set(response.data.map((item) => item.term))).map((term) =>
+          response.data.find((item) => item.term === term),
+        )
+        setTerms(uniqueTerms)
       } catch (error) {
-        setError("Failed to fetch terms and conditions.");
-        setTerms([]);
+        setError("Failed to fetch terms and conditions.")
+        setTerms([])
       }
-    };
-    fetchTerms();
-  }, []);
+    }
+    fetchTerms()
+  }, [])
 
   // Payment verification logic
   useEffect(() => {
     const attemptVerification = async () => {
       if (!orderId) {
-        setError(
-          "No order ID provided. Please try initiating the payment again."
-        );
-        setLoading(false);
-        return;
+        setError("No order ID provided. Please try initiating the payment again.")
+        setLoading(false)
+        return
       }
 
       try {
-        const statusData = await verifyPayment(orderId);
+        const statusData = await verifyPayment(orderId)
 
         if (statusData.paymentStatus === "PENDING" && retryCount < maxRetries) {
           setTimeout(() => {
-            setRetryCount(retryCount + 1);
-          }, retryDelay);
-          return;
+            setRetryCount(retryCount + 1)
+          }, retryDelay)
+          return
         }
 
-        setPaymentStatus(statusData);
-        setLoading(false);
+        setPaymentStatus(statusData)
+        setLoading(false)
         if (statusData.paymentStatus === "FAILED") {
-          setError(
-            `Payment failed: ${statusData.failureReason || "Unknown reason"}`
-          );
+          setError(`Payment failed: ${statusData.failureReason || "Unknown reason"}`)
         }
       } catch (err) {
-        const errorMessage = err.response?.data?.error || err.message;
-        setError(`Failed to verify payment: ${errorMessage}`);
-        setLoading(false);
+        const errorMessage = err.response?.data?.error || err.message
+        setError(`Failed to verify payment: ${errorMessage}`)
+        setLoading(false)
       }
-    };
+    }
 
     if (!paymentStatus || paymentStatus.paymentStatus === "PENDING") {
-      attemptVerification();
+      attemptVerification()
     } else {
-      setLoading(false);
+      setLoading(false)
       if (paymentStatus.paymentStatus === "FAILED") {
-        setError(
-          `Payment failed: ${paymentStatus.failureReason || "Unknown reason"}`
-        );
+        setError(`Payment failed: ${paymentStatus.failureReason || "Unknown reason"}`)
       }
     }
-  }, [orderId, retryCount, paymentStatus]);
+  }, [orderId, retryCount, paymentStatus])
 
   const handleTryAgain = () => {
-    navigate("/pay", { state: location.state });
-  };
+    navigate("/pay", { state: location.state })
+  }
 
   const handleRefreshStatus = async () => {
-    setLoading(true);
-    setError("");
-    setRetryCount(0);
+    setLoading(true)
+    setError("")
+    setRetryCount(0)
     try {
-      const statusData = await verifyPayment(orderId);
-      setPaymentStatus(statusData);
-      setLoading(false);
+      const statusData = await verifyPayment(orderId)
+      setPaymentStatus(statusData)
+      setLoading(false)
       if (statusData.paymentStatus === "FAILED") {
-        setError(
-          `Payment failed: ${statusData.failureReason || "Unknown reason"}`
-        );
+        setError(`Payment failed: ${statusData.failureReason || "Unknown reason"}`)
       }
     } catch (err) {
-      const errorMessage = err.response?.data?.error || err.message;
-      setError(`Failed to refresh payment status: ${errorMessage}`);
-      setLoading(false);
+      const errorMessage = err.response?.data?.error || err.message
+      setError(`Failed to refresh payment status: ${errorMessage}`)
+      setLoading(false)
     }
-  };
+  }
 
-  // PDF Receipt Generation
+  const copyToClipboard = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopied(true)
+      setTimeout(() => setCopied(false), 2000)
+    } catch (err) {
+      console.error("Failed to copy: ", err)
+    }
+  }
+
+  // Enhanced PDF Receipt Generation
   const generateReceiptPDF = () => {
     const doc = new jsPDF({
       orientation: "portrait",
       unit: "mm",
       format: "a4",
-    });
+    })
 
-    const pageWidth = doc.internal.pageSize.width;
-    const margin = 15;
-    const lineSpacing = 6;
-    let yPosition = margin;
+    const pageWidth = doc.internal.pageSize.width
+    const pageHeight = doc.internal.pageSize.height
+    const margin = 20
+    let yPosition = margin
 
-    const drawRoundedRect = (x, y, width, height, radius) => {
-      doc.setFillColor(204, 204, 204);
-      doc.roundedRect(x + 1, y + 1, width, height, radius, radius, "F");
-      doc.setFillColor(230, 240, 250);
-      doc.setDrawColor(240, 98, 146); // Pink border (#f06292)
-      doc.roundedRect(x, y, width, height, radius, radius, "FD");
-    };
+    // Modern Header with Gradient Effect
+    doc.setFillColor(139, 69, 19) // Brown
+    doc.rect(0, 0, pageWidth, 40, "F")
 
-    const drawTableRow = (y, cols, isHeader = false) => {
-      const colWidths = [80, 30, 30, 30];
-      let x = margin + 5;
-      doc.setLineWidth(0.2);
-      doc.setDrawColor(240, 98, 146); // Pink border (#f06292)
+    // Add a subtle pattern
+    doc.setFillColor(160, 82, 45, 0.3)
+    for (let i = 0; i < pageWidth; i += 10) {
+      doc.rect(i, 0, 5, 40, "F")
+    }
 
-      if (isHeader) {
-        doc.setFillColor(248, 187, 208); // Light pink for header (#f8bbd0)
-        doc.rect(margin + 5, y - 5, pageWidth - 2 * (margin + 5), 8, "F");
-      }
+    // Company Logo Area (placeholder)
+    // doc.setFillColor(255, 255, 255)
+    // doc.circle(margin + 15, 20, 12, "F")
+    // doc.setFillColor(139, 69, 19)
+    // doc.setFontSize(16)
+    // doc.setFont("helvetica", "bold")
+    // doc.text("SP", margin + 10, 23)
 
-      cols.forEach((col, i) => {
-        const text = String(col);
-        doc.text(text, x + 2, y, { maxWidth: colWidths[i] - 4 });
-        doc.rect(x, y - 5, colWidths[i], 8);
-        x += colWidths[i];
-      });
-    };
+    // Header Text
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(24)
+    doc.setFont("helvetica", "bold")
+    doc.text("PAYMENT RECEIPT", pageWidth / 2, 18, { align: "center" })
 
-    // Header
-    doc.setFillColor(240, 98, 146); // Pink header (#f06292)
-    doc.rect(0, 0, pageWidth, 30, "F");
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(20);
-    doc.setTextColor(255, 255, 255);
-    doc.text("Payment Receipt", pageWidth / 2, yPosition, { align: "center" });
-    yPosition += 10;
-    doc.setFontSize(14);
-    doc.text(paymentStatus?.parlor.name || "N/A", pageWidth / 2, yPosition, {
-      align: "center",
-    });
-    yPosition += 8;
-    doc.setFontSize(10);
-    doc.text(`Bill No: ${paymentStatus?.orderId || "N/A"}`, margin, yPosition);
-    doc.text(
-      `Date: ${
-        paymentStatus?.createdAt
-          ? new Date(paymentStatus.createdAt).toLocaleDateString()
-          : "N/A"
-      }`,
-      pageWidth - margin - 50,
-      yPosition
-    );
-    yPosition += 10;
+    doc.setFontSize(12)
+    doc.setFont("helvetica", "normal")
+    doc.text(paymentStatus?.parlor?.name || "Beauty Salon", pageWidth / 2, 28, { align: "center" })
 
-    // Customer Details
-    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, 50, 5);
-    yPosition += 10;
+    yPosition = 50
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(26, 26, 26);
+    // Receipt Info Bar
+    doc.setFillColor(245, 245, 245)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 15, "F")
+    doc.setTextColor(60, 60, 60)
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "bold")
+    doc.text(`Receipt #: ${paymentStatus?.orderId || "N/A"}`, margin + 5, yPosition + 8)
+    doc.text(`Date: ${new Date().toLocaleDateString()}`, pageWidth - margin - 40, yPosition + 8)
+    doc.text(`Time: ${new Date().toLocaleTimeString()}`, pageWidth - margin - 40, yPosition + 12)
 
-    const customerDetails = [
-      { label: "Customer", value: paymentStatus?.name || "N/A" },
+    yPosition += 25
+
+    // Customer Information Section
+    doc.setFillColor(139, 69, 19)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(12)
+    doc.setFont("helvetica", "bold")
+    doc.text("CUSTOMER INFORMATION", margin + 5, yPosition + 6)
+
+    yPosition += 15
+    doc.setTextColor(60, 60, 60)
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "normal")
+
+    const customerInfo = [
+      { label: "Customer Name", value: paymentStatus?.name || "N/A" },
       {
-        label: "Date",
-        value: paymentStatus?.date
-          ? new Date(paymentStatus.date).toLocaleDateString()
-          : "N/A",
+        label: "Appointment Date",
+        value: paymentStatus?.date ? new Date(paymentStatus.date).toLocaleDateString() : "N/A",
       },
-      { label: "Time", value: paymentStatus?.time || "N/A" },
-      { label: "Employee", value: paymentStatus?.favoriteEmployee || "N/A" },
-    ];
+      { label: "Appointment Time", value: paymentStatus?.time || "N/A" },
+      { label: "Preferred Staff", value: paymentStatus?.favoriteEmployee || "N/A" },
+    ]
 
-    customerDetails.forEach((item) => {
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(240, 98, 146); // Pink for labels (#f06292)
-      doc.text(`${item.label}:`, margin + 5, yPosition);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(26, 26, 26);
-      doc.text(item.value, margin + 45, yPosition);
-      yPosition += lineSpacing;
-    });
+    customerInfo.forEach((item) => {
+      doc.setFont("helvetica", "bold")
+      doc.text(`${item.label}:`, margin + 5, yPosition)
+      doc.setFont("helvetica", "normal")
+      doc.text(item.value, margin + 50, yPosition)
+      yPosition += 6
+    })
 
-    yPosition += 10;
+    yPosition += 10
 
-    // Service Details
-    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, 60, 5);
-    yPosition += 10;
+    // Service Details Section
+    doc.setFillColor(139, 69, 19)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(12)
+    doc.setFont("helvetica", "bold")
+    doc.text("SERVICE DETAILS", margin + 5, yPosition + 6)
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
-    doc.text("Service Details", margin + 5, yPosition);
-    yPosition += 8;
+    yPosition += 15
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(10);
-    drawTableRow(yPosition, ["Description", "Quantity", "Rate", "Total"], true);
-    yPosition += 8;
+    // Service Table Header
+    doc.setFillColor(250, 250, 250)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 10, "F")
+    doc.setDrawColor(200, 200, 200)
+    doc.setLineWidth(0.5)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 10)
 
-    doc.setFont("helvetica", "normal");
-    doc.setTextColor(26, 26, 26);
+    doc.setTextColor(60, 60, 60)
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "bold")
+    doc.text("Service Description", margin + 5, yPosition + 7)
+    doc.text("Qty", pageWidth - margin - 60, yPosition + 7)
+    doc.text("Amount", pageWidth - margin - 30, yPosition + 7)
 
-    const primaryService = [
-      paymentStatus?.service || "N/A",
-      "1",
-      String(paymentStatus?.total_amount || "0"),
-      String(paymentStatus?.total_amount || "0"),
-    ];
-    drawTableRow(yPosition, primaryService);
-    yPosition += 8;
+    yPosition += 10
+
+    // Service Items
+    const services = [
+      {
+        name: paymentStatus?.service || "Beauty Service",
+        qty: "1",
+        amount: paymentStatus?.total_amount || 0,
+      },
+    ]
 
     if (paymentStatus?.relatedServices?.length > 0) {
       paymentStatus.relatedServices.forEach((service) => {
-        drawTableRow(yPosition, [service, "1", "N/A", "N/A"]);
-        yPosition += 8;
-      });
+        services.push({
+          name: service,
+          qty: "1",
+          amount: "Included",
+        })
+      })
     }
 
-    if (paymentStatus?.couponCode) {
-      doc.text(
-        `Coupon: ${paymentStatus.couponCode} (-${
-          paymentStatus.discountAmount || 0
-        })`,
-        margin + 5,
-        yPosition
-      );
-      yPosition += 8;
-    }
+    services.forEach((service, index) => {
+      if (index % 2 === 0) {
+        doc.setFillColor(248, 248, 248)
+        doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+      }
 
-    doc.setFont("helvetica", "bold");
-    doc.text(
-      `Total: ${paymentStatus?.currency || "INR"} ${
-        paymentStatus?.total_amount || 0
-      }`,
-      pageWidth - margin - 50,
-      yPosition
-    );
-    yPosition += 8;
-    doc.text(
-      `Discount: ${paymentStatus?.currency || "INR"} ${
-        paymentStatus?.discountAmount || 0
-      }`,
-      pageWidth - margin - 50,
-      yPosition
-    );
-    yPosition += 8;
-    doc.text(
-      `Final Amount: ${paymentStatus?.currency || "INR"} ${
-        paymentStatus?.amount || 0
-      }`,
-      pageWidth - margin - 50,
-      yPosition
-    );
-    yPosition += 10;
+      doc.setTextColor(60, 60, 60)
+      doc.setFont("helvetica", "normal")
+      doc.text(service.name, margin + 5, yPosition + 6)
+      doc.text(service.qty, pageWidth - margin - 60, yPosition + 6)
+      doc.text(String(service.amount), pageWidth - margin - 30, yPosition + 6)
+      yPosition += 8
+    })
+
+    yPosition += 10
 
     // Payment Summary
-    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, 70, 5);
-    yPosition += 10;
+    doc.setFillColor(139, 69, 19)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(12)
+    doc.setFont("helvetica", "bold")
+    doc.text("PAYMENT SUMMARY", margin + 5, yPosition + 6)
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
-    doc.text("Payment Summary", margin + 5, yPosition);
-    yPosition += 8;
+    yPosition += 15
 
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(26, 26, 26);
-
-    const paymentDetails = [
-      {
-        label: "Amount Paid",
-        value: `${paymentStatus?.currency || "INR"} ${
-          paymentStatus?.amount || 0
-        }`,
-      },
-      { label: "Payment Method", value: paymentStatus?.Payment_Mode || "N/A" },
-      { label: "Transaction ID", value: paymentStatus?.transactionId || "N/A" },
-      { label: "Status", value: paymentStatus?.paymentStatus || "N/A" },
-      {
-        label: "Date & Time",
-        value: paymentStatus?.createdAt
-          ? new Date(paymentStatus.createdAt).toLocaleString()
-          : "N/A",
-      },
-    ];
+    const summaryItems = [
+      { label: "Subtotal", value: `${paymentStatus?.currency || "INR"} ${paymentStatus?.total_amount || 0}` },
+      { label: "Discount", value: `${paymentStatus?.currency || "INR"} ${paymentStatus?.discountAmount || 0}` },
+      { label: "Total Paid", value: `${paymentStatus?.currency || "INR"} ${paymentStatus?.amount || 0}`, bold: true },
+    ]
 
     if (paymentStatus?.couponCode) {
-      paymentDetails.push({
-        label: "Coupon Code",
-        value: paymentStatus.couponCode || "N/A",
-      });
-      paymentDetails.push({
-        label: "Discount",
-        value: `${paymentStatus?.currency || "INR"} ${
-          paymentStatus?.discountAmount || 0
-        }`,
-      });
+      summaryItems.splice(1, 0, {
+        label: `Coupon (${paymentStatus.couponCode})`,
+        value: `-${paymentStatus?.currency || "INR"} ${paymentStatus?.discountAmount || 0}`,
+      })
     }
 
-    if (paymentStatus?.paymentStatus === "FAILED") {
-      paymentDetails.push({
-        label: "Reason",
-        value: paymentStatus?.failureReason || "Unknown",
-      });
-    }
-
-    paymentDetails.forEach((item) => {
-      doc.setFont("helvetica", "bold");
-      doc.setTextColor(240, 98, 146); // Pink for labels (#f06292)
-      doc.text(`${item.label}:`, margin + 5, yPosition);
-      doc.setFont("helvetica", "normal");
-      doc.setTextColor(26, 26, 26);
-      if (item.label === "Status") {
-        if (item.value === "SUCCESS") doc.setTextColor(0, 128, 0);
-        else if (item.value === "FAILED") doc.setTextColor(255, 0, 0);
+    summaryItems.forEach((item) => {
+      if (item.bold) {
+        doc.setFillColor(240, 240, 240)
+        doc.rect(margin, yPosition - 2, pageWidth - 2 * margin, 8, "F")
+        doc.setFont("helvetica", "bold")
+        doc.setFontSize(12)
+      } else {
+        doc.setFont("helvetica", "normal")
+        doc.setFontSize(10)
       }
-      doc.text(item.value, margin + 45, yPosition);
-      doc.setTextColor(26, 26, 26);
-      yPosition += lineSpacing;
-    });
 
-    yPosition += 10;
+      doc.setTextColor(60, 60, 60)
+      doc.text(item.label, margin + 5, yPosition + 4)
+      doc.text(item.value, pageWidth - margin - 5, yPosition + 4, { align: "right" })
+      yPosition += item.bold ? 12 : 8
+    })
 
-    // Terms and Conditions
-    // Calculate dynamic height for Terms & Conditions box
-    let termsHeight = 18; // Base height for title (10mm padding + 8mm for title)
+    yPosition += 10
+
+    // Payment Information
+    doc.setFillColor(139, 69, 19)
+    doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(12)
+    doc.setFont("helvetica", "bold")
+    doc.text("PAYMENT INFORMATION", margin + 5, yPosition + 6)
+
+    yPosition += 15
+
+    const paymentInfo = [
+      { label: "Payment Method", value: paymentStatus?.Payment_Mode || "N/A" },
+      { label: "Transaction ID", value: paymentStatus?.transactionId || "N/A" },
+      { label: "Payment Status", value: paymentStatus?.paymentStatus || "N/A" },
+      {
+        label: "Payment Date",
+        value: paymentStatus?.createdAt ? new Date(paymentStatus.createdAt).toLocaleString() : "N/A",
+      },
+    ]
+
+    doc.setTextColor(60, 60, 60)
+    doc.setFontSize(10)
+    paymentInfo.forEach((item) => {
+      doc.setFont("helvetica", "bold")
+      doc.text(`${item.label}:`, margin + 5, yPosition)
+      doc.setFont("helvetica", "normal")
+      doc.text(item.value, margin + 50, yPosition)
+      yPosition += 6
+    })
+
+    yPosition += 15
+
+    // Terms & Conditions
     if (terms.length > 0) {
-      terms.forEach((term) => {
-        const formattedTerm = `${term.term}`;
-        const wrappedText = doc.splitTextToSize(
-          formattedTerm,
-          pageWidth - 2 * (margin + 10)
-        );
-        termsHeight += wrappedText.length * (lineSpacing - 2) + 2;
-      });
-    } else {
-      termsHeight += lineSpacing; // For "No terms" message
+      doc.setFillColor(139, 69, 19)
+      doc.rect(margin, yPosition, pageWidth - 2 * margin, 8, "F")
+      doc.setTextColor(255, 255, 255)
+      doc.setFontSize(12)
+      doc.setFont("helvetica", "bold")
+      doc.text("TERMS & CONDITIONS", margin + 5, yPosition + 6)
+
+      yPosition += 15
+      doc.setTextColor(60, 60, 60)
+      doc.setFontSize(9)
+      doc.setFont("helvetica", "normal")
+
+      terms.slice(0, 5).forEach((term, index) => {
+        const text = `${index + 1}. ${term.term}`
+        const splitText = doc.splitTextToSize(text, pageWidth - 2 * margin - 10)
+        splitText.forEach((line) => {
+          if (yPosition > pageHeight - 40) return
+          doc.text(line, margin + 5, yPosition)
+          yPosition += 4
+        })
+      })
     }
-    termsHeight += 10; // Bottom padding
-
-    drawRoundedRect(margin, yPosition, pageWidth - 2 * margin, termsHeight, 5);
-    yPosition += 10;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(240, 98, 146); // Pink for section title (#f06292)
-    doc.text("Terms & Conditions", margin + 5, yPosition);
-    yPosition += 8;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(26, 26, 26);
-
-    if (terms.length > 0) {
-      terms.forEach((term, index) => {
-        const formattedTerm = `${index + 1}. ${term.term}`;
-        const wrappedText = doc.splitTextToSize(
-          formattedTerm,
-          pageWidth - 2 * (margin + 10)
-        );
-        wrappedText.forEach((line) => {
-          doc.text(line, margin + 5, yPosition);
-          yPosition += lineSpacing - 2;
-        });
-        yPosition += 2;
-      });
-    } else {
-      doc.text("No terms and conditions available.", margin + 5, yPosition);
-      yPosition += lineSpacing;
-    }
-
-    yPosition += 20; // Increased spacing (20mm) before footer to prevent overlap
 
     // Footer
-    doc.setFillColor(248, 187, 208); // Light pink footer (#f8bbd0)
-    doc.rect(0, yPosition, pageWidth, 25, "F");
-    doc.setFillColor(252, 228, 236, 0.5); // Lighter pink for second layer (#fce4ec)
-    doc.rect(0, yPosition + 12.5, pageWidth, 12.5, "F");
+    yPosition = pageHeight - 30
+    doc.setFillColor(139, 69, 19)
+    doc.rect(0, yPosition, pageWidth, 30, "F")
 
-    doc.setFillColor(26, 26, 26);
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 10; j++) {
-        if (Math.random() > 0.5) {
-          doc.rect(
-            pageWidth - margin - 15 + i * 1.5,
-            yPosition + 5 + j * 1.5,
-            1,
-            1,
-            "F"
-          );
-        }
-      }
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(10)
+    doc.setFont("helvetica", "bold")
+    doc.text(`Thank you for choosing ${paymentStatus?.parlor?.name || "our salon"}!`, pageWidth / 2, yPosition + 10, {
+      align: "center",
+    })
+
+    doc.setFont("helvetica", "normal")
+    doc.setFontSize(9)
+    doc.text("For support: support@salon.com | +1-234-567-8900", pageWidth / 2, yPosition + 18, { align: "center" })
+    doc.text("Visit us: www.salon.com", pageWidth / 2, yPosition + 24, { align: "center" })
+
+    doc.save(`receipt_${paymentStatus?.orderId || "unknown"}.pdf`)
+  }
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case "PAID":
+        return <CheckCircle className="payment-callback-status-icon payment-callback-success" />
+      case "FAILED":
+        return <XCircle className="payment-callback-status-icon payment-callback-error" />
+      default:
+        return <Clock className="payment-callback-status-icon payment-callback-warning" />
     }
+  }
 
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(9);
-    doc.setTextColor(26, 26, 26);
-    doc.text(
-      `Thank you for choosing ${paymentStatus?.parlor.name || "us"}!`,
-      margin + 5,
-      yPosition + 10
-    );
-    doc.setFont("helvetica", "normal");
-    doc.text(
-      "Contact: support@parlor.com | +123-456-7890",
-      margin + 5,
-      yPosition + 15
-    );
+  const formatCurrency = (amount, currency = "INR") => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: currency,
+      minimumFractionDigits: 2,
+    }).format(amount || 0)
+  }
 
-    doc.save(`receipt_${paymentStatus?.orderId || "unknown"}.pdf`);
-  };
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A"
+    return new Date(dateString).toLocaleDateString("en-IN", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    })
+  }
+
+  const formatTime = (timeString) => {
+    if (!timeString) return "N/A"
+    return timeString
+  }
 
   return (
-    <Box
-      sx={{
-        p: { xs: 2, sm: 3, md: 4 },
-        width: "100%", // Ensure full width
-        minHeight: "100vh", // Ensure full viewport height
-        bgcolor: "#fad9e3", // Background color
-        display: "flex",
-        flexDirection: "column",
-        position: "relative", // Ensure layout control
-        boxSizing: "border-box", // Prevent padding issues
-      }}
-    >
-      {/* Progress Navigation (Centered) */}
-      <Box
-        sx={{
-          mb: 2,
-          maxWidth: "400px",
-          mx: "auto", // Center the stepper horizontally
-        }}
-      >
-        <Stepper
-          activeStep={2} // Set "Confirmation" as the active step (index 2)
-          alternativeLabel
-          sx={{
-            "& .MuiStepLabel-label": {
-              fontFamily: "'Montserrat', sans-serif",
-              fontSize: { xs: "0.8rem", sm: "1rem" },
-            },
-          }}
-        >
-          {steps.map((label, index) => (
-            <Step key={label}>
-              <StepLabel
-                sx={{
-                  "& .MuiStepLabel-label": {
-                    color: index <= 2 ? "#f06292" : "#999", // Pink for completed/active steps
-                    fontWeight: index <= 2 ? 600 : 400,
-                  },
-                  "& .MuiStepIcon-root": {
-                    color: index <= 2 ? "#f06292" : "#ccc", // Pink for completed/active steps
-                    "&.Mui-completed": {
-                      color: "#f06292",
-                    },
-                    "&.Mui-active": {
-                      color: "#f06292",
-                    },
-                  },
-                  "& .MuiStepIcon-text": {
-                    fill: "#ffffff",
-                  },
-                }}
-              >
-                {label}
-              </StepLabel>
-            </Step>
-          ))}
-        </Stepper>
-      </Box>
+    <div className="payment-callback-app-container">
+      <div className="payment-callback-app-content">
+        {/* App Header */}
+        <div className="payment-callback-app-header">
+          <button className="payment-callback-back-button" onClick={() => navigate("/")}>
+            <ArrowLeft className="payment-callback-back-icon" />
+          </button>
+          <h1 className="payment-callback-app-title">Payment Status</h1>
+          <div className="payment-callback-header-actions">
+            {paymentStatus?.paymentStatus === "PAID" && (
+              <button className="payment-callback-share-button" onClick={() => window.navigator.share?.({ title: "Payment Receipt" })}>
+                <Share2 className="payment-callback-share-icon" />
+              </button>
+            )}
+          </div>
+        </div>
 
-      <Typography
-        variant="h4"
-        sx={{
-          mb: { xs: 2, sm: 3 },
-          color: "#000000",
-          fontWeight: 700,
-          textAlign: "center",
-          fontSize: { xs: "1.5rem", sm: "1.8rem", md: "2.2rem" },
-          fontFamily: "'Montserrat', sans-serif",
-        }}
-      >
-        Payment Status
-      </Typography>
+        {/* Progress Steps */}
+        <div className="payment-callback-progress-container">
+          <div className="payment-callback-progress-track">
+            {steps.map((step, index) => (
+              <div key={step} className={`payment-callback-progress-step ${index <= 2 ? "payment-callback-completed" : ""}`}>
+                <div className="payment-callback-step-circle">
+                  <span className="payment-callback-step-number">{index + 1}</span>
+                </div>
+                <span className="payment-callback-step-label">{step}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <Box
-        sx={{
-          maxWidth: { xs: "100%", sm: 600 },
-          width: "100%",
-          mx: "auto",
-          flexGrow: 1, // Ensure content takes available space
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
         {loading ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              flexGrow: 1,
-              bgcolor: theme.secondary,
-              borderRadius: 2,
-              p: { xs: 2, sm: 3 },
-            }}
-          >
-            <CircularProgress sx={{ color: "#f06292" }} />
-            <Typography
-              sx={{
-                mt: 2,
-                color: "#000000",
-                fontSize: { xs: "0.9rem", sm: "1rem" },
-                fontFamily: "'Montserrat', sans-serif",
-              }}
-            >
-              Checking payment status, please wait...
-            </Typography>
-          </Box>
+          <div className="payment-callback-loading-screen">
+            <div className="payment-callback-loading-content">
+              <div className="payment-callback-loading-spinner-container">
+                <Loader2 className="payment-callback-loading-spinner" />
+                <div className="payment-callback-loading-pulse"></div>
+              </div>
+              <h3 className="payment-callback-loading-title">Verifying Payment</h3>
+              <p className="payment-callback-loading-text">Please wait while we confirm your transaction...</p>
+              <div className="payment-callback-loading-bar">
+                <div className="payment-callback-loading-progress"></div>
+              </div>
+            </div>
+          </div>
         ) : error ? (
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              flexGrow: 1,
-              px: { xs: 1, sm: 0 },
-            }}
-          >
-            <Alert
-              severity="error"
-              sx={{
-                mb: 3,
-                width: "100%",
-                bgcolor: "#FFEBEE",
-                color: theme.error,
-                borderRadius: 2,
-                fontSize: { xs: "0.85rem", sm: "0.9rem" },
-                "& .MuiAlert-icon": { color: theme.error },
-              }}
-            >
-              {error}
-            </Alert>
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
-              <Button
-                variant="contained"
-                onClick={handleTryAgain}
-                sx={{
-                  bgcolor: "#f06292",
-                  color: "#fff",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": { bgcolor: "#ec407a" },
-                  fontFamily: "'Montserrat', sans-serif",
-                }}
-              >
-                Try Again
-              </Button>
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/")}
-                sx={{
-                  borderColor: "#f06292",
-                  color: "#f06292",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": {
-                    bgcolor: "#f8bbd0",
-                    borderColor: "#f06292",
-                  },
-                  fontFamily: "'Montserrat', sans-serif",
-                }}
-              >
-                Back to Home
-              </Button>
-            </Box>
-          </Box>
+          <div className="payment-callback-error-screen">
+            <div className="payment-callback-error-content">
+              <div className="payment-callback-error-icon-container">
+                <XCircle className="payment-callback-error-icon" />
+              </div>
+              <h3 className="payment-callback-error-title">Payment Failed</h3>
+              <p className="payment-callback-error-message">{error}</p>
+              <div className="payment-callback-error-actions">
+                <button onClick={handleTryAgain} className="payment-callback-primary-button">
+                  <RefreshCw className="payment-callback-button-icon" />
+                  Try Again
+                </button>
+                <button onClick={() => navigate("/")} className="payment-callback-secondary-button">
+                  <Home className="payment-callback-button-icon" />
+                  Go Home
+                </button>
+              </div>
+            </div>
+          </div>
         ) : (
-          <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              flexDirection: "column",
-              gap: { xs: 1.5, sm: 2 },
-            }}
-          >
-            <Alert
-              severity={
-                paymentStatus?.paymentStatus === "PAID"
-                  ? "success"
-                  : paymentStatus?.paymentStatus === "FAILED"
-                  ? "error"
-                  : "warning"
-              }
-              sx={{
-                borderRadius: 2,
-                bgcolor:
-                  paymentStatus?.paymentStatus === "PAID"
-                    ? "#E8F5E9"
-                    : paymentStatus?.paymentStatus === "FAILED"
-                    ? "#FFEBEE"
-                    : "#FFF8E1",
-                color:
-                  paymentStatus?.paymentStatus === "PAID"
-                    ? theme.success
-                    : paymentStatus?.paymentStatus === "FAILED"
-                    ? theme.error
-                    : "#FFCA28",
-                fontSize: { xs: "0.85rem", sm: "0.9rem" },
-                "& .MuiAlert-icon": {
-                  color:
-                    paymentStatus?.paymentStatus === "PAID"
-                      ? theme.success
+          <div className="payment-callback-main-content">
+            {/* Status Card */}
+            <div className={`payment-callback-status-card ${paymentStatus?.paymentStatus?.toLowerCase()}`}>
+              <div className="payment-callback-status-header">
+                <div className="payment-callback-status-icon-container">{getStatusIcon(paymentStatus?.paymentStatus)}</div>
+                <div className="payment-callback-status-info">
+                  <h2 className="payment-callback-status-title">
+                    {paymentStatus?.paymentStatus === "PAID"
+                      ? "Payment Successful!"
                       : paymentStatus?.paymentStatus === "FAILED"
-                      ? theme.error
-                      : "#FFCA28",
-                },
-                fontFamily: "'Montserrat', sans-serif",
-              }}
-            >
-              {paymentStatus?.paymentStatus === "PAID"
-                ? `Payment Successful`
-                : paymentStatus?.paymentStatus === "FAILED"
-                ? `Payment Failed for order: ${orderId}: ${
-                    paymentStatus.failureReason || "Unknown reason"
-                  }`
-                : `Payment is still processing for order: ${orderId}. Please wait or refresh the status.`}
-            </Alert>
-            {paymentStatus && (
-              <Box
-                sx={{
-                  p: { xs: 2, sm: 3 },
-                  borderRadius: 3,
-                  bgcolor: theme.transparent,
-                  backdropFilter: "blur(5px)",
-                  border: `1px solid rgba(255, 255, 255, 0.3)`,
-                  boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    mb: 2,
-                    color: "#000000",
-                    fontWeight: 600,
-                    fontSize: { xs: "1.2rem", sm: "1.4rem" },
-                    fontFamily: "'Montserrat', sans-serif",
-                  }}
+                        ? "Payment Failed"
+                        : "Payment Processing"}
+                  </h2>
+                  <p className="payment-callback-status-subtitle">
+                    {paymentStatus?.paymentStatus === "PAID"
+                      ? "Your payment has been processed successfully"
+                      : paymentStatus?.paymentStatus === "FAILED"
+                        ? "There was an issue with your payment"
+                        : "Your payment is being processed"}
+                  </p>
+                </div>
+              </div>
+              <div className="payment-callback-status-amount">
+                <span className="payment-callback-amount-label">Amount Paid</span>
+                <span className="payment-callback-amount-value">{formatCurrency(paymentStatus?.amount, paymentStatus?.currency)}</span>
+              </div>
+            </div>
+
+            {/* Receipt Card */}
+            <div className="payment-callback-receipt-card">
+              <div className="payment-callback-receipt-header">
+                <div className="payment-callback-receipt-title-section">
+                  <Receipt className="payment-callback-receipt-icon" />
+                  <div>
+                    <h3 className="payment-callback-receipt-title">Digital Receipt</h3>
+                    <p className="payment-callback-receipt-subtitle">Order #{paymentStatus?.orderId}</p>
+                  </div>
+                </div>
+                <button
+                  className="payment-callback-copy-button"
+                  onClick={() => copyToClipboard(paymentStatus?.orderId)}
+                  title="Copy Order ID"
                 >
-                  Receipt
-                </Typography>
-                <Divider sx={{ my: 2, bgcolor: "#f06292" }} />
-                <Box
-                  sx={{
-                    display: "grid",
-                    gridTemplateColumns: {
-                      xs: "1fr",
-                      sm: "1fr 1fr",
-                      md: "1fr 1fr",
-                    },
-                    gap: { xs: 1, sm: 2 },
-                    fontSize: { xs: "0.85rem", sm: "0.9rem" },
-                  }}
-                >
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Parlor:</strong>{" "}
-                    {paymentStatus.parlor.name || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Customer:</strong> {paymentStatus.name || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Service:</strong> {paymentStatus.service || "N/A"}
-                  </Typography>
-                  {paymentStatus.relatedServices?.length > 0 && (
-                    <Typography sx={{ color: "#000000" }}>
-                      <strong>Additional Services:</strong>{" "}
-                      {paymentStatus.relatedServices.join(", ")}
-                    </Typography>
-                  )}
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Date:</strong>{" "}
-                    {paymentStatus.date
-                      ? new Date(paymentStatus.date).toLocaleDateString()
-                      : "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Time:</strong> {paymentStatus.time || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Employee:</strong>{" "}
-                    {paymentStatus.favoriteEmployee || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Total Amount:</strong>{" "}
-                    {paymentStatus.currency || "INR"}{" "}
-                    {paymentStatus.total_amount || 0}
-                  </Typography>
-                  {paymentStatus.couponCode && (
+                  {copied ? <Check className="payment-callback-copy-icon" /> : <Copy className="payment-callback-copy-icon" />}
+                </button>
+              </div>
+
+              {/* Business Info */}
+              <div className="payment-callback-business-section">
+                <div className="payment-callback-business-header">
+                  <MapPin className="payment-callback-business-icon" />
+                  <h4 className="payment-callback-business-name">{paymentStatus?.parlor?.name || "Beauty Salon"}</h4>
+                </div>
+                {/* <div className="payment-callback-business-contacts">
+                  <div className="payment-callback-contact-item">
+                    <Phone className="payment-callback-contact-icon" />
+                    <span>+1 (555) 123-4567</span>
+                  </div>
+                  <div className="payment-callback-contact-item">
+                    <Mail className="payment-callback-contact-icon" />
+                    <span>info@beautysalon.com</span>
+                  </div>
+                </div> */}
+              </div>
+
+              {/* Appointment Details */}
+              <div className="payment-callback-details-section">
+                <h4 className="payment-callback-section-title">
+                  <Calendar className="payment-callback-section-icon" />
+                  Appointment Details
+                </h4>
+                <div className="payment-callback-details-grid">
+                  <div className="payment-callback-detail-item">
+                    <span className="payment-callback-detail-label">Customer</span>
+                    <span className="payment-callback-detail-value">{paymentStatus?.name || "N/A"}</span>
+                  </div>
+                  <div className="payment-callback-detail-item">
+                    <span className="payment-callback-detail-label">Date</span>
+                    <span className="payment-callback-detail-value">{formatDate(paymentStatus?.date)}</span>
+                  </div>
+                  <div className="payment-callback-detail-item">
+                    <span className="payment-callback-detail-label">Time</span>
+                    <span className="payment-callback-detail-value">{formatTime(paymentStatus?.time)}</span>
+                  </div>
+                  <div className="payment-callback-detail-item">
+                    <span className="payment-callback-detail-label">Staff</span>
+                    <span className="payment-callback-detail-value">{paymentStatus?.favoriteEmployee || "Any Available"}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Service Details */}
+              <div className="payment-callback-service-section">
+                <h4 className="payment-callback-section-title">
+                  <Receipt className="payment-callback-section-icon" />
+                  Services
+                </h4>
+                <div className="payment-callback-service-list">
+                  <div className="payment-callback-service-item payment-callback-primary-service">
+                    <div className="payment-callback-service-info">
+                      <span className="payment-callback-service-name">{paymentStatus?.service || "Beauty Service"}</span>
+                      <span className="payment-callback-service-type">Primary Service</span>
+                    </div>
+                    <span className="payment-callback-service-price">
+                      {formatCurrency(paymentStatus?.total_amount, paymentStatus?.currency)}
+                    </span>
+                  </div>
+
+                  {paymentStatus?.relatedServices?.length > 0 && (
                     <>
-                      <Typography sx={{ color: "#000000" }}>
-                        <strong>Coupon Code:</strong>{" "}
-                        {paymentStatus.couponCode || "N/A"}
-                      </Typography>
-                      <Typography sx={{ color: "#000000" }}>
-                        <strong>Discount:</strong>{" "}
-                        {paymentStatus.currency || "INR"}{" "}
-                        {paymentStatus.discountAmount || 0}
-                      </Typography>
+                      <div className="payment-callback-service-divider">Additional Services</div>
+                      {paymentStatus.relatedServices.map((service, index) => (
+                        <div key={index} className="payment-callback-service-item payment-callback-additional-service">
+                          <div className="payment-callback-service-info">
+                            <span className="payment-callback-service-name">{service}</span>
+                            <span className="payment-callback-service-type">Complementary</span>
+                          </div>
+                          <span className="payment-callback-service-included">Included</span>
+                        </div>
+                      ))}
                     </>
                   )}
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Amount Paid:</strong>{" "}
-                    {paymentStatus.currency || "INR"}{" "}
-                    {paymentStatus.amount || 0}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Payment Method:</strong>{" "}
-                    {paymentStatus.Payment_Mode || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Transaction ID:</strong>{" "}
-                    {paymentStatus.transactionId || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Order ID:</strong> {paymentStatus.orderId || "N/A"}
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Status:</strong>{" "}
-                    <span
-                      style={{
-                        color:
-                          paymentStatus.paymentStatus === "PAID"
-                            ? theme.success
-                            : paymentStatus.paymentStatus === "FAILED"
-                            ? theme.error
-                            : "#FFCA28",
-                      }}
-                    >
-                      {paymentStatus.paymentStatus || "N/A"}
+                </div>
+              </div>
+
+              {/* Payment Summary */}
+              <div className="payment-callback-summary-section">
+                <h4 className="payment-callback-section-title">
+                  <CreditCard className="payment-callback-section-icon" />
+                  Payment Summary
+                </h4>
+                <div className="payment-callback-summary-list">
+                  <div className="payment-callback-summary-item">
+                    <span className="payment-callback-summary-label">Subtotal</span>
+                    <span className="payment-callback-summary-value">
+                      {formatCurrency(paymentStatus?.total_amount, paymentStatus?.currency)}
                     </span>
-                  </Typography>
-                  <Typography sx={{ color: "#000000" }}>
-                    <strong>Created At:</strong>{" "}
-                    {paymentStatus.createdAt
-                      ? new Date(paymentStatus.createdAt).toLocaleString()
-                      : "N/A"}
-                  </Typography>
-                  {paymentStatus.paymentStatus === "FAILED" && (
-                    <Typography sx={{ color: theme.error }}>
-                      <strong>Reason:</strong>{" "}
-                      {paymentStatus.failureReason || "Unknown"}
-                    </Typography>
+                  </div>
+
+                  {paymentStatus?.couponCode && (
+                    <div className="payment-callback-summary-item payment-callback-discount">
+                      <span className="payment-callback-summary-label">Discount ({paymentStatus.couponCode})</span>
+                      <span className="payment-callback-summary-value">
+                        -{formatCurrency(paymentStatus?.discountAmount, paymentStatus?.currency)}
+                      </span>
+                    </div>
                   )}
-                </Box>
-              </Box>
-            )}
-            <Box
-              sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: { xs: 1, sm: 2 },
-                justifyContent: "center",
-                mt: { xs: 1, sm: 2 },
-              }}
-            >
+
+                  <div className="payment-callback-summary-divider"></div>
+                  <div className="payment-callback-summary-item payment-callback-total">
+                    <span className="payment-callback-summary-label">Total Paid</span>
+                    <span className="payment-callback-summary-value">
+                      {formatCurrency(paymentStatus?.amount, paymentStatus?.currency)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Transaction Details */}
+              <div className="payment-callback-transaction-section">
+                <h4 className="payment-callback-section-title">
+                  <Hash className="payment-callback-section-icon" />
+                  Transaction Details
+                </h4>
+                <div className="payment-callback-transaction-list">
+                  <div className="payment-callback-transaction-item">
+                    <span className="payment-callback-transaction-label">Payment Method</span>
+                    <span className="payment-callback-transaction-value">{paymentStatus?.Payment_Mode || "N/A"}</span>
+                  </div>
+                  <div className="payment-callback-transaction-item">
+                    <span className="payment-callback-transaction-label">Transaction ID</span>
+                    <span className="payment-callback-transaction-value payment-callback-transaction-id">{paymentStatus?.transactionId || "N/A"}</span>
+                  </div>
+                  <div className="payment-callback-transaction-item">
+                    <span className="payment-callback-transaction-label">Payment Date</span>
+                    <span className="payment-callback-transaction-value">
+                      {paymentStatus?.createdAt ? new Date(paymentStatus.createdAt).toLocaleString() : "N/A"}
+                    </span>
+                  </div>
+                  {paymentStatus?.paymentStatus === "FAILED" && (
+                    <div className="payment-callback-transaction-item payment-callback-error">
+                      <span className="payment-callback-transaction-label">Failure Reason</span>
+                      <span className="payment-callback-transaction-value">{paymentStatus?.failureReason || "Unknown"}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="payment-callback-action-buttons">
               {paymentStatus?.paymentStatus === "PAID" && (
-                <Button
-                  variant="contained"
-                  onClick={generateReceiptPDF}
-                  sx={{
-                    bgcolor: "#f06292",
-                    color: "#fff",
-                    borderRadius: 2,
-                    px: { xs: 2, sm: 3 },
-                    py: 1,
-                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                    fontWeight: 500,
-                    "&:hover": { bgcolor: "#ec407a" },
-                    fontFamily: "'Montserrat', sans-serif",
-                  }}
-                >
+                <button onClick={generateReceiptPDF} className="payment-callback-primary-button payment-callback-large">
+                  <Download className="payment-callback-button-icon" />
                   Download Receipt
-                </Button>
+                </button>
               )}
               {paymentStatus?.paymentStatus === "PENDING" && (
-                <Button
-                  variant="contained"
-                  onClick={handleRefreshStatus}
-                  sx={{
-                    bgcolor: "#f06292",
-                    color: "#fff",
-                    borderRadius: 2,
-                    px: { xs: 2, sm: 3 },
-                    py: 1,
-                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                    fontWeight: 500,
-                    "&:hover": { bgcolor: "#ec407a" },
-                    fontFamily: "'Montserrat', sans-serif",
-                  }}
-                >
+                <button onClick={handleRefreshStatus} className="payment-callback-primary-button payment-callback-large">
+                  <RefreshCw className="payment-callback-button-icon" />
                   Refresh Status
-                </Button>
+                </button>
               )}
               {paymentStatus?.paymentStatus === "FAILED" && (
-                <Button
-                  variant="contained"
-                  onClick={handleTryAgain}
-                  sx={{
-                    bgcolor: "#f06292",
-                    color: "#fff",
-                    borderRadius: 2,
-                    px: { xs: 2, sm: 3 },
-                    py: 1,
-                    fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                    fontWeight: 500,
-                    "&:hover": { bgcolor: "#ec407a" },
-                    fontFamily: "'Montserrat', sans-serif",
-                  }}
-                >
+                <button onClick={handleTryAgain} className="payment-callback-primary-button payment-callback-large">
+                  <RefreshCw className="payment-callback-button-icon" />
                   Try Again
-                </Button>
+                </button>
               )}
-              <Button
-                variant="outlined"
-                onClick={() => navigate("/")}
-                sx={{
-                  borderColor: "#f06292",
-                  color: "#f06292",
-                  borderRadius: 2,
-                  px: { xs: 2, sm: 3 },
-                  py: 1,
-                  fontSize: { xs: "0.8rem", sm: "0.9rem" },
-                  fontWeight: 500,
-                  "&:hover": {
-                    bgcolor: "#f8bbd0",
-                    borderColor: "#f06292",
-                  },
-                  fontFamily: "'Montserrat', sans-serif",
-                }}
-              >
-                Back to Home
-              </Button>
-            </Box>
-          </Box>
+
+              <div className="payment-callback-secondary-actions">
+                <button onClick={() => navigate("/")} className="payment-callback-secondary-button">
+                  <Home className="payment-callback-button-icon" />
+                  Back to Home
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-      </Box>
+      </div>
+    </div>
+  )
+}
 
-      {/* Global CSS to ensure full-screen background */}
-      <style jsx global>{`
-        html,
-        body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: 100%;
-          overflow-x: hidden;
-        }
-        #root {
-          width: 100%;
-          min-height: 100vh;
-        }
-      `}</style>
-    </Box>
-  );
-};
-
-export default PaymentCallback;
+export default PaymentCallback

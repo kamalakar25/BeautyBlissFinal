@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./Components/Navbar/Navbar";
 import Home from "./Components/salon/Home";
 import Salon from "./Components/salon/Salon";
@@ -45,6 +45,7 @@ import AdminFaqs from "./Components/Admin/AdminFaqs";
 import SpNotifications from "./Components/SpNotifications";
 import SpHome from "./Components/serviceProvider/SpHome";
 import LeadCaptureForm from "./Components/salon/LeadCaptureForm";
+import ResponsiveHomeWrapper from "./Components/salon/ResponsiveHomeWrapper";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -52,14 +53,17 @@ function PageLayout({ children }) {
   return <>{children}</>;
 }
 
-function App() {
+// New component to handle Routes and useLocation
+function AppContent() {
+  const location = useLocation(); // Now safe to use inside Router
+
   return (
-    <Router>
+    <>
       <Navbar />
-      <div style={{ marginTop: "50px" }}>
+      <div style={{ marginTop: location.pathname === "/" ? "0px" : "50px" }}>
         <Routes>
           {/* Public Routes */}
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<ResponsiveHomeWrapper />} />
           <Route path="/salon" element={<Salon />} />
           <Route path="/signup" element={<SignupForm />} />
           <Route path="/login" element={<Login />} />
@@ -118,9 +122,7 @@ function App() {
           </Route>
 
           {/* ServiceProvider Routes */}
-          <Route
-            element={<ProtectedRoute allowedRoles={["ServiceProvider"]} />}
-          >
+          <Route element={<ProtectedRoute allowedRoles={["ServiceProvider"]} />}>
             <Route path="/AddEmployee" element={<AdminPage />} />
             <Route path="/services" element={<ServicePage />} />
             <Route path="/SpBookingDetails" element={<SpBookingDetails />} />
@@ -148,7 +150,6 @@ function App() {
                 </PageLayout>
               }
             />
-
             <Route
               path="/serviceProviders"
               element={
@@ -165,7 +166,6 @@ function App() {
                 </PageLayout>
               }
             />
-
             <Route
               path="/approvals"
               element={
@@ -196,6 +196,14 @@ function App() {
           <Route path="*" element={<div>404 Not Found</div>} />
         </Routes>
       </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <Router>
+      <AppContent />
     </Router>
   );
 }

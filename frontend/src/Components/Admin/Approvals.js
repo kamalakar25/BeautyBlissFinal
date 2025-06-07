@@ -1,8 +1,44 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Typography, Accordion, AccordionSummary, AccordionDetails, useMediaQuery } from '@mui/material';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { styled, useTheme } from '@mui/material/styles';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
+
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  borderRadius: '10px',
+  border: '1px solid #e2e8f0',
+  marginBottom: '16px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.15)',
+  },
+  '&:before': {
+    display: 'none',
+  },
+}));
+
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  background: '#fb646b',
+  color: '#ffffff',
+  borderRadius: '8px',
+  padding: '10px 16px',
+  '& .MuiAccordionSummary-content': {
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  '&:hover': {
+    backgroundColor: '#e65a60',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+  },
+  '& .MuiAccordionSummary-expandIconWrapper': {
+    color: '#ffffff',
+  },
+}));
 
 const Approvals = () => {
   const [providers, setProviders] = useState([]);
@@ -10,6 +46,9 @@ const Approvals = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [providersPerPage] = useState(5);
   const [loadingStates, setLoadingStates] = useState({}); // Track loading state for each provider
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg')); // Detect mobile view
 
   useEffect(() => {
     axios
@@ -19,7 +58,6 @@ const Approvals = () => {
         setLoading(false);
       })
       .catch((err) => {
-        // console.error('Error fetching providers:', err);
         setLoading(false);
       });
   }, []);
@@ -27,16 +65,15 @@ const Approvals = () => {
   const handleApprove = (id) => {
     const isConfirmed = window.confirm('Are you sure you want to approve this service provider?');
     if (isConfirmed) {
-      setLoadingStates((prev) => ({ ...prev, [id]: true })); // Set loading state for this provider
+      setLoadingStates((prev) => ({ ...prev, [id]: true }));
       axios
         .post(`${BASE_URL}/api/main/admin/service-providers/approve/${id}`)
         .then((res) => {
           setProviders((prev) => prev.filter((provider) => provider._id !== id));
-          setLoadingStates((prev) => ({ ...prev, [id]: false })); // Clear loading state
+          setLoadingStates((prev) => ({ ...prev, [id]: false }));
         })
         .catch((err) => {
-          // console.error('Error approving provider:', err);
-          setLoadingStates((prev) => ({ ...prev, [id]: false })); // Clear loading state on error
+          setLoadingStates((prev) => ({ ...prev, [id]: false }));
         });
     }
   };
@@ -49,7 +86,7 @@ const Approvals = () => {
         .then((res) => {
           setProviders((prev) => prev.filter((provider) => provider._id !== id));
         })
-        .catch((err) => console.error('Error rejecting provider:', err));
+        .catch((err) => {});
     }
   };
 
@@ -69,7 +106,6 @@ const Approvals = () => {
         flexDirection: 'column',
         alignItems: 'center',
         mt: '100px',
-        // background: 'linear-gradient(180deg, #ffffff 0%, #E8ECEF 100%)',
       }}
     >
       {/* Dot Spinner CSS */}
@@ -167,12 +203,10 @@ const Approvals = () => {
           }
 
           @keyframes pulse0112 {
-            0%,
-            100% {
+            0%, 100% {
               transform: scale(0);
               opacity: 0.5;
             }
-
             50% {
               transform: scale(1);
               opacity: 1;
@@ -184,38 +218,34 @@ const Approvals = () => {
       <Box
         sx={{
           width: '100%',
-          maxWidth: '1300px',
+          maxWidth: '1200px',
           backgroundColor: '#fad9e3',
-          backdropFilter: 'blur(10px)',
-          borderRadius: '20px',
-          p: '30px',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 15px rgba(32, 21, 72, 0.2)',
+          borderRadius: '12px',
+          p: '24px',
+          boxShadow: '0 4px 16px rgba(0,0,0,0.1)',
+          border: '1px solid #e2e8f0',
           margin: '0 auto',
-          border: '1px solid rgba(32, 21, 72, 0.3)',
-          animation: 'glow 2s ease-in-out infinite alternate',
-          '@keyframes glow': {
-            '0%': { borderColor: 'rgba(32, 21, 72, 0.3)', boxShadow: '0 10px 30px rgba(0,0,0,0.15), 0 0 15px rgba(32, 21, 72, 0.2)' },
-            '100%': { borderColor: 'rgba(32, 21, 72, 0.5)', boxShadow: '0 10px 30px rgba(0,0,0,0.2), 0 0 20px rgba(32, 21, 72, 0.4)' },
+          transition: 'all 0.3s ease',
+          animation: 'fadeIn 0.5s ease-out',
+          '@keyframes fadeIn': {
+            from: { opacity: 0 },
+            to: { opacity: 1 },
+          },
+          '&:hover': {
+            boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
           },
         }}
       >
         <Box
           component="h2"
           sx={{
-            fontSize: { xs: '1.8rem', sm: '2.2rem' },
+            fontSize: { xs: '1.75rem', sm: '2rem' },
             color: '#0e0f0f',
             m: 0,
             textAlign: 'center',
-            mb: '30px',
+            mb: '24px',
             fontWeight: '700',
-            letterSpacing: '0.5px',
-            textShadow: '2px 2px 4px rgba(0,0,0,0.1)',
-            transition: 'transform 0.4s ease, color 0.4s ease',
-            animation: 'fadeInTitle 1s ease',
-            '@keyframes fadeInTitle': {
-              from: { opacity: 0, transform: 'translateY(-20px)' },
-              to: { opacity: 1, transform: 'translateY(0)' },
-            },
+            transition: 'transform 0.3s ease, color 0.3s ease',
             '&:hover': {
               transform: 'scale(1.03)',
               color: '#fb646b',
@@ -281,7 +311,7 @@ const Approvals = () => {
               sx={{
                 width: '140px',
                 opacity: 0.8,
-                transition: 'opacity 0.4s ease, transform 0.4s ease',
+                transition: 'opacity 0.3s ease, transform 0.3s ease',
                 '&:hover': { opacity: 1, transform: 'scale(1.15) rotate(5deg)' },
               }}
             />
@@ -292,8 +322,6 @@ const Approvals = () => {
                 fontSize: '1.4rem',
                 color: '#0e0f0f',
                 fontWeight: '500',
-                letterSpacing: '0.5px',
-                textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
               }}
             >
               All service providers are approved!
@@ -301,313 +329,349 @@ const Approvals = () => {
           </Box>
         ) : (
           <>
-            <Box sx={{ overflowX: 'auto', width: '100%' }}>
-              <Box
-                component="table"
-                sx={{
-                  width: '100%',
-                  borderCollapse: 'separate',
-                  borderSpacing: '0',
-                  background: 'rgba(255, 255, 255, 0.95)',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  boxShadow: '0 12px 40px rgba(0,0,0,0.1)',
-                }}
-              >
+            {isMobile ? (
+              <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {currentProviders.map((provider, index) => (
+                  <StyledAccordion key={provider._id}>
+                    <StyledAccordionSummary
+                      expandIcon={<ExpandMoreIcon />}
+                      aria-controls={`panel${index}-content`}
+                      id={`panel${index}-header`}
+                    >
+                      <Box sx={{ display: 'flex', flexDirection: 'column', maxWidth: '80%' }}>
+                        <Typography
+                          sx={{
+                            fontWeight: 'bold',
+                            fontSize: '0.95rem',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap',
+                          }}
+                        >
+                          {provider.name || 'N/A'}
+                        </Typography>
+                        <Typography sx={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.8)' }}>
+                          {provider.email || 'N/A'}
+                        </Typography>
+                      </Box>
+                    </StyledAccordionSummary>
+                    <AccordionDetails sx={{ p: 2, backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Name:</strong> {provider.name || 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Email:</strong> {provider.email || 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Phone:</strong> {provider.phone || 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Designation:</strong> {provider.designation || 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Shop Name:</strong> {provider.shopName || 'N/A'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                          <strong>Address:</strong> {provider.spAddress || 'N/A'}
+                        </Typography>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', gap: '12px', mt: 2 }}>
+                          <Button
+                            onClick={() => handleApprove(provider._id)}
+                            disabled={loadingStates[provider._id]}
+                            sx={{
+                              p: '10px 20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '600',
+                              borderRadius: '12px',
+                              border: 'none',
+                              background: '#fb646b',
+                              color: '#ffffff',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                background: '#ffffff',
+                                color: '#0e0f0f',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                              },
+                              '&:disabled': {
+                                opacity: 0.6,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                          >
+                            {loadingStates[provider._id] ? (
+                              <div className="dot-spinner">
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                              </div>
+                            ) : (
+                              'Approve'
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => handleReject(provider._id)}
+                            sx={{
+                              p: '10px 20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '600',
+                              borderRadius: '12px',
+                              border: 'none',
+                              background: '#ffffff',
+                              color: '#0e0f0f',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                background: '#fb646b',
+                                color: '#ffffff',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                              },
+                            }}
+                          >
+                            Reject
+                          </Button>
+                        </Box>
+                      </Box>
+                    </AccordionDetails>
+                  </StyledAccordion>
+                ))}
+              </Box>
+            ) : (
+              <Box sx={{ overflowX: 'auto', width: '100%' }}>
                 <Box
-                  component="thead"
+                  component="table"
                   sx={{
-                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
-                    color: '#ffffff',
-                    boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    background: 'rgba(255, 255, 255, 0.95)',
+                    borderRadius: '10px',
+                    overflow: 'hidden',
+                    border: '1px solid #e2e8f0',
+                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
                   }}
                 >
-                  <tr>
-                    {[
-                      'Sl. No',
-                      'Name',
-                      'Email',
-                      'Phone',
-                      'Designation',
-                      'Shop Name',
-                      'Address',
-                      'Actions',
-                    ].map((header, idx) => (
+                  <Box
+                    component="thead"
+                    sx={{
+                      background: '#fb646b',
+                      color: '#ffffff',
+                    }}
+                  >
+                    <tr>
+                      {[
+                        'Sl. No',
+                        'Name',
+                        'Email',
+                        'Phone',
+                        'Designation',
+                        'Shop Name',
+                        'Address',
+                        'Actions',
+                      ].map((header, idx) => (
+                        <Box
+                          component="th"
+                          key={idx}
+                          sx={{
+                            p: '14px',
+                            textAlign: 'center',
+                            fontSize: '1rem',
+                            fontWeight: '600',
+                            border: '1px solid #e2e8f0',
+                            transition: 'background 0.3s ease',
+                            '&:hover': {
+                              background: '#e65a60',
+                            },
+                          }}
+                        >
+                          {header}
+                        </Box>
+                      ))}
+                    </tr>
+                  </Box>
+                  <Box component="tbody">
+                    {currentProviders.map((provider, index) => (
                       <Box
-                        component="th"
-                        key={idx}
+                        component="tr"
+                        key={provider._id}
                         sx={{
-                          p: '16px',
-                          textAlign: 'center',
-                          fontSize: '1rem',
-                          borderBottom: '2px solid rgba(255,255,255,0.2)',
-                          fontWeight: '600',
-                          letterSpacing: '0.5px',
-                          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
-                          transition: 'background 0.3s ease',
+                          background: index % 2 === 0 ? '#ffffff' : 'rgba(240, 244, 255, 0.5)',
+                          transition: 'all 0.3s ease',
                           '&:hover': {
-                            background: 'rgba(255,255,255,0.1)',
+                            background: '#f1f5f9',
+                            transform: 'scale(1.01)',
                           },
                         }}
                       >
-                        {header}
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {indexOfFirstProvider + index + 1}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.name || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.email || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.phone || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.designation || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.shopName || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            border: '1px solid #e2e8f0',
+                            color: '#0e0f0f',
+                          }}
+                        >
+                          {provider.spAddress || 'N/A'}
+                        </Box>
+                        <Box
+                          component="td"
+                          sx={{
+                            p: '14px',
+                            fontSize: '0.95rem',
+                            textAlign: 'center',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            gap: '12px',
+                            border: '1px solid #e2e8f0',
+                          }}
+                        >
+                          <Button
+                            onClick={() => handleApprove(provider._id)}
+                            disabled={loadingStates[provider._id]}
+                            sx={{
+                              p: '10px 20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '600',
+                              borderRadius: '12px',
+                              border: 'none',
+                              background: '#fb646b',
+                              color: '#ffffff',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                background: '#ffffff',
+                                color: '#0e0f0f',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                              },
+                              '&:disabled': {
+                                opacity: 0.6,
+                                cursor: 'not-allowed',
+                              },
+                            }}
+                          >
+                            {loadingStates[provider._id] ? (
+                              <div className="dot-spinner">
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                                <div className="dot-spinner__dot"></div>
+                              </div>
+                            ) : (
+                              'Approve'
+                            )}
+                          </Button>
+                          <Button
+                            onClick={() => handleReject(provider._id)}
+                            sx={{
+                              p: '10px 20px',
+                              fontSize: '0.9rem',
+                              fontWeight: '600',
+                              borderRadius: '12px',
+                              border: 'none',
+                              background: '#ffffff',
+                              color: '#0e0f0f',
+                              transition: 'all 0.3s ease',
+                              '&:hover': {
+                                background: '#fb646b',
+                                color: '#ffffff',
+                                transform: 'translateY(-2px)',
+                                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                              },
+                            }}
+                          >
+                            Reject
+                          </Button>
+                        </Box>
                       </Box>
                     ))}
-                  </tr>
-                </Box>
-                <Box component="tbody">
-                  {currentProviders.map((provider, index) => (
-                    <Box
-                      component="tr"
-                      key={provider._id}
-                      sx={{
-                        background: index % 2 === 0 ? '#ffffff' : 'rgba(240, 244, 255, 0.5)',
-                        borderBottom: '1px solid rgba(32, 21, 72, 0.2)',
-                        transition: 'all 0.4s ease',
-                        animation: `rowSlideIn 0.6s ease ${index * 0.15}s both`,
-                        '@keyframes rowSlideIn': {
-                          from: { opacity: 0, transform: 'translateX(-20px)' },
-                          to: { opacity: 1, transform: 'translateX(0)' },
-                        },
-                        '&:hover': {
-                          background: 'linear-gradient(135deg, #ffffff, #E8ECEF)',
-                          transform: 'scale(1.02)',
-                          boxShadow: '0 6px 20px rgba(0,0,0,0.15)',
-                        },
-                      }}
-                    >
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {indexOfFirstProvider + index + 1}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.name}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.email}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.phone}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.designation}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.shopName}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          border: '1px solid rgba(32, 21, 72, 0.1)',
-                          color: '#0e0f0f',
-                          fontWeight: '500',
-                          letterSpacing: '0.3px',
-                        }}
-                      >
-                        {provider.spAddress}
-                      </Box>
-                      <Box
-                        component="td"
-                        sx={{
-                          p: '16px',
-                          fontSize: '0.95rem',
-                          textAlign: 'center',
-                          display: 'flex',
-                          justifyContent: 'center',
-                          gap: '12px',
-                        }}
-                      >
-                        <Button
-                          onClick={() => handleApprove(provider._id)}
-                          disabled={loadingStates[provider._id]} // Disable button when loading
-                          sx={{
-                            p: '10px 20px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            borderRadius: '12px',
-                            border: 'none',
-                            background: 'linear-gradient(135deg, #fb646b, #fb646b)',
-                            color: '#ffffff',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.2), inset -2px -2px 5px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15)',
-                            transition: 'all 0.4s ease',
-                            letterSpacing: '0.5px',
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            '&:hover': {
-                              background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                              color: '#0e0f0f',
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 8px 20px rgba(0,0,0,0.2), 0 0 15px rgba(32, 21, 72, 0.3)',
-                            },
-                            '&:active': {
-                              '&:before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                width: '0',
-                                height: '0',
-                                background: 'rgba(255,255,255,0.4)',
-                                borderRadius: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                animation: 'ripple 0.8s linear',
-                              },
-                            },
-                            '&:disabled': {
-                              opacity: 0.6,
-                              cursor: 'not-allowed',
-                              transform: 'none',
-                              boxShadow: 'none',
-                            },
-                            '@keyframes ripple': {
-                              to: {
-                                width: '300px',
-                                height: '300px',
-                                opacity: 0,
-                              },
-                            },
-                          }}
-                        >
-                          {loadingStates[provider._id] ? (
-                            <div className="dot-spinner">
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                              <div className="dot-spinner__dot"></div>
-                            </div>
-                          ) : (
-                            'Approve'
-                          )}
-                        </Button>
-                        <Button
-                          onClick={() => handleReject(provider._id)}
-                          sx={{
-                            p: '10px 20px',
-                            fontSize: '0.9rem',
-                            fontWeight: '600',
-                            borderRadius: '12px',
-                            border: 'none',
-                            background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                            color: '#0e0f0f',
-                            position: 'relative',
-                            overflow: 'hidden',
-                            boxShadow: 'inset 2px 2px 5px rgba(255,255,255,0.2), inset -2px -2px 5px rgba(0,0,0,0.2), 0 4px 12px rgba(0,0,0,0.15)',
-                            transition: 'all 0.4s ease',
-                            letterSpacing: '0.5px',
-                            '&:hover': {
-                              background: 'linear-gradient(135deg, #fb646b, #fb646b)',
-                              color: '#ffffff',
-                              transform: 'translateY(-2px)',
-                              boxShadow: '0 8px 20px rgba(0,0,0,0.2), 0 0 15px rgba(32, 21, 72, 0.3)',
-                            },
-                            '&:active': {
-                              '&:before': {
-                                content: '""',
-                                position: 'absolute',
-                                top: '50%',
-                                left: '50%',
-                                width: '0',
-                                height: '0',
-                                background: 'rgba(32,21,72,0.4)',
-                                borderRadius: '50%',
-                                transform: 'translate(-50%, -50%)',
-                                animation: 'ripple 0.8s linear',
-                              },
-                            },
-                            '@keyframes ripple': {
-                              to: {
-                                width: '300px',
-                                height: '300px',
-                                opacity: 0,
-                              },
-                            },
-                          }}
-                        >
-                          Reject
-                        </Button>
-                      </Box>
-                    </Box>
-                  ))}
+                  </Box>
                 </Box>
               </Box>
-            </Box>
-            {providers.length > 0 && (
+            )}
+            {providers.length > providersPerPage && (
               <Box
                 sx={{
                   mt: '30px',
@@ -615,11 +679,6 @@ const Approvals = () => {
                   justifyContent: 'center',
                   alignItems: 'center',
                   gap: '16px',
-                  animation: 'slideUp 0.7s ease',
-                  '@keyframes slideUp': {
-                    from: { opacity: 0, transform: 'translateY(20px)' },
-                    to: { opacity: 1, transform: 'translateY(0)' },
-                  },
                 }}
               >
                 <Box
@@ -630,38 +689,22 @@ const Approvals = () => {
                     p: '10px 24px',
                     borderRadius: '30px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                    background: '#fb646b',
                     color: '#ffffff',
                     fontSize: '0.9rem',
                     fontWeight: '600',
                     cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.4s ease',
-                    boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    letterSpacing: '0.5px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
                     '&:hover': {
                       ...(currentPage !== 1
                         ? {
-                            background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                            color: '#ffffff',
+                            background: '#ffffff',
+                            color: '#0e0f0f',
                             transform: 'translateY(-2px)',
-                            boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
-                            '&:after': {
-                              width: '100%',
-                            },
+                            boxShadow: '0 6px 15px rgba(0,0,0,0.25)',
                           }
                         : {}),
-                    },
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '0',
-                      height: '3px',
-                      background: '#ffffff',
-                      transition: 'width 0.4s ease',
                     },
                     '&:disabled': {
                       opacity: 0.5,
@@ -677,25 +720,10 @@ const Approvals = () => {
                     fontSize: '1.1rem',
                     fontWeight: '600',
                     color: '#0e0f0f',
-                    textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
-                    letterSpacing: '0.5px',
-                    position: 'relative',
-                    transition: 'transform 0.4s ease',
+                    transition: 'transform 0.3s ease',
                     '&:hover': {
                       transform: 'scale(1.1)',
-                    },
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: '-4px',
-                      left: 0,
-                      width: '0',
-                      height: '2px',
-                      background: '#fb646b',
-                      transition: 'width 0.4s ease',
-                    },
-                    '&:hover:after': {
-                      width: '100%',
+                      color: '#fb646b',
                     },
                   }}
                 >
@@ -709,38 +737,22 @@ const Approvals = () => {
                     p: '10px 24px',
                     borderRadius: '30px',
                     border: 'none',
-                    background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                    background: '#fb646b',
                     color: '#ffffff',
                     fontSize: '0.9rem',
                     fontWeight: '600',
                     cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                    transition: 'all 0.4s ease',
-                    boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
-                    position: 'relative',
-                    overflow: 'hidden',
-                    letterSpacing: '0.5px',
+                    transition: 'all 0.3s ease',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.2)',
                     '&:hover': {
                       ...(currentPage !== totalPages
                         ? {
-                            background: 'linear-gradient(135deg, #ffffff, #ffffff)',
+                            background: '#ffffff',
                             color: '#0e0f0f',
                             transform: 'translateY(-2px)',
-                            boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
-                            '&:after': {
-                              width: '100%',
-                            },
+                            boxShadow: '0 6px 15px rgba(0,0,0,0.25)',
                           }
                         : {}),
-                    },
-                    '&:after': {
-                      content: '""',
-                      position: 'absolute',
-                      bottom: 0,
-                      left: 0,
-                      width: '0',
-                      height: '3px',
-                      background: '#ffffff',
-                      transition: 'width 0.4s ease',
                     },
                     '&:disabled': {
                       opacity: 0.5,

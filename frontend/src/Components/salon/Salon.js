@@ -39,7 +39,7 @@ const BookNowButton = () => {
       <Box
         sx={{
           position: "fixed",
-          bottom: { xs: 20, sm: 40 },
+          bottom: { xs: 80, sm: 100 }, // Adjusted to place the button above the nav bar
           right: { xs: 20, sm: 40 },
           zIndex: 1000,
         }}
@@ -48,29 +48,32 @@ const BookNowButton = () => {
           variant="contained"
           size={isMobile ? "small" : "medium"}
           sx={{
-            background: "linear-gradient(135deg, #201548 0%, #3a2a6b 100%)",
+            background:
+              "linear-gradient(to right, rgb(171 19 130), rgb(91 24 68))",
             color: "#ffffff",
             fontSize: {
               xs: "0.75rem",
               sm: "0.9rem",
               md: "1rem",
             },
-            px: { xs: 2.5, sm: 3 },
-            py: { xs: 1, sm: 1.25 },
-            borderRadius: "50px",
+            px: { xs: 2, sm: 2.5 },
+            py: { xs: 0.75, sm: 1 },
+            borderRadius: "25px",
             textTransform: "uppercase",
             fontWeight: "600",
-            letterSpacing: "1px",
-            boxShadow: "0 6px 20px rgba(32, 21, 72, 0.3)",
-            transition: "all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)",
+            letterSpacing: "0.5px",
+            boxShadow: "0 4px 15px rgba(91, 24, 68, 0.3)",
+            transition: "all 0.3s ease",
             position: "relative",
             overflow: "hidden",
             minWidth: "auto",
-            border: "2px solid rgba(255,255,255,0.2)",
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            fontFamily: "'Times New Roman', cursive",
             "&:hover": {
-              transform: "translateY(-3px) scale(1.03)",
-              boxShadow: "0 10px 25px rgba(32, 21, 72, 0.5)",
-              background: "linear-gradient(135deg, #3a2a6b 0%, #201548 100%)",
+              transform: "translateY(-2px)",
+              boxShadow: "0 6px 20px rgba(91, 24, 68, 0.4)",
+              background:
+                "linear-gradient(to right, rgb(91 24 68), rgb(171 19 130))",
             },
             "&:after": {
               content: '""',
@@ -80,9 +83,9 @@ const BookNowButton = () => {
               width: "100%",
               height: "100%",
               background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
               transform: "translateX(-100%)",
-              transition: "0.6s",
+              transition: "transform 0.5s ease",
             },
             "&:hover:after": {
               transform: "translateX(100%)",

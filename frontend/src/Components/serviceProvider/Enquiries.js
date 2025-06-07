@@ -22,6 +22,7 @@ const Enquiries = () => {
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [replyText, setReplyText] = useState("");
   const [showReplyModal, setShowReplyModal] = useState(false);
+  const [expandedCard, setExpandedCard] = useState(null); // State for tracking expanded card
   const itemsPerPage = 5;
 
   const API_BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
@@ -197,6 +198,10 @@ const Enquiries = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
     }
+  };
+
+  const toggleCard = (enquiryId) => {
+    setExpandedCard(expandedCard === enquiryId ? null : enquiryId);
   };
 
   return (
@@ -396,102 +401,199 @@ const Enquiries = () => {
                 )}
               </div>
             ) : (
-              <div className="table-responsive">
-                <table className="table table-hover border">
-                  <thead style={{ backgroundColor: "#f1f5f9" }}>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Customer</th>
-                      <th scope="col">Enquiry</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Status</th>
-                      <th scope="col" className="text-end">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedEnquiries.map((enquiry) => (
-                      <tr
-                        key={enquiry.id}
-                        style={{ backgroundColor: "#FFEBF1" }}
-                      >
-                        <td className="align-middle">{enquiry.id}</td>
-                        <td className="align-middle">
-                          <div className="d-flex flex-column">
-                            <span
-                              className="fw-semibold"
-                              style={{ color: "#2D2828" }}
-                            >
-                              {enquiry.customerName}
-                            </span>
-                            <small style={{ color: "#2D2828" }}>
-                              {enquiry.customerEmail}
-                            </small>
-                            <small style={{ color: "#2D2828" }}>
-                              {enquiry.customerPhone}
-                            </small>
-                          </div>
-                        </td>
-                        <td className="align-middle">
-                          <div
-                            className="d-flex flex-column"
-                            style={{
-                              maxWidth: "200px",
-                              whiteSpace: "normal",
-                              wordBreak: "break-word",
-                              overflow: "hidden",
-                              textOverflow: "ellipsis",
-                              color: "#2D2828",
-                            }}
-                          >
-                            <span>{enquiry.message}</span>
-                          </div>
-                        </td>
-                        <td
-                          className="align-middle"
-                          style={{ color: "#2D2828" }}
+              <>
+                {/* Table for Desktop View */}
+                <div className="table-responsive d-none d-md-block">
+                  <table className="table table-hover border">
+                    <thead style={{ backgroundColor: "#f1f5f9" }}>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Customer</th>
+                        <th scope="col">Enquiry</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
+                        <th scope="col" className="text-end">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paginatedEnquiries.map((enquiry) => (
+                        <tr
+                          key={enquiry.id}
+                          style={{ backgroundColor: "#FFEBF1" }}
                         >
-                          {formatDate(enquiry.dateSubmitted)}
-                        </td>
-                        <td className="align-middle">
-                          {getStatusBadge(enquiry.status)}
-                        </td>
-                        <td className="align-middle text-end">
-                          <div className="btn-group">
-                            {enquiry.status === "new" && (
-                              <Tooltip title="Reply">
+                          <td className="align-middle">{enquiry.id}</td>
+                          <td className="align-middle">
+                            <div className="d-flex flex-column">
+                              <span
+                                className="fw-semibold"
+                                style={{ color: "#2D2828" }}
+                              >
+                                {enquiry.customerName}
+                              </span>
+                              <small style={{ color: "#2D2828" }}>
+                                {enquiry.customerEmail}
+                              </small>
+                              <small style={{ color: "#2D2828" }}>
+                                {enquiry.customerPhone}
+                              </small>
+                            </div>
+                          </td>
+                          <td className="align-middle">
+                            <div
+                              className="d-flex flex-column"
+                              style={{
+                                maxWidth: "200px",
+                                whiteSpace: "normal",
+                                wordBreak: "break-word",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                color: "#2D2828",
+                              }}
+                            >
+                              <span>{enquiry.message}</span>
+                            </div>
+                          </td>
+                          <td
+                            className="align-middle"
+                            style={{ color: "#2D2828" }}
+                          >
+                            {formatDate(enquiry.dateSubmitted)}
+                          </td>
+                          <td className="align-middle">
+                            {getStatusBadge(enquiry.status)}
+                          </td>
+                          <td className="align-middle text-end">
+                            <div className="btn-group">
+                              {enquiry.status === "new" && (
+                                <Tooltip title="Reply">
+                                  <button
+                                    className="btn btn-sm btn-outline-custom"
+                                    onClick={() => handleReply(enquiry)}
+                                    style={{
+                                      borderColor: "#fb646b",
+                                      color: "#fb646b",
+                                    }}
+                                  >
+                                    <ReplyIcon fontSize="small" />
+                                  </button>
+                                </Tooltip>
+                              )}
+                              <Tooltip title="Delete">
                                 <button
                                   className="btn btn-sm btn-outline-custom"
-                                  onClick={() => handleReply(enquiry)}
+                                  onClick={() => handleDelete(enquiry.id)}
                                   style={{
                                     borderColor: "#fb646b",
                                     color: "#fb646b",
                                   }}
                                 >
-                                  <ReplyIcon fontSize="small" />
+                                  <DeleteIcon fontSize="small" />
                                 </button>
                               </Tooltip>
-                            )}
-                            <Tooltip title="Delete">
-                              <button
-                                className="btn btn-sm btn-outline-custom"
-                                onClick={() => handleDelete(enquiry.id)}
-                                style={{
-                                  borderColor: "#fb646b",
-                                  color: "#fb646b",
-                                }}
-                              >
-                                <DeleteIcon fontSize="small" />
-                              </button>
-                            </Tooltip>
+                            </div>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Card View for Mobile */}
+                <div className="d-block d-md-none">
+                  {paginatedEnquiries.map((enquiry) => (
+                    <motion.div
+                      key={enquiry.id}
+                      className="card mb-3"
+                      style={{ backgroundColor: "#FFEBF1", borderColor: "#fb646b" }}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div
+                        className="card-header"
+                        style={{ backgroundColor: "#f1f5f9", cursor: "pointer" }}
+                        onClick={() => toggleCard(enquiry.id)}
+                      >
+                        <div className="d-flex justify-content-between align-items-center">
+                          <h6
+                            className="mb-0 fw-semibold"
+                            style={{ color: "#2D2828" }}
+                          >
+                            {enquiry.customerName}
+                          </h6>
+                          {getStatusBadge(enquiry.status)}
+                        </div>
+                        <div
+                          className="mt-2"
+                          style={{
+                            color: "#2D2828",
+                            fontSize: "0.9rem",
+                            maxWidth: "100%",
+                            whiteSpace: "normal",
+                            wordBreak: "break-word",
+                          }}
+                        >
+                          {enquiry.message}
+                        </div>
+                      </div>
+                      {expandedCard === enquiry.id && (
+                        <motion.div
+                          className="card-body"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <p className="mb-1" style={{ color: "#2D2828" }}>
+                            <strong>ID:</strong> {enquiry.id}
+                          </p>
+                          <p className="mb-1" style={{ color: "#2D2828" }}>
+                            <strong>Email:</strong> {enquiry.customerEmail}
+                          </p>
+                          <p className="mb-1" style={{ color: "#2D2828" }}>
+                            <strong>Phone:</strong> {enquiry.customerPhone}
+                          </p>
+                          <p className="mb-1" style={{ color: "#2D2828" }}>
+                            <strong>Date:</strong> {formatDate(enquiry.dateSubmitted)}
+                          </p>
+                          <div className="d-flex justify-content-end mt-3">
+                            <div className="btn-group">
+                              {enquiry.status === "new" && (
+                                <Tooltip title="Reply">
+                                  <button
+                                    className="btn btn-sm btn-outline-custom"
+                                    onClick={() => handleReply(enquiry)}
+                                    style={{
+                                      borderColor: "#fb646b",
+                                      color: "#fb646b",
+                                    }}
+                                  >
+                                    <ReplyIcon fontSize="small" />
+                                  </button>
+                                </Tooltip>
+                              )}
+                              <Tooltip title="Delete">
+                                <button
+                                  className="btn btn-sm btn-outline-custom"
+                                  onClick={() => handleDelete(enquiry.id)}
+                                  style={{
+                                    borderColor: "#fb646b",
+                                    color: "#fb646b",
+                                  }}
+                                >
+                                  <DeleteIcon fontSize="small" />
+                                </button>
+                              </Tooltip>
+                            </div>
                           </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>

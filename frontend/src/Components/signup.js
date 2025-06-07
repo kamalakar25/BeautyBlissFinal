@@ -21,13 +21,21 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import PhoneOutlinedIcon from "@mui/icons-material/PhoneOutlined";
+import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
+import StoreOutlinedIcon from "@mui/icons-material/StoreOutlined";
+import LocationOnOutlinedIcon from "@mui/icons-material/LocationOnOutlined";
+import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
+import MedicalInformationOutlinedIcon from "@mui/icons-material/MedicalInformationOutlined";
+import TransgenderOutlinedIcon from "@mui/icons-material/TransgenderOutlined";
+import WorkOutlineIcon from "@mui/icons-material/WorkOutline";
 import L from "leaflet";
-import "leaflet/dist/leaflet.css";
 import axios from "axios";
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = "https://api.example.com"; // Replace with actual API URL
 
-// Define custom marker icon
 const customIcon = L.icon({
   iconUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-icon.png",
   shadowUrl: "https://unpkg.com/leaflet@1.9.3/dist/images/marker-shadow.png",
@@ -37,52 +45,65 @@ const customIcon = L.icon({
   shadowSize: [41, 41],
 });
 
-const formAnimation = keyframes`
-  from { transform: rotateX(-30deg); opacity: 0; }
-  to {–
-
-System: transform: rotateX(0deg); opacity: 1; }
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 `;
 
 const containerVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: {
+    opacity: 1,
+    scale: 1,
+    transition: { duration: 0.6, ease: "easeOut" },
+  },
 };
 
 const buttonVariants = {
-  hover: { scale: 1.1, transition: { duration: 0.3 } },
+  hover: { scale: 1.05, transition: { duration: 0.3 } },
   tap: { scale: 0.95 },
 };
 
-// Styled component for the search input
 const StyledTextField = styled(TextField)(({ theme }) => ({
-  minWidth: { xs: 200, sm: 300 },
-  backgroundColor: "#ffffff",
-  borderRadius: theme.shape.borderRadius,
+  "& .MuiInputBase-root": {
+    borderRadius: "25px",
+    border: "1px solid #f35271",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    transition: "all 0.3s ease",
+    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+    "&:hover": {
+      backgroundColor: "rgba(255, 255, 255, 1)",
+    },
+  },
   "& .MuiInputBase-input": {
-    fontSize: { xs: "0.875rem", sm: "1rem" },
-    color: "#0e0f0f",
+    color: "#1a202c",
+    padding: "14px 16px",
   },
   "& .MuiInputLabel-root": {
-    fontSize: { xs: "0.875rem", sm: "1rem" },
-    color: "#0e0f0f",
-    "&.Mui-focused": { color: "#201548" },
+    color: "#4a5568",
+    "&.Mui-focused": { color: "#d53f8c" },
+    "&.MuiFormLabel-filled": { color: "#4a5568" },
   },
   "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": { borderColor: "#201548" },
-    "&.Mui-focused fieldset": { borderColor: "#201548" },
-  },
-  "&:hover": {
-    "& .MuiInputBase-root": {
-      backgroundColor: "#f5f5f5",
+    "& fieldset": {
+      borderColor: "#f35271",
+      borderWidth: "1px",
+    },
+    "&:hover fieldset": {
+      borderColor: "#d53f8c",
+    },
+    "&.Mui-focused fieldset": {
+      borderColor: "#d53f8c",
+      borderWidth: "1px",
     },
   },
 }));
 
-export default function SignupForm() {
+function SignupForm() {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const isSmallScreen = useMediaQuery("(max-width:600px)");
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
@@ -125,19 +146,15 @@ export default function SignupForm() {
 
   const initializeMap = () => {
     if (mapRef.current && !mapInstanceRef.current) {
-      // Initialize Leaflet map
       mapInstanceRef.current = L.map(mapRef.current).setView(
         [40.7128, -74.006],
         10
-      ); // Default to New York
-
-      // Add OpenStreetMap tiles
+      );
       L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {}
       ).addTo(mapInstanceRef.current);
 
-      // Try to get the user's current location
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
@@ -153,14 +170,12 @@ export default function SignupForm() {
             }
           },
           () => {
-            // Fallback to default location
             mapInstanceRef.current.setView([40.7128, -74.006], 10);
           },
           { enableHighAccuracy: true }
         );
       }
 
-      // Add click listener to select location on map
       mapInstanceRef.current.on("click", (e) => {
         const { lat, lng } = e.latlng;
         setSelectedLocation({ lat, lng });
@@ -184,12 +199,7 @@ export default function SignupForm() {
       const response = await axios.get(
         "https://nominatim.openstreetmap.org/search",
         {
-          params: {
-            q: query,
-            format: "json",
-            addressdetails: 1,
-            limit: 5,
-          },
+          params: { q: query, format: "json", addressdetails: 1, limit: 5 },
         }
       );
       setSearchResults(response.data);
@@ -288,7 +298,6 @@ export default function SignupForm() {
     setErrors((prev) => ({
       ...prev,
       [name]: error,
-      // Re-validate the other time field if one changes
       ...(name === "fromTime" && form.toTime
         ? { toTime: validateField("toTime", form.toTime) }
         : name === "toTime" && form.fromTime
@@ -474,7 +483,7 @@ export default function SignupForm() {
 
     if (name === "shopName" && isAdvanced) {
       const isValid =
-        /^[a-zA-Z]+[a-zA-Z\s]*[a-zA-Z]$/.test(value) &&
+        /^[a-zA-Z]+[a-zAZ\s]*[a-zA-Z]$/.test(value) &&
         value.length >= 2 &&
         value.length <= 50;
       error = value
@@ -554,61 +563,100 @@ export default function SignupForm() {
   };
 
   const inputSx = {
-    mb: 1,
+    mb: 1.5,
     "& .MuiInputBase-root": {
-      borderRadius: "5px",
-      backgroundColor: "#ffffff",
-      transition: "all 0.3s ease-in-out",
-      transformStyle: "preserve-3d",
-      color: "black",
-      boxShadow:
-        "0px 2px 4px rgba(0, 0, 0, 0.4), 0px 7px 13px -3px rgba(0, 0, 0, 0.3), 0px -3px 0px inset rgba(0, 0, 0, 0.2)",
-      "&:hover, &.Mui-focused": {
-        borderColor: "#1abc9c",
-        transform: "scale(1.05) rotateY(20deg)",
-        boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.3)",
+      borderRadius: "25px",
+      backgroundColor: "rgba(255, 255, 255, 0.9)",
+      color: "#1a202c",
+      height: "52px",
+      fontSize: "1rem",
+      padding: "0 16px",
+      paddingLeft: "40px",
+      transition: "all 0.3s ease",
+      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.05)",
+      "&:hover": {
+        backgroundColor: "rgba(255, 255, 255, 1)",
       },
     },
     "& .MuiInputBase-input": {
-      color: "#0e0f0f",
+      color: "#1a202c",
+      fontWeight: 500,
     },
     "& .MuiInputBase-input.Mui-disabled": {
-      color: "#0e0f0f",
-      WebkitTextFillColor: "#0e0f0f",
+      color: "#4a5568",
+      WebkitTextFillColor: "#4a5568",
       opacity: 0.7,
     },
-    "& .MuiInputBase-input::placeholder": { color: "#0e0f0f", opacity: 0.6 },
-    "& .MuiInputLabel-root": {
-      color: "#0e0f0f",
-      "&.Mui-focused": { color: "#201548" },
+    "& .MuiInputBase-input::placeholder": {
+      color: "#718096",
+      opacity: 1,
     },
-    "& .MuiFormHelperText-root": { color: "#F44336" },
+    "& .MuiInputLabel-root": {
+      color: "#4a5568",
+      fontSize: "1.1rem",
+      fontWeight: 600,
+      transform: "translate(40px, 16px) scale(1)",
+      "&.Mui-focused": {
+        color: "#d53f8c",
+        transform: "translate(14px, -9px) scale(0.75)",
+      },
+      "&.MuiFormLabel-filled": {
+        transform: "translate(14px, -9px) scale(0.75)",
+      },
+      "&.MuiInputLabel-shrink": {
+        transform: "translate(14px, -9px) scale(0.75)",
+      },
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: "#f35271",
+        borderWidth: "1px",
+        borderRadius: "25px",
+      },
+      "&:hover fieldset": {
+        borderColor: "#d53f8c",
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: "#d53f8c",
+        borderWidth: "1px",
+      },
+    },
+    "& .MuiFormHelperText-root": {
+      color: "#e53e3e",
+      marginLeft: "16px",
+      fontWeight: 600,
+      fontSize: "0.9rem",
+    },
+    "& .MuiInputAdornment-root": {
+      position: "absolute",
+      left: "12px",
+    },
   };
 
+  const childVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+};
+
   const buttonSx = {
-    height: 56,
-    borderRadius: "5px",
-    border: "2px solid #201548",
-    backgroundColor: "#201548",
+    height: 52,
+    borderRadius: "25px",
+    background: "linear-gradient(90deg, #ec4899 0%, #f56565 100%)",
     color: "#ffffff",
-    fontSize: { xs: "14px", sm: "16px" },
-    cursor: "pointer",
-    transformStyle: "preserve-3d",
-    transform: "rotateX(-10deg)",
-    transition: "all 0.3s ease-in-out",
-    boxShadow:
-      "0px 2px 4px rgba(0, 0, 0, 0.4), 0px 7px 13px -3px rgba(0, 0, 0, 0.3), 0px -3px 0px inset rgba(0, 0, 0, 0.2)",
+    fontSize: "1.1rem",
+    fontWeight: 700,
+    textTransform: "none",
+    transition: "all 0.3s ease",
+    boxShadow: "0 4px 12px rgba(236, 72, 153, 0.3)",
     "&:hover": {
-      backgroundColor: "#1a1138",
-      fontSize: { xs: "15px", sm: "17px" },
-      boxShadow:
-        "0px 2px 4px rgba(0, 0, 0, 0.4), 0px 7px 13px -3px rgba(0, 0, 0, 0.3), 0px -3px 0px inset rgba(0, 0, 0, 0.2)",
+      background: "linear-gradient(90deg, #d53f8c 0%, #e53e3e 100%)",
+      boxShadow: "0 6px 16px rgba(236, 72, 153, 0.5)",
+      transform: "scale(1.02)",
     },
     "&:disabled": {
-      backgroundColor: "#cccccc",
-      color: "#666666",
-      borderColor: "#cccccc",
-      transform: "rotateX(-10deg)",
+      background: "#e2e8f0",
+      color: "#a0aec0",
+      boxShadow: "none",
     },
   };
 
@@ -619,86 +667,56 @@ export default function SignupForm() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        backgroundImage:
-          "url(https://images.pexels.com/photos/7750102/pexels-photo-7750102.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundAttachment: { xs: "scroll", md: "fixed" },
-        position: "relative",
-        "&::before": {
-          content: '""',
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: "rgba(0, 0, 0, 0.5)",
-          zIndex: 1,
-        },
+        background: "linear-gradient(135deg, #ffe6e9 0%, #ffd1d6 100%)",
+        padding: { xs: 3, sm: 4 },
+        pt: { xs: "80px", sm: "100px" },
+        overflow: "auto",
       }}
     >
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        style={{ zIndex: 2 }}
       >
         <Box
           component="form"
           sx={{
             display: "flex",
             flexDirection: "column",
-            gap: "8px",
-            padding: { xs: "20px", sm: "30px" },
-            backgroundColor: "#ffffff",
-            borderRadius: "10px",
-            perspective: "1000px",
-            transform: "rotateX(-10deg)",
-            transition: "all 0.3s ease-in-out",
-            boxShadow:
-              "0px 2px 4px rgba(0, 0, 0, 0.4), 0px 7px 13px -3px rgba(0, 0, 0, 0.3), 0px -3px 0px inset rgba(0, 0, 0, 0.2)",
-            animation: `${formAnimation} 0.5s ease-in-out`,
-            width: { xs: "90vw", sm: "400px" },
-            maxWidth: "450px",
-            marginTop: "20px",
+            gap: 1,
+            width: { xs: "100%", sm: "480px" },
+            maxWidth: "520px",
+            animation: `${fadeIn} 0.6s ease-out`,
           }}
         >
-          <style>
-            {`
-              h2.text-primary1 {
-                font-family: 'Poppins', sans-serif;
-                font-weight: 500;
-                font-size: 2rem;
-                color: #0e0f0f;
-                position: relative;
-                margin-bottom: 1.5rem;
-              }
-
-              h2.text-primary1::after {
-                content: '';
-                position: absolute;
-                bottom: -10px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 100px;
-                height: 4px;
-                background: #201548;
-                border-radius: 2px;
-              }
-            `}
-          </style>
-          <h2
-            className="text-primary1 fw-bold mb-4 animate__animated animate__fadeInDown text-center"
-            style={{
-              animationDuration: "1s",
-              fontSize: "2rem",
-              letterSpacing: "1px",
-              textTransform: "uppercase",
-              color: "#000",
-            }}
-          >
-            Create Your Account
-          </h2>
+          <motion.div variants={childVariants}>
+            <Box>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 600,
+                  fontSize: { xs: "1.3rem", sm: "1.5rem" },
+                  color: "#333333",
+                }}
+              >
+                Create an Account
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  fontFamily: "Poppins, sans-serif",
+                  fontWeight: 300,
+                  fontSize: { xs: "1.1rem", sm: "1.2rem" },
+                  color: "#666666",
+                  mt: "4px",
+                  mb: "5px"
+                }}
+              >
+                Signup Here
+              </Typography>
+            </Box>
+          </motion.div>
 
           <TextField
             label="Name"
@@ -713,6 +731,16 @@ export default function SignupForm() {
             disabled={isLoading}
             autoComplete="off"
             sx={inputSx}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PersonOutlineIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
           <TextField
@@ -728,6 +756,16 @@ export default function SignupForm() {
             disabled={isLoading}
             autoComplete="off"
             sx={inputSx}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailOutlinedIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
           <TextField
@@ -740,6 +778,16 @@ export default function SignupForm() {
             onChange={handleChange}
             disabled={isLoading}
             sx={inputSx}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <TransgenderOutlinedIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           >
             <MenuItem value="Male">Male</MenuItem>
             <MenuItem value="Female">Female</MenuItem>
@@ -747,7 +795,7 @@ export default function SignupForm() {
           </TextField>
 
           <TextField
-            label="Phone"
+            label="Phone Number"
             variant="outlined"
             fullWidth
             name="phone"
@@ -760,6 +808,16 @@ export default function SignupForm() {
             inputProps={{ maxLength: 10 }}
             autoComplete="off"
             sx={inputSx}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <PhoneOutlinedIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           />
 
           <TextField
@@ -774,7 +832,10 @@ export default function SignupForm() {
             error={!!errors.dob}
             helperText={errors.dob}
             disabled={isLoading}
-            InputLabelProps={{ shrink: true }}
+            InputLabelProps={{
+              shrink: true,
+              style: { color: form.dob ? "#4a5568" : "#4a5568" },
+            }}
             inputProps={{
               max: new Date().toISOString().split("T")[0],
               min: new Date(
@@ -784,7 +845,25 @@ export default function SignupForm() {
                 .split("T")[0],
             }}
             autoComplete="off"
-            sx={inputSx}
+            sx={{
+              ...inputSx,
+              "& .MuiInputLabel-root": {
+                transform: "translate(40px, 16px) scale(1)",
+                "&.Mui-focused": {
+                  transform: "translate(14px, -9px) scale(0.75)",
+                },
+                "&.MuiInputLabel-shrink": {
+                  transform: "translate(14px, -9px) scale(0.75)",
+                },
+              },
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <CalendarTodayOutlinedIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
           />
 
           <TextField
@@ -797,6 +876,16 @@ export default function SignupForm() {
             onChange={handleChange}
             disabled={isLoading}
             sx={inputSx}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <WorkOutlineIcon sx={{ color: "#4a5568" }} />
+                </InputAdornment>
+              ),
+            }}
+            InputLabelProps={{
+              shrink: true,
+            }}
           >
             <MenuItem value="User">User</MenuItem>
             <MenuItem value="Salon">Salon</MenuItem>
@@ -820,6 +909,16 @@ export default function SignupForm() {
                 inputProps={{ maxLength: 10 }}
                 autoComplete="off"
                 sx={inputSx}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <PhoneOutlinedIcon sx={{ color: "#4a5568" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
 
               <TextField
@@ -835,6 +934,18 @@ export default function SignupForm() {
                 disabled={isLoading}
                 autoComplete="off"
                 sx={inputSx}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <MedicalInformationOutlinedIcon
+                        sx={{ color: "#4a5568" }}
+                      />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </>
           )}
@@ -854,9 +965,27 @@ export default function SignupForm() {
                 disabled={isLoading}
                 autoComplete="off"
                 sx={inputSx}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <StoreOutlinedIcon sx={{ color: "#4a5568" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
 
-              <Box sx={{ display: "flex", gap: 1, mb: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  gap: 1,
+                  mb: 1,
+                  alignItems: "center",
+                  flexDirection: { xs: "column", sm: "row" },
+                }}
+              >
                 <TextField
                   label="Shop Address"
                   variant="outlined"
@@ -870,6 +999,16 @@ export default function SignupForm() {
                   disabled={true}
                   autoComplete="off"
                   sx={inputSx}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <LocationOnOutlinedIcon sx={{ color: "#4a5568" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
                 <motion.div
                   variants={buttonVariants}
@@ -881,30 +1020,38 @@ export default function SignupForm() {
                     onClick={handleGetLocation}
                     disabled={isLoading}
                     sx={{
-                      ...buttonSx,
-                      backgroundColor: "#ffffff",
-                      borderColor: "#201548",
-                      color: "#201548",
+                      height: 52,
+                      borderRadius: "25px",
+                      borderColor: "#d53f8c",
+                      color: "#d53f8c",
+                      fontSize: "0.9rem",
+                      fontWeight: 600,
+                      textTransform: "none",
+                      transition: "all 0.3s ease",
+                      width: { xs: "100%", sm: "auto" },
                       "&:hover": {
-                        backgroundColor: "#f5f5f5",
-                        color: "#201548",
-                        borderColor: "#201548",
-                        transform: "scale(1.05) rotateY(20deg) rotateX(10deg)",
+                        borderColor: "#b83280",
+                        backgroundColor: "rgba(213, 63, 140, 0.1)",
+                        color: "#b83280",
                       },
                     }}
                   >
-                    Get{" "}
-                    <i
-                      className="fa-solid fa-location-dot"
-                      style={{ marginLeft: "8px" }}
-                    ></i>
+                    Select Location
                   </Button>
                 </motion.div>
               </Box>
 
               {form.coordinates.latitude && form.coordinates.longitude && (
                 <Box sx={{ mb: 1 }}>
-                  <Typography variant="body2" sx={{ color: "#0e0f0f" }}>
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      color: "#4a5568",
+                      mb: 1,
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                    }}
+                  >
                     Coordinates: {form.location}
                   </Typography>
                   <MuiLink
@@ -913,8 +1060,10 @@ export default function SignupForm() {
                     rel="noopener"
                     underline="hover"
                     sx={{
-                      color: "#0e0f0f",
-                      "&:hover": { color: "#201548", transform: "scale(1.05)" },
+                      color: "#d53f8c",
+                      fontWeight: 600,
+                      fontSize: "0.95rem",
+                      "&:hover": { color: "#b83280" },
                     }}
                   >
                     View on OpenStreetMap
@@ -922,39 +1071,90 @@ export default function SignupForm() {
                 </Box>
               )}
 
-              <TextField
-                label="Shop Opening Time"
-                type="time"
-                variant="outlined"
-                fullWidth
-                name="fromTime"
-                value={form.fromTime}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={!!errors.fromTime}
-                helperText={errors.fromTime}
-                disabled={isLoading}
-                InputLabelProps={{ shrink: true }}
-                autoComplete="off"
-                sx={inputSx}
-              />
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: { xs: "column", sm: "row" },
+                  gap: 1,
+                  mb: 1,
+                }}
+              >
+                <TextField
+                  label="Opening Time"
+                  type="time"
+                  variant="outlined"
+                  fullWidth
+                  name="fromTime"
+                  value={form.fromTime}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!errors.fromTime}
+                  helperText={errors.fromTime}
+                  disabled={isLoading}
+                  InputLabelProps={{
+                    shrink: true,
+                    style: { color: form.fromTime ? "#4a5568" : "#4a5568" },
+                  }}
+                  autoComplete="off"
+                  sx={{
+                    ...inputSx,
+                    "& .MuiInputLabel-root": {
+                      transform: "translate(40px, 16px) scale(1)",
+                      "&.Mui-focused": {
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
+                      "&.MuiInputLabel-shrink": {
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
+                    },
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccessTimeOutlinedIcon sx={{ color: "#4a5568" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
 
-              <TextField
-                label="Shop Closing Time"
-                type="time"
-                variant="outlined"
-                fullWidth
-                name="toTime"
-                value={form.toTime}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={!!errors.toTime}
-                helperText={errors.toTime}
-                disabled={isLoading}
-                InputLabelProps={{ shrink: true }}
-                autoComplete="off"
-                sx={inputSx}
-              />
+                <TextField
+                  label="Closing Time"
+                  type="time"
+                  variant="outlined"
+                  fullWidth
+                  name="toTime"
+                  value={form.toTime}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={!!errors.toTime}
+                  helperText={errors.toTime}
+                  disabled={isLoading}
+                  InputLabelProps={{
+                    shrink: true,
+                    style: { color: form.toTime ? "#4a5568" : "#4a5568" },
+                  }}
+                  autoComplete="off"
+                  sx={{
+                    ...inputSx,
+                    "& .MuiInputLabel-root": {
+                      transform: "translate(40px, 16px) scale(1)",
+                      "&.Mui-focused": {
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
+                      "&.MuiInputLabel-shrink": {
+                        transform: "translate(14px, -9px) scale(0.75)",
+                      },
+                    },
+                  }}
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <AccessTimeOutlinedIcon sx={{ color: "#4a5568" }} />
+                      </InputAdornment>
+                    ),
+                  }}
+                />
+              </Box>
             </>
           )}
 
@@ -975,18 +1175,26 @@ export default function SignupForm() {
                 autoComplete="new-password"
                 sx={inputSx}
                 InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Visibility sx={{ color: "#4a5568" }} />
+                    </InputAdornment>
+                  ),
                   endAdornment: (
                     <InputAdornment position="end">
-                      <IconButton
+                      {/* <IconButton
                         onClick={togglePasswordVisibility}
                         edge="end"
                         disabled={isLoading}
-                        sx={{ color: "#0e0f0f" }}
+                        sx={{ color: "#4a5568" }}
                       >
                         {showPassword ? <VisibilityOff /> : <Visibility />}
-                      </IconButton>
+                      </IconButton> */}
                     </InputAdornment>
                   ),
+                }}
+                InputLabelProps={{
+                  shrink: true,
                 }}
               />
 
@@ -1004,6 +1212,16 @@ export default function SignupForm() {
                 disabled={isLoading}
                 autoComplete="new-password"
                 sx={inputSx}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Visibility sx={{ color: "#4a5568" }} />
+                    </InputAdornment>
+                  ),
+                }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
               />
             </>
           )}
@@ -1018,44 +1236,26 @@ export default function SignupForm() {
               onClick={handleSubmit}
               disabled={isLoading}
               fullWidth
-              sx={{
-                padding: { xs: "8px 16px", sm: "10px 20px" },
-                borderRadius: "5px",
-                backgroundColor: "#201548",
-                color: "#ffffff",
-                fontSize: { xs: "14px", sm: "16px" },
-                transform: "rotateX(-10deg)",
-                transition: "all 0.3s ease-in-out",
-                boxShadow:
-                  "0px 2px 4px rgba(0, 0, 0, 0.4), 0px 7px 13px -3px rgba(0, 0, 0, 0.3), 0px -3px 0px inset rgba(0, 0, 0, 0.2)",
-                "&:hover": {
-                  backgroundColor: "#1a1138",
-                  fontSize: { xs: "15px", sm: "17px" },
-                  transform: "scale(1.05) rotateY(20deg) rotateX(10deg)",
-                },
-                "&:disabled": {
-                  backgroundColor: "#cccccc",
-                  color: "#666666",
-                  transform: "rotateX(-10deg)",
-                },
-              }}
+              sx={buttonSx}
             >
-              {isLoading ? "Signing Up..." : "Sign Up"}
+              {isLoading ? "Joining..." : "Sign In"}
             </Button>
           </motion.div>
 
-          <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
             <MuiLink
               component={Link}
               to="/login"
-              underline="hover"
+              underline="none"
               sx={{
-                fontSize: { xs: 12, sm: 14 },
-                color: "#0e0f0f",
-                "&:hover": { color: "#201548" },
+                fontSize: "1rem",
+                color: "#4a5568",
+                fontWeight: 600,
+                "&:hover": { color: "#d53f8c" },
+                textShadow: "0 1px 2px rgba(0, 0, 0, 0.05)",
               }}
             >
-              Already have an account? Log In
+              Already have an account? <strong>Log In</strong>
             </MuiLink>
           </Box>
         </Box>
@@ -1067,11 +1267,15 @@ export default function SignupForm() {
         maxWidth="md"
         fullWidth
       >
-        <DialogTitle sx={{ color: "#0e0f0f" }}>Select Location</DialogTitle>
+        <DialogTitle
+          sx={{ color: "#1a202c", fontWeight: 700, fontSize: "1.25rem" }}
+        >
+          Select Location
+        </DialogTitle>
         <DialogContent>
           <StyledTextField
             inputRef={searchInputRef}
-            label="Your Location"
+            label="Search Location"
             variant="outlined"
             fullWidth
             placeholder="Search for any place (e.g., college, shop, park)"
@@ -1079,35 +1283,141 @@ export default function SignupForm() {
             sx={{ mb: 2 }}
           />
           {searchResults.length > 0 && (
-            <Box sx={{ maxHeight: "150px", overflowY: "auto", mb: 2 }}>
+            <Box
+              sx={{
+                maxHeight: "150px",
+                overflowY: "auto",
+                mb: 2,
+                border: "1px solid #e2e8f0",
+                borderRadius: "12px",
+              }}
+            >
               {searchResults.map((place) => (
                 <Box
                   key={place.place_id}
                   sx={{
-                    p: 1,
-                    borderBottom: "1px solid #ccc",
+                    p: 1.5,
+                    borderBottom: "1px solid #e2e8f0",
                     cursor: "pointer",
-                    color: "#0e0f0f",
-                    "&:hover": { backgroundColor: "#f5f5f5" },
+                    color: "#1a202c",
+                    "&:hover": { backgroundColor: "rgba(213, 63, 140, 0.1)" },
                   }}
                   onClick={() => handleSearchSelect(place)}
                 >
-                  <Typography variant="body2">{place.display_name}</Typography>
+                  <Typography
+                    variant="body2"
+                    sx={{ fontWeight: 500, fontSize: "0.95rem" }}
+                  >
+                    {place.display_name}
+                  </Typography>
                 </Box>
               ))}
             </Box>
           )}
-          <Box sx={{ height: "400px", width: "100%", mb: 2 }}>
+          <Box
+            sx={{
+              height: "400px",
+              width: "100%",
+              mb: 2,
+              borderRadius: "12px",
+              overflow: "hidden",
+              boxShadow: "0 4px 12px rgba(0, 0, 0, 0.1)",
+            }}
+          >
             <div ref={mapRef} style={{ height: "100%", width: "100%" }} />
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} disabled={isLoading}>
+          at FlowParserMixin.parseBlock
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12961:10)
+          at FlowParserMixin.parseStatementContent
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12522:21)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12432:17)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5153:24)
+          at FlowParserMixin.parseStatementOrSloppyAnnexBFunctionDeclaration
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12422:17)
+          at FlowParserMixin.parseIfStatement
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12794:28)
+          at FlowParserMixin.parseStatementContent
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12461:21)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12432:17)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5153:24)
+          at FlowParserMixin.parseStatementListItem
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12412:17)
+          at FlowParserMixin.parseBlockOrModuleBlockBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12980:61)
+          at FlowParserMixin.parseBlockBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12973:10)
+          at FlowParserMixin.parseBlock
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12961:10)
+          at FlowParserMixin.parseStatementContent
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12522:21)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12432:17)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5153:24)
+          at FlowParserMixin.parseStatementOrSloppyAnnexBFunctionDeclaration
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12422:17)
+          at FlowParserMixin.parseIfStatement
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12794:28)
+          at FlowParserMixin.parseStatementContent
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12461:21)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12432:17)
+          at FlowParserMixin.parseStatementLike
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5153:24)
+          at FlowParserMixin.parseStatementListItem
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12412:17)
+          at FlowParserMixin.parseBlockOrModuleBlockBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12980:61)
+          at FlowParserMixin.parseBlockBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12973:10)
+          at FlowParserMixin.parseBlock
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:12961:10)
+          at FlowParserMixin.parseFunctionBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:11810:24)
+          at
+          D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5127:63
+          at FlowParserMixin.forwardNoArrowParamsConversionAt
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5303:16)
+          at FlowParserMixin.parseFunctionBody
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5127:12)
+          at FlowParserMixin.parseArrowExpression
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:11785:10)
+          at FlowParserMixin.parseParenAndDistinguishExpression
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:11398:12)
+          at FlowParserMixin.parseParenAndDistinguishExpression
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:5828:18)
+          at FlowParserMixin.parseExprAtom
+          (D:\beauti\BeautyBliss-project-main\frontend\node_modules\@babel\parser\lib\index.js:11033:23)
+          ERROR in [eslint] src\Components\signup.js Line 437:21: Parsing error:
+          Unexpected token, expected ")" (437:21) webpack compiled with 2 errors
+          and 1 warning
+          <Button
+            onClick={handleCloseModal}
+            disabled={isLoading}
+            sx={{
+              color: "#4a5568",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+              "&:hover": { color: "#e53e3e" },
+            }}
+          >
             Cancel
           </Button>
           <Button
             onClick={handleConfirmLocation}
             disabled={isLoading || !selectedLocation}
+            sx={{
+              color: "#d53f8c",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+              "&:hover": { color: "#b83280" },
+            }}
           >
             Confirm
           </Button>
@@ -1116,3 +1426,5 @@ export default function SignupForm() {
     </Box>
   );
 }
+
+export default SignupForm;

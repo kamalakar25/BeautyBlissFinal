@@ -78,6 +78,7 @@ const SpProfile = () => {
   const mapInstanceRef = useRef(null);
   const markerRef = useRef(null);
   const searchInputRef = useRef(null);
+  const editFormRef = useRef(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -105,13 +106,12 @@ const SpProfile = () => {
       mapInstanceRef.current = L.map(mapRef.current).setView(
         [40.7128, -74.006],
         10
-      ); // Default to New York
+      );
       L.tileLayer(
         "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
         {}
       ).addTo(mapInstanceRef.current);
 
-      // Try to get current location or use existing coordinates
       const { coordinates } = formData;
       if (coordinates?.latitude && coordinates?.longitude) {
         mapInstanceRef.current.setView(
@@ -308,10 +308,6 @@ const SpProfile = () => {
       }
     }
 
-    if (name === "gender") {
-      error = value ? "" : "Gender is required";
-    }
-
     if (name === "location") {
       error = value ? "" : "Location is required";
     }
@@ -367,6 +363,13 @@ const SpProfile = () => {
     setEditMode(true);
     setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
     setErrors({});
+
+    // Scroll to edit form in mobile view (xs breakpoint, <= 600px)
+    if (window.innerWidth <= 600 && editFormRef.current) {
+      setTimeout(() => {
+        editFormRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100); // Delay to ensure edit form is rendered
+    }
   };
 
   const handleSave = () => {
@@ -406,7 +409,6 @@ const SpProfile = () => {
       return;
     }
 
-    // Prepare update data
     const updateData = {
       ...formData,
       availableTime: { fromTime: formData.fromTime, toTime: formData.toTime },
@@ -451,377 +453,269 @@ const SpProfile = () => {
     <Box
       sx={{
         display: "flex",
+        flexDirection: { xs: "column", md: "row" }, // Stack on mobile, side by side on desktop
         justifyContent: "center",
-        alignItems: "center", // Center vertically
+        alignItems: { xs: "center", md: "flex-start" }, // Align top on desktop
         background: "#fad9e3",
-        height: "auto", // Your existing height setting
-        width: { xs: "100%", 2560: "fit-content" }, // Your existing width
-        maxWidth: { 2560: 700 }, // Your existing maxWidth
-        minHeight: { xs: "100vh", 2560: "100vh" }, // Full viewport height for centering
-        paddingBottom: "30px",
-        paddingTop: "30px",
+        minHeight: "100vh",
+        padding: { xs: 2, md: 4 },
+        gap: { xs: 2, md: 4 }, // Space between profile and edit form
       }}
     >
+      {/* Profile Card */}
       <Card
         sx={{
-          width: "90%",
-          maxWidth: 600,
+          width: { xs: "100%", md: "350px" }, // Fixed width on desktop
+          maxWidth: { xs: 300, md: 350 },
           backgroundColor: "#FFEBF1",
           boxShadow: "0px 12px 40px rgba(0,0,0,0.15)",
           borderRadius: 6,
-          transform: "rotateX(3deg)",
-          transition: "transform 0.3s ease, box-shadow 0.3s ease",
-          "&:hover": {
-            transform: "rotateX(0deg) scale(1.02)",
-            boxShadow: "0px 16px 48px rgba(0,0,0,0.2)",
-          },
           border: "1px solid rgba(255, 128, 221, 0.3)",
         }}
       >
-        <CardContent sx={{ textAlign: "center", p: 4 }}>
-          <Typography
-            variant="h5"
-            gutterBottom
-            fontWeight="bold"
-            sx={{ color: "#0e0f0f", mb: 3 }}
+        <CardContent
+          sx={{
+            p: { xs: 3, md: 4 },
+          }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              mb: 2,
+            }}
           >
-            Service Provider Profile
-          </Typography>
-
-          {[
-            { label: "Name", key: "name" },
-            { label: "Email", key: "email" },
-            { label: "Gender", key: "gender", isSelect: true },
-            { label: "Phone", key: "phone" },
-            { label: "Date of Birth", key: "dob", isDateInput: true },
-            { label: "Shop Name", key: "shopName" },
-            { label: "Location", key: "location", isLocation: true },
-            { label: "Shop Address", key: "spAddress" },
-            { label: "Opening Time", key: "fromTime", isTime: true },
-            { label: "Closing Time", key: "toTime", isTime: true },
-            { label: "Designation", key: "designation", disabled: true },
-            { label: "Rating", key: "spRating", disabled: true },
-            { label: "Password", key: "password", isPassword: true },
-            ...(editMode
-              ? [
-                  {
-                    label: "Confirm Password",
-                    key: "confirmPassword",
-                    isPassword: true,
-                    isConfirmPassword: true,
-                  },
-                ]
-              : []),
-          ].map((item) => (
+            <Typography
+              variant="h5"
+              fontWeight="bold"
+              sx={{ color: "#0e0f0f", mb: 2 }}
+            >
+              {serviceProvider.name || "Not specified"}
+            </Typography>
             <Box
-              key={item.key}
+              component="img"
+              src="https://static.vecteezy.com/system/resources/thumbnails/020/911/732/small/profile-icon-avatar-icon-user-icon-person-icon-free-png.png"
+              alt="Profile Picture"
               sx={{
-                display: { xs: "block", md: "flex" },
-                alignItems: "center",
-                justifyContent: "space-between",
-                backgroundColor: "rgba(255, 255, 255, 0.1)",
-                p: 1,
+                width: 100,
+                height: 100,
+                borderRadius: "50%",
+                mb: 2,
+                border: "2px solid #FF80DD",
+              }}
+            />
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#FF80DD", fontWeight: "600", mb: 2 }}
+            >
+              {serviceProvider.designation || "Not specified"}
+            </Typography>
+            <Typography sx={{ color: "#0e0f0f", mb: 1, display: "flex", alignItems: "center", fontSize: { xs: "0.875rem", md: "1rem" } }}>
+              <Box component="span" sx={{ mr: 1 }}>📧</Box>
+              {serviceProvider.email || "Not specified"}
+            </Typography>
+            <Typography sx={{ color: "#0e0f0f", mb: 1, display: "flex", alignItems: "center", fontSize: { xs: "0.875rem", md: "1rem" } }}>
+              <Box component="span" sx={{ mr: 1 }}>📞</Box>
+              {serviceProvider.phone || "Not specified"}
+            </Typography>
+            <Typography sx={{ color: "#0e0f0f", mb: 1, display: "flex", alignItems: "center", fontSize: { xs: "0.875rem", md: "1rem" } }}>
+              <Box component="span" sx={{ mr: 1 }}>📍</Box>
+              {serviceProvider.spAddress || "Not specified"}
+            </Typography>
+            <Typography sx={{ color: "#0e0f0f", mb: 2, display: "flex", alignItems: "center", fontSize: { xs: "0.875rem", md: "1rem" } }}>
+              <Box component="span" sx={{ mr: 1 }}>📅</Box>
+              Member since {formatDate(serviceProvider.createdAt) || "Not specified"}
+            </Typography>
+            <Button
+              variant="contained"
+              onClick={handleEdit}
+              sx={{
+                backgroundColor: "#FF80DD",
+                color: "#ffffff",
                 borderRadius: 2,
-                transition: "background-color 0.3s ease",
+                px: 3,
+                py: 0.5,
+                boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
                 "&:hover": {
-                  backgroundColor: "rgba(255, 255, 255, 0.2)",
+                  backgroundColor: "#ff66cc",
+                  boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
                 },
+                fontSize: { xs: "0.875rem", md: "1rem" },
               }}
             >
-              <Typography
-                fontWeight="600"
-                sx={{
-                  flex: { md: "0 0 150px" },
-                  textAlign: { md: "left" },
-                  color: "#0e0f0f",
-                }}
-              >
-                {item.label}:
-              </Typography>
-              {editMode && !item.disabled ? (
-                item.isPassword ? (
-                  <Box
-                    sx={{
-                      position: "relative",
-                      display: "inline-block",
-                      flex: 1,
-                    }}
-                  >
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      type={
-                        item.isConfirmPassword
-                          ? showConfirmPassword
-                            ? "text"
-                            : "password"
-                          : showPassword
-                          ? "text"
-                          : "password"
-                      }
-                      name={item.key}
-                      value={formData[item.key] || ""}
-                      onChange={handleChange}
-                      placeholder={
-                        item.isConfirmPassword
-                          ? "Confirm new password"
-                          : "Enter new password"
-                      }
-                      fullWidth
-                      error={!!errors[item.key]}
-                      helperText={errors[item.key]}
-                      sx={{
-                        backgroundColor: "#fff5f8",
-                        borderRadius: 2,
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover fieldset": { borderColor: "#FF80DD" },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#FF80DD",
-                            borderWidth: 2,
-                          },
-                        },
-                      }}
-                      InputProps={{
-                        endAdornment: (
-                          <InputAdornment position="end">
-                            <IconButton
-                              onClick={() =>
-                                item.isConfirmPassword
-                                  ? setShowConfirmPassword(!showConfirmPassword)
-                                  : setShowPassword(!showPassword)
-                              }
-                              sx={{ color: "#FF80DD" }}
-                            >
-                              {(
-                                item.isConfirmPassword
-                                  ? showConfirmPassword
-                                  : showPassword
-                              ) ? (
-                                <VisibilityOffIcon />
-                              ) : (
-                                <VisibilityIcon />
-                              )}
-                            </IconButton>
-                          </InputAdornment>
-                        ),
-                      }}
-                    />
-                  </Box>
-                ) : item.isSelect ? (
-                  <TextField
-                    select
-                    variant="outlined"
-                    size="small"
-                    name={item.key}
-                    value={formData[item.key] || ""}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      flex: 1,
-                      backgroundColor: "#fff5f8",
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        "&:hover fieldset": { borderColor: "#FF80DD" },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#FF80DD",
-                          borderWidth: 2,
-                        },
-                      },
-                    }}
-                    error={!!errors[item.key]}
-                    helperText={errors[item.key]}
-                  >
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Others">Others</MenuItem>
-                  </TextField>
-                ) : item.isTime ? (
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    type="time"
-                    name={item.key}
-                    value={formData[item.key] || ""}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      flex: 1,
-                      backgroundColor: "#fff5f8",
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        "&:hover fieldset": { borderColor: "#FF80DD" },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#FF80DD",
-                          borderWidth: 2,
-                        },
-                      },
-                    }}
-                    error={!!errors[item.key]}
-                    helperText={errors[item.key]}
-                    InputLabelProps={{ shrink: true }}
-                  />
-                ) : item.isLocation ? (
-                  <Box sx={{ display: "flex", gap: 1, flex: 1 }}>
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      name={item.key}
-                      value={formData[item.key] || ""}
-                      onChange={handleChange}
-                      fullWidth
-                      disabled={true}
-                      error={!!errors[item.key]}
-                      helperText={errors[item.key]}
-                      sx={{
-                        backgroundColor: "#fff5f8",
-                        borderRadius: 2,
-                        "& .MuiOutlinedInput-root": {
-                          "&:hover fieldset": { borderColor: "#FF80DD" },
-                          "&.Mui-focused fieldset": {
-                            borderColor: "#FF80DD",
-                            borderWidth: 2,
-                          },
-                        },
-                      }}
-                    />
-                    <motion.div
-                      variants={{ hover: { scale: 1.1 }, tap: { scale: 0.95 } }}
-                      whileHover="hover"
-                      whileTap="tap"
-                    >
-                      <Button
-                        variant="contained"
-                        onClick={handleGetLocation}
-                        disabled={isLoading}
-                        sx={{
-                          backgroundColor: "#FF80DD",
-                          color: "#ffffff",
-                          borderRadius: 2,
-                          px: 3,
-                          py: 1,
-                          boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
-                          "&:hover": {
-                            backgroundColor: "#ff66cc",
-                            boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
-                          },
-                          "&:disabled": {
-                            backgroundColor: "#ffb3e6",
-                            color: "#ffffff",
-                          },
-                        }}
-                      >
-                        Get Location
-                      </Button>
-                    </motion.div>
-                  </Box>
-                ) : (
-                  <TextField
-                    variant="outlined"
-                    size="small"
-                    type={item.isDateInput ? "date" : "text"}
-                    name={item.key}
-                    value={formData[item.key] || ""}
-                    onChange={handleChange}
-                    fullWidth
-                    sx={{
-                      flex: 1,
-                      backgroundColor: "#fff5f8",
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        "&:hover fieldset": { borderColor: "#FF80DD" },
-                        "&.Mui-focused fieldset": {
-                          borderColor: "#FF80DD",
-                          borderWidth: 2,
-                        },
-                      },
-                    }}
-                    error={!!errors[item.key]}
-                    helperText={errors[item.key]}
-                    InputLabelProps={item.isDateInput ? { shrink: true } : {}}
-                    inputProps={
-                      item.isDateInput
-                        ? {
-                            max: new Date().toISOString().split("T")[0],
-                            min: new Date(
-                              new Date().setFullYear(
-                                new Date().getFullYear() - 100
-                              )
-                            )
-                              .toISOString()
-                              .split("T")[0],
-                          }
-                        : {}
-                    }
-                  />
-                )
-              ) : (
-                <Typography
-                  sx={{ flex: 1, textAlign: { md: "left" }, color: "#0e0f0f" }}
-                >
-                  {item.isPassword
-                    ? "********"
-                    : item.key === "dob"
-                    ? formatDate(serviceProvider[item.key])
-                    : item.key === "fromTime" || item.key === "toTime"
-                    ? serviceProvider.availableTime?.[item.key] ||
-                      "Not specified"
-                    : serviceProvider[item.key] || "Not specified"}
-                </Typography>
-              )}
-            </Box>
-          ))}
-
-          <Box
-            sx={{ mt: 4, display: "flex", justifyContent: "center", gap: 2 }}
-          >
-            {editMode ? (
-              <Button
-                variant="contained"
-                color="success"
-                onClick={handleSave}
-                sx={{
-                  px: 4,
-                  py: 1,
-                  borderRadius: 2,
-                  backgroundColor: "#FF80DD",
-                  boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
-                  "&:hover": {
-                    backgroundColor: "#ff66cc",
-                    boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
-                  },
-                  "&:disabled": {
-                    backgroundColor: "#ffb3e6",
-                    color: "#ffffff",
-                  },
-                }}
-                disabled={Object.values(errors).some((error) => error)}
-              >
-                Save
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={handleEdit}
-                sx={{
-                  px: 4,
-                  py: 1,
-                  borderRadius: 2,
-                  backgroundColor: "#FF80DD",
-                  boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
-                  "&:hover": {
-                    backgroundColor: "#ff66cc",
-                    boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
-                  },
-                }}
-              >
-                Edit
-              </Button>
-            )}
+              Edit
+            </Button>
           </Box>
         </CardContent>
       </Card>
 
+      {/* Edit Profile Form Section */}
+      {editMode && (
+        <Box
+          ref={editFormRef}
+          sx={{
+            backgroundColor: "#fff",
+            borderRadius: 2,
+            p: { xs: 2, md: 3 },
+            border: "1px solid rgba(255, 128, 221, 0.3)",
+            width: { xs: "100%", md: "350px" }, // Fixed width on desktop
+            maxWidth: { xs: 300, md: 350 },
+          }}
+        >
+          <Typography
+            variant="h6"
+            fontWeight="bold"
+            sx={{ color: "#0e0f0f", mb: 2 }}
+          >
+            Edit Profile Information
+          </Typography>
+
+          {[
+            { label: "Full Name", key: "name" },
+            { label: "Email", key: "email" },
+            { label: "Phone Number", key: "phone" },
+            { label: "Address", key: "spAddress", isLocation: true },
+            { label: "Date of Birth", key: "dob", isDateInput: true },
+          ].map((item) => (
+            <Box key={item.key} sx={{ mb: 1.5 }}>
+              <Typography sx={{ color: "#0e0f0f", mb: 0.5, fontWeight: "500", fontSize: { xs: "0.875rem", md: "1rem" } }}>
+                {item.label}
+              </Typography>
+              {item.isLocation ? (
+                <Box sx={{ display: "flex", gap: 1 }}>
+                  <TextField
+                    variant="outlined"
+                    size="small"
+                    name={item.key}
+                    value={formData[item.key] || ""}
+                    onChange={handleChange}
+                    fullWidth
+                    disabled={true}
+                    error={!!errors[item.key]}
+                    helperText={errors[item.key]}
+                    sx={{
+                      backgroundColor: "#fff",
+                      borderRadius: 2,
+                      "& .MuiOutlinedInput-root": {
+                        "&:hover fieldset": { borderColor: "#FF80DD" },
+                        "&.Mui-focused fieldset": {
+                          borderColor: "#FF80DD",
+                          borderWidth: 2,
+                        },
+                      },
+                      "& .MuiInputBase-input": {
+                        fontSize: { xs: "0.875rem", md: "1rem" },
+                      },
+                    }}
+                  />
+                  <motion.div
+                    variants={{ hover: { scale: 1.1 }, tap: { scale: 0.95 } }}
+                    whileHover="hover"
+                    whileTap="tap"
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={handleGetLocation}
+                      disabled={isLoading}
+                      sx={{
+                        backgroundColor: "#FF80DD",
+                        color: "#ffffff",
+                        borderRadius: 2,
+                        px: 2,
+                        py: 0.5,
+                        boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
+                        "&:hover": {
+                          backgroundColor: "#ff66cc",
+                          boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
+                        },
+                        "&:disabled": {
+                          backgroundColor: "#ffb3e6",
+                          color: "#ffffff",
+                        },
+                        fontSize: { xs: "0.75rem", md: "0.875rem" },
+                      }}
+                    >
+                      Get Location
+                    </Button>
+                  </motion.div>
+                </Box>
+              ) : (
+                <TextField
+                  variant="outlined"
+                  size="small"
+                  type={item.isDateInput ? "date" : "text"}
+                  name={item.key}
+                  value={formData[item.key] || ""}
+                  onChange={handleChange}
+                  fullWidth
+                  sx={{
+                    backgroundColor: "#fff",
+                    borderRadius: 2,
+                    "& .MuiOutlinedInput-root": {
+                      "&:hover fieldset": { borderColor: "#FF80DD" },
+                      "&.Mui-focused fieldset": {
+                        borderColor: "#FF80DD",
+                        borderWidth: 2,
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      fontSize: { xs: "0.875rem", md: "1rem" },
+                    },
+                  }}
+                  error={!!errors[item.key]}
+                  helperText={errors[item.key]}
+                  InputLabelProps={item.isDateInput ? { shrink: true } : {}}
+                  inputProps={
+                    item.isDateInput
+                      ? {
+                          max: new Date().toISOString().split("T")[0],
+                          min: new Date(
+                            new Date().setFullYear(
+                              new Date().getFullYear() - 100
+                            )
+                          )
+                            .toISOString()
+                            .split("T")[0],
+                        }
+                      : {}
+                  }
+                />
+              )}
+            </Box>
+          ))}
+
+          <Box sx={{ mt: 2, display: "flex", justifyContent: "flex-end" }}>
+            <Button
+              variant="contained"
+              onClick={handleSave}
+              sx={{
+                backgroundColor: "#FF80DD",
+                color: "#ffffff",
+                borderRadius: 2,
+                px: 3,
+                py: 0.5,
+                boxShadow: "0px 4px 12px rgba(255, 128, 221, 0.4)",
+                "&:hover": {
+                  backgroundColor: "#ff66cc",
+                  boxShadow: "0px 6px 16px rgba(255, 128, 221, 0.5)",
+                },
+                "&:disabled": {
+                  backgroundColor: "#ffb3e6",
+                  color: "#ffffff",
+                },
+                fontSize: { xs: "0.875rem", md: "1rem" },
+              }}
+              disabled={Object.values(errors).some((error) => error)}
+            >
+              Save Changes
+            </Button>
+          </Box>
+        </Box>
+      )}
+
+      {/* Map Dialog */}
       <Dialog
         open={openMapModal}
         onClose={handleCloseModal}

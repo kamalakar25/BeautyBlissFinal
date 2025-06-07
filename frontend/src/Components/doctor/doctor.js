@@ -165,11 +165,12 @@ const BookNowButton = () => {
 
   return (
     <Zoom in={true} timeout={1500} mountOnEnter unmountOnExit>
-      <Box
+    
+        <Box
         sx={{
           position: "fixed",
-          bottom: { xs: 20, sm: 55 },
-          right: { xs: 12, sm: 24 },
+          bottom: { xs: 80, sm: 100 }, // Adjusted to place the button above the nav bar
+          right: { xs: 20, sm: 40 },
           zIndex: 1000,
         }}
       >
@@ -177,52 +178,56 @@ const BookNowButton = () => {
           variant="contained"
           size={isMobile ? "small" : "medium"}
           sx={{
-            background: "#36257d", // Initial background
-            color: "#fff", // Text color
+            background:
+              "linear-gradient(to right, rgb(171 19 130), rgb(91 24 68))",
+            color: "#ffffff",
             fontSize: {
-              xs: "0.7rem",
-              sm: "0.85rem",
-              md: "0.9rem",
-              lg: "0.95rem",
+              xs: "0.75rem",
+              sm: "0.9rem",
+              md: "1rem",
             },
-            px: { xs: 2, sm: 2.5, md: 3 },
+            px: { xs: 2, sm: 2.5 },
             py: { xs: 0.75, sm: 1 },
             borderRadius: "25px",
             textTransform: "uppercase",
-            fontWeight: "bold", // Matching with the Fab style
+            fontWeight: "600",
             letterSpacing: "0.5px",
-            boxShadow: "0 4px 12px rgba(50, 26, 188, 0.4)", // Subtle shadow effect
+            boxShadow: "0 4px 15px rgba(91, 24, 68, 0.3)",
             transition: "all 0.3s ease",
             position: "relative",
             overflow: "hidden",
             minWidth: "auto",
-            border: "1px solid #fff", // Border to match the Fab
+            border: "1px solid rgba(255, 255, 255, 0.15)",
+            fontFamily: "'Times New Roman', cursive",
             "&:hover": {
-              background: "#36257d", // Light teal color on hover
-              color: "#fff", // Keep text color teal
-              transform: "translateY(-2px)", // Slight lift effect
-              boxShadow: "0 6px 16px rgba(50, 26, 188, 0.6)", // Enhanced shadow on hover
+              transform: "translateY(-2px)",
+              boxShadow: "0 6px 20px rgba(91, 24, 68, 0.4)",
+              background:
+                "linear-gradient(to right, rgb(91 24 68), rgb(171 19 130))",
             },
-            "&:before": {
+            "&:after": {
               content: '""',
               position: "absolute",
               top: 0,
-              left: "-100%",
+              left: 0,
               width: "100%",
               height: "100%",
               background:
-                "linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent)", // Glowing effect
-              transition: "0.4s",
+                "linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent)",
+              transform: "translateX(-100%)",
+              transition: "transform 0.5s ease",
             },
-            "&:hover:before": {
-              left: "100%",
+            "&:hover:after": {
+              transform: "translateX(100%)",
             },
           }}
           onClick={() =>
             navigate("/products", { state: { designation: "Doctor" } })
           }
         >
-          <BookOnlineIcon sx={{ mr: 1 }} />
+          <BookOnlineIcon
+            sx={{ mr: 1, fontSize: { xs: "1rem", sm: "1.2rem" } }}
+          />
           Book Now
         </Button>
       </Box>

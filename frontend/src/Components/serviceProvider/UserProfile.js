@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
   Box,
@@ -8,28 +9,46 @@ import {
   Button,
   TextField,
   IconButton,
-  MenuItem,
   InputAdornment,
   Grow,
+  CircularProgress,
 } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import { styled } from "@mui/system";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import { styled } from "@mui/material/styles";
 
-import ContentCopyIcon from "@mui/icons-material/ContentCopy"; // Added for copy functionality
+// Error Boundary to catch rendering errors
+class ErrorBoundary extends React.Component {
+  state = { hasError: false, error: null };
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
 
-// Styled component for the coupon
+  render() {
+    if (this.state.hasError) {
+      return (
+        <Typography color="error">
+          Something went wrong: {this.state.error?.message || "Unknown error"}
+        </Typography>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+const BASE_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; // Fallback for development
+
 const CouponContainer = styled(Box)(({ theme }) => ({
   marginTop: "12px",
-  padding: "12px",
+  padding: { xs: "8px", sm: "12px" },
   background: "linear-gradient(135deg, #FF6F91, #D85CFF)",
   borderRadius: "8px",
   textAlign: "center",
   color: "#FFF",
   fontWeight: "bold",
-  fontSize: "1rem",
+  fontSize: { xs: "0.85rem", sm: "1rem" },
   boxShadow: "0px 4px 15px rgba(0,0,0,0.2), 0 0 10px rgba(255, 111, 145, 0.7)",
   backdropFilter: "blur(5px)",
   WebkitBackdropFilter: "blur(5px)",
@@ -54,63 +73,91 @@ const CouponContainer = styled(Box)(({ theme }) => ({
     boxShadow:
       "0px 6px 20px rgba(0,0,0,0.3), 0 0 15px rgba(255, 111, 145, 0.9)",
   },
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "0.85rem",
-    padding: "10px",
-  },
 }));
 
 const CouponCode = styled(Typography)(({ theme }) => ({
-  fontSize: "1.1rem",
-  letterSpacing: "3px",
+  fontSize: { xs: "0.9rem", sm: "1.1rem" },
+  letterSpacing: { xs: "1px", sm: "3px" },
+  wordBreak: "break-all",
   marginTop: "6px",
   color: "#FFF",
   fontFamily: '"Roboto Mono", monospace',
   backgroundColor: "rgba(255, 255, 255, 0.15)",
   padding: "4px 8px",
   borderRadius: "4px",
-  [theme.breakpoints.down("sm")]: {
-    fontSize: "0.95rem",
-  },
 }));
 
 const UserProfile = () => {
-  const userEmail = localStorage.getItem("email");
+  const userEmail = localStorage.getItem("email") || "";
   const [user, setUser] = useState(null);
-  const [editMode, setEditMode] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [editMode, setEditMode] = useState(false); // Controls edit form visibility
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    dob: "",
+    password: "",
+    confirmPassword: "",
+  });
   const [errors, setErrors] = useState({});
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [coupon, setCoupon] = useState(null);
   const [loyaltyPoints, setLoyaltyPoints] = useState(0);
-  const [copied, setCopied] = useState(false); // State to track copy feedback
+  const [copied, setCopied] = useState(false);
+  const [isRedeeming, setIsRedeeming] = useState(false);
+  const editFormRef = useRef(null); // Reference to the edit form Card
+  // Fallback for mobile detection using window.innerWidth
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 900); // 900px is Material-UI's default 'md' breakpoint
+
+  // Update isMobile on window resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 900);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     if (!userEmail) {
+      console.error("No user email found in localStorage");
       alert("User email not found. Please log in again.");
       return;
     }
 
-    axios
-      .get(`${BASE_URL}/api/users/userProfile/${encodeURIComponent(userEmail)}`)
-      .then((res) => {
-        setUser(res.data);
-        setFormData({ ...res.data, password: "", confirmPassword: "" });
-        setLoyaltyPoints(res.data.loyaltyPoints || 0);
-        if (res.data.couponCode && res.data.couponCode !== "NONE") {
-          setCoupon({ code: res.data.couponCode, discount: "10%" });
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get(
+          `${BASE_URL}/api/users/userProfile/${encodeURIComponent(userEmail)}`
+        );
+        console.log("User data fetched:", res.data);
+        const userData = res.data || {};
+        setUser(userData);
+        setFormData({
+          name: userData.name || "",
+          email: userData.email || "",
+          phone: userData.phone || "",
+          dob: userData.dob || "",
+          password: "",
+          confirmPassword: "",
+        });
+        setLoyaltyPoints(userData.loyaltyPoints || 0);
+        if (userData.couponCode && userData.couponCode !== "NONE") {
+          setCoupon({ code: userData.couponCode, discount: "10%" });
         } else {
           setCoupon(null);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Failed to fetch user:", err);
         alert(
           err.response?.data?.message ||
             "Failed to load profile. Please check your connection and try again."
         );
-      });
+      }
+    };
+
+    fetchUser();
   }, [userEmail]);
 
   const validateField = (name, value) => {
@@ -170,9 +217,7 @@ const UserProfile = () => {
       }
     }
 
-    if (name === "gender") {
-      error = value ? "" : "Gender is required";
-    }
+   
 
     if (name === "password" && value) {
       const passwordRegex =
@@ -210,15 +255,32 @@ const UserProfile = () => {
   };
 
   const handleEdit = () => {
+    console.log("Edit button clicked, showing edit form");
     setEditMode(true);
-    setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
+    setFormData((prev) => {
+      console.log("Form data reset:", { ...prev, password: "", confirmPassword: "" });
+      return { ...prev, password: "", confirmPassword: "" };
+    });
     setErrors({});
+    // Scroll to edit form immediately after rendering
+    if (editFormRef.current) {
+      setTimeout(() => {
+        try {
+          editFormRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+          console.log("Scrolled to edit form");
+        } catch (err) {
+          console.error("Failed to scroll to edit form:", err);
+        }
+      }, 150); // Delay for rendering
+    } else {
+      console.log("No scroll: editFormRef not available");
+    }
   };
 
   const handleSave = () => {
     const newErrors = {};
-    ["name", "email", "phone", "dob", "gender"].forEach((key) => {
-      const error = validateField(key, formData[key]);
+    ["name", "email", "phone", "dob"].forEach((key) => {
+      const error = validateField(key, formData[key] || "");
       if (error) newErrors[key] = error;
     });
 
@@ -246,19 +308,17 @@ const UserProfile = () => {
       return;
     }
 
-    // Construct updateData, excluding couponCode and confirmPassword
     const updateData = {
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
       dob: formData.dob,
-      gender: formData.gender,
+      // address: formData.address,
     };
 
-    if (!updateData.password) {
-      delete updateData.password;
+    if (formData.password) {
+      updateData.password = formData.password;
     }
-    delete updateData.confirmPassword;
 
     axios
       .put(
@@ -266,12 +326,12 @@ const UserProfile = () => {
         updateData
       )
       .then((res) => {
-        setUser(res.data.user);
-        setLoyaltyPoints(res.data.user.loyaltyPoints || 0);
+        setUser(res.data.user || {});
+        setLoyaltyPoints(res.data.user?.loyaltyPoints || 0);
         alert("Profile updated successfully!");
         setFormData((prev) => ({ ...prev, password: "", confirmPassword: "" }));
         setErrors({});
-        setEditMode(false);
+        setEditMode(false); // Hide edit form after saving
       })
       .catch((err) => {
         console.error("Failed to update profile:", err);
@@ -282,13 +342,19 @@ const UserProfile = () => {
       });
   };
 
-  const handleRedeem = () => {
+  const handleRedeem = async () => {
+    if (isRedeeming) return;
+    console.log("handleRedeem called with:", { loyaltyPoints, userEmail, couponCode: user?.couponCode });
+    if (!user) {
+      alert("User data not loaded. Please try again.");
+      return;
+    }
     if (loyaltyPoints < 100) {
       alert("You need at least 100 loyalty points to redeem a coupon.");
       return;
     }
 
-    if (user.couponCode !== "NONE") {
+    if (user.couponCode && user.couponCode !== "NONE") {
       alert(
         "You already have an active coupon. Please use it before redeeming a new one."
       );
@@ -300,31 +366,54 @@ const UserProfile = () => {
       return;
     }
 
-    const couponCode = `DISC${Math.random()
-      .toString(36)
-      .substr(2, 8)
-      .toUpperCase()}`;
+    setIsRedeeming(true);
+    const couponCode = `DISCMF10${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
     const newLoyaltyPoints = loyaltyPoints - 100;
 
-    axios
-      .put(`${BASE_URL}/api/users/updateProfile/${userEmail}`, {
-        ...formData,
-        loyaltyPoints: newLoyaltyPoints,
-        couponCode: couponCode,
-      })
-      .then((res) => {
-        setUser(res.data.user);
-        setLoyaltyPoints(newLoyaltyPoints);
-        setCoupon({ code: couponCode, discount: "10%" });
-        alert("Coupon redeemed successfully! 100 loyalty points deducted.");
-      })
-      .catch((err) => {
-        console.error("Failed to update loyalty points:", err);
-        alert(
-          err.response?.data?.message ||
-            "Failed to redeem coupon. Please check your connection and try again."
-        );
-      });
+    try {
+      const res = await axios.put(
+        `${BASE_URL}/api/users/updateProfile/${encodeURIComponent(userEmail)}`,
+        {
+          loyaltyPoints: newLoyaltyPoints,
+          couponCode: couponCode,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      console.log("Redeem response:", res.data);
+      if (!res.data.user) {
+        throw new Error("Invalid response: user data not found");
+      }
+
+      setUser({ ...res.data.user, couponCode });
+      setLoyaltyPoints(newLoyaltyPoints);
+      setCoupon({ code: couponCode, discount: "10%" });
+      alert("Coupon redeemed successfully! 100 loyalty points deducted.");
+    } catch (err) {
+      console.error("Failed to redeem coupon:", err);
+      let errorMessage = "Failed to redeem coupon. Please try again.";
+      if (err.response) {
+        console.log("Error response:", err.response.data);
+        if (err.response.status === 400) {
+          errorMessage = err.response.data.message || "Invalid request. Please check your input.";
+        } else if (err.response.status === 401) {
+          errorMessage = "Unauthorized. Please log in again.";
+        } else if (err.response.status === 404) {
+          errorMessage = "User not found. Please check your account.";
+        } else if (err.response.status >= 500) {
+          errorMessage = "Server error. Please try again later.";
+        }
+      } else if (err.request) {
+        errorMessage = "Network error. Please check your connection.";
+      }
+      alert(errorMessage);
+    } finally {
+      setIsRedeeming(false);
+    }
   };
 
   const handleCopy = () => {
@@ -333,7 +422,7 @@ const UserProfile = () => {
         .writeText(coupon.code)
         .then(() => {
           setCopied(true);
-          setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+          setTimeout(() => setCopied(false), 2000);
         })
         .catch((err) => {
           console.error("Failed to copy coupon code:", err);
@@ -343,6 +432,7 @@ const UserProfile = () => {
   };
 
   const formatDate = (dateString) => {
+    if (!dateString) return "Not specified";
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       return "Not specified";
@@ -353,210 +443,255 @@ const UserProfile = () => {
     return `${day}/${month}/${year}`;
   };
 
-  if (!user) return <p>Loading profile...</p>;
+  if (!user) return <Typography>Loading profile...</Typography>;
+
+  const isRedeemDisabled = !user || loyaltyPoints < 100 || (user.couponCode && user.couponCode !== "NONE") || isRedeeming;
+  console.log("isRedeemDisabled:", isRedeemDisabled, { user: !!user, loyaltyPoints, couponCode: user?.couponCode, isRedeeming });
 
   return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        //  paddingTop: { xs: '80px', sm: '100px' }, // Increased from 8 to 12 to push content further down
-        padding: "20px",
-        bgcolor: "#fad9e3",
-        minHeight: "110vh",
-        width: "100%",
-        "@media (min-width: 1024px) and (max-width: 2560px)": {
-          position: "absolute",
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-
-          alignItems: "center", // Center vertically
-        },
-      }}
-    >
-      <Card
+    <ErrorBoundary>
+      <Box
         sx={{
-          width: { xs: "90%", sm: "85%" },
-          marginTop: { xs: "10px", sm: "60px" },
-          maxWidth: 500,
-          height: "auto",
-          boxShadow: "0px 6px 20px rgba(0,0,0,0.15)",
-          borderRadius: 6,
-          bgcolor: "#FFEBF1",
-          transition: "0.3s ease",
-          "&:hover": {
-            transform: "scale(1.01)",
-          },
-          "@media (min-width: 1024px) and (max-width: 2560px)": {
-            maxHeight: 600,
-          },
+          display: "flex",
+          justifyContent: "center",
+          padding: { xs: "10px", sm: "20px" },
+          bgcolor: "#d3d3d3",
+          width: "100%",
+          minHeight: "100vh",
         }}
       >
-        <CardContent
+        <Box
           sx={{
-            textAlign: "center",
-            p: 3,
-            "@media (min-width: 1024px) and (max-width: 2560px)": {
-              maxHeight: 600,
-              overflowY: "auto",
-              "&::-webkit-scrollbar": {
-                width: "8px",
-              },
-              "&::-webkit-scrollbar-track": {
-                background: "#f1f1f1",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-thumb": {
-                background: "#FF99CC",
-                borderRadius: "4px",
-              },
-              "&::-webkit-scrollbar-thumb:hover": {
-                background: "#FF80BF",
-              },
-            },
+            display: "flex",
+            flexDirection: { xs: "column", sm: "column", md: "row" },
+            gap: { xs: 2, sm: 3 },
+            justifyContent: "center",
+            alignItems: { xs: "center", md: "flex-start" },
+            width: "100%",
+            maxWidth: { xs: "100%", sm: "600px", md: "900px" }, // Limit container width
           }}
         >
-          <Typography variant="h5" gutterBottom fontWeight="bold">
-            User Profile
-          </Typography>
-
-          {[
-            { label: "Name", key: "name" },
-            { label: "Email", key: "email" },
-            { label: "Gender", key: "gender", isSelect: true },
-            { label: "Phone", key: "phone" },
-            { label: "Date of Birth", key: "dob", isDateInput: true },
-            { label: "Designation", key: "designation", disabled: true },
-            {
-              label: "Joined At",
-              key: "createdAt",
-              disabled: true,
-              isDate: true,
-            },
-            { label: "Loyalty Points", key: "loyaltyPoints", disabled: true },
-            { label: "Password", key: "password", isPassword: true },
-            ...(editMode
-              ? [
-                  {
-                    label: "Confirm Password",
-                    key: "confirmPassword",
-                    isPassword: true,
-                    isConfirmPassword: true,
-                  },
-                ]
-              : []),
-          ].map((item) => (
-            <Box key={item.key} sx={{ mt: 1.5 }}>
-              <Box
+          <Card
+  sx={{
+    width: { xs: "100%", sm: "400px" }, // Equal width for both cards
+    maxWidth: "400px",
+    boxShadow: "0px 6px 20px rgba(0,0,0,0.15)",
+    borderRadius: 6,
+    bgcolor: "#FFEBF1",
+    transition: "0.3s ease",
+    "&:hover": {
+      transform: "scale(1.01)",
+    },
+  }}
+>
+  <CardContent sx={{ textAlign: "center", p: 3 }}> {/* Changed textAlign to center */}
+    <Typography variant="h5" gutterBottom fontWeight="bold">
+      Your Profile
+    </Typography>
+    <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+      Manage your personal information
+    </Typography>
+    <Box sx={{ mt: 2, display: "flex", justifyContent: "center" }}>
+      <Box
+        component="img"
+        src="https://static.vecteezy.com/system/resources/thumbnails/020/911/732/small/profile-icon-avatar-icon-user-icon-person-icon-free-png.png"
+        srcSet="https://static.vecteezy.com/system/resources/thumbnails/020/911/732/small/profile-icon-avatar-icon-user-icon-person-icon-free-png.png"
+        alt="Profile"
+        loading="lazy"
+        sx={{
+          width: { xs: "80px", sm: "100px" },
+          height: { xs: "80px", sm: "100px" },
+          borderRadius: "50%",
+          border: "2px solid #FF99CC",
+        }}
+      />
+    </Box>
+    <Typography variant="h6" fontWeight="bold" sx={{ mt: 2 }}>
+      {user.name || "Unknown"}
+    </Typography>
+    <Typography variant="subtitle1" color="text.secondary" gutterBottom>
+      {user.designation || "Premium Member"}
+    </Typography>
+    <Box sx={{ mt: 2 }}>
+      <Typography sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" }}>
+        <span role="img" aria-label="email">✉️</span>
+        {user.email || "Not specified"}
+      </Typography>
+      <Typography sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "100%" }}>
+        <span role="img" aria-label="phone">📞</span>
+        {user.phone || "Not specified"}
+      </Typography>
+      <Typography sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1 }}>
+        <span role="img" aria-label="calendar">📅</span>
+        Member since {formatDate(user.createdAt)}
+      </Typography>
+      <Typography sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 1, mt: 1 }}>
+        <span role="img" aria-label="points">⭐</span>
+        Loyalty Points: {loyaltyPoints}
+      </Typography>
+    </Box>
+    <Box sx={{ mt: 3, display: "flex", justifyContent: "center", gap: { xs: 1, sm: 2 }, flexWrap: "wrap" }}>
+      <Button
+        id="edit-profile-button"
+        variant="contained"
+        sx={{
+          px: 3,
+          py: 0.5,
+          borderRadius: 6,
+          background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
+          color: "#FFFFFF",
+          fontWeight: "bold",
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
+          textTransform: "uppercase",
+          "&:hover": {
+            background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
+          },
+        }}
+        onClick={handleEdit}
+        aria-label="Edit Profile"
+      >
+        Edit
+      </Button>
+      <Button
+        variant="contained"
+        sx={{
+          px: 3,
+          py: 0.5,
+          borderRadius: 6,
+          background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
+          color: "#FFFFFF",
+          fontWeight: "bold",
+          boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
+          textTransform: "uppercase",
+          "&:hover": {
+            background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
+          },
+          "&:disabled": {
+            background: "#E8E8E8",
+            color: "#A0A0A0",
+            boxShadow: "none",
+          },
+        }}
+        onClick={handleRedeem}
+        disabled={isRedeemDisabled}
+        aria-label="Redeem Points"
+      >
+        {isRedeeming ? <CircularProgress size={24} color="inherit" /> : "Redeem Points"}
+      </Button>
+    </Box>
+    {coupon && (
+      <Box sx={{ mt: 3 }}>
+        <Grow in={true} timeout={500}>
+          <CouponContainer>
+            <Typography>
+              Congratulations! You've received a {coupon.discount} discount!
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: 1,
+                mt: 1,
+              }}
+            >
+              <CouponCode aria-live="polite">Coupon Code: {coupon.code}</CouponCode>
+              <IconButton
+                onClick={handleCopy}
                 sx={{
-                  display: { xs: "block", md: "flex" },
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 1.5,
+                  color: "#FFF",
+                  bgcolor: "rgba(255, 255, 255, 0.2)",
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.3)",
+                  },
+                  p: 0.5,
                 }}
+                aria-label="Copy coupon code"
               >
-                <Typography
-                  fontWeight="600"
-                  sx={{
-                    flex: { md: "0 0 140px" },
-                    textAlign: { md: "left" },
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                  }}
-                >
-                  {item.label}:
+                {copied ? (
+                  <Typography
+                    variant="caption"
+                    sx={{ color: "#FFF", fontSize: "0.8rem" }}
+                  >
+                    Copied!
+                  </Typography>
+                ) : (
+                  <ContentCopyIcon fontSize="small" />
+                )}
+              </IconButton>
+            </Box>
+          </CouponContainer>
+        </Grow>
+      </Box>
+    )}
+  </CardContent>
+</Card>
+
+          {editMode && (
+            <Card
+              ref={editFormRef} // Attach ref to the edit form Card
+              sx={{
+                width: { xs: "100%", sm: "400px" }, // Equal width for both cards
+                maxWidth: "400px",
+                boxShadow: "0px 6px 20px rgba(0,0,0,0.15)",
+                borderRadius: "6px",
+                bgcolor: "#FFFFFF",
+                mt: { xs: 2, sm: 2, md: 0 }, // Ensure spacing in mobile views
+              }}
+            >
+              <CardContent sx={{ p: 3 }}>
+                <Typography variant="h6" gutterBottom fontWeight="bold">
+                  Edit Profile Information
                 </Typography>
-                {editMode && !item.disabled ? (
-                  item.isPassword ? (
-                    <Box
-                      sx={{
-                        position: "relative",
-                        display: "inline-block",
-                        flex: 1,
-                      }}
-                    >
-                      <TextField
-                        variant="outlined"
-                        size="small"
-                        type={
-                          item.isConfirmPassword
-                            ? showConfirmPassword
-                              ? "text"
-                              : "password"
-                            : showPassword
-                            ? "text"
-                            : "password"
-                        }
-                        name={item.key}
-                        value={formData[item.key] || ""}
-                        onChange={handleChange}
-                        placeholder={
-                          item.isConfirmPassword
-                            ? "Confirm new password"
-                            : "Enter new password"
-                        }
-                        fullWidth
-                        error={!!errors[item.key]}
-                        helperText={errors[item.key]}
-                        InputProps={{
-                          endAdornment: (
-                            <InputAdornment position="end">
-                              <IconButton
-                                onClick={() =>
-                                  item.isConfirmPassword
-                                    ? setShowConfirmPassword(
-                                        !showConfirmPassword
-                                      )
-                                    : setShowPassword(!showPassword)
-                                }
-                                sx={{ position: "absolute", right: 0, top: 0 }}
-                              >
-                                {(
-                                  item.isConfirmPassword
-                                    ? showConfirmPassword
-                                    : showPassword
-                                ) ? (
-                                  <VisibilityOffIcon />
-                                ) : (
-                                  <VisibilityIcon />
-                                )}
-                              </IconButton>
-                            </InputAdornment>
-                          ),
-                        }}
-                      />
-                    </Box>
-                  ) : item.isSelect ? (
+                {[
+                  { label: "Full Name", key: "name", icon: "👤" },
+                  { label: "Email", key: "email", icon: "✉️" },
+                  { label: "Phone Number", key: "phone", icon: "📞" },
+                  // { label: "Address", key: "address", icon: "📍" },
+                  { label: "Date of Birth", key: "dob", icon: "📅", isDateInput: true },
+                  { label: "Password", key: "password", icon: "🔒", isPassword: true },
+                  { label: "Confirm Password", key: "confirmPassword", icon: "🔒", isPassword: true },
+                ].map((item) => (
+                  <Box key={item.key} sx={{ mt: { xs: 1.5, sm: 2 } }}>
                     <TextField
-                      select
+                      label={item.label}
                       variant="outlined"
                       size="small"
+                      type={item.isPassword ? (item.key === "password" && showPassword ? "text" : item.key === "confirmPassword" && showConfirmPassword ? "text" : "password") : item.isDateInput ? "date" : "text"}
                       name={item.key}
                       value={formData[item.key] || ""}
                       onChange={handleChange}
                       fullWidth
-                      sx={{ flex: 1 }}
-                      error={!!errors[item.key]}
-                      helperText={errors[item.key]}
-                    >
-                      <MenuItem value="Male">Male</MenuItem>
-                      <MenuItem value="Female">Female</MenuItem>
-                      <MenuItem value="Others">Others</MenuItem>
-                    </TextField>
-                  ) : (
-                    <TextField
-                      variant="outlined"
-                      size="small"
-                      type={item.isDateInput ? "date" : "text"}
-                      name={item.key}
-                      value={formData[item.key] || ""}
-                      onChange={handleChange}
-                      fullWidth
-                      sx={{ flex: 1 }}
                       error={!!errors[item.key]}
                       helperText={errors[item.key]}
                       InputLabelProps={item.isDateInput ? { shrink: true } : {}}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start" sx={{ fontSize: { xs: "1.2rem", sm: "1.5rem" } }}>
+                            <span role="img" aria-label={item.label}>{item.icon}</span>
+                          </InputAdornment>
+                        ),
+                        endAdornment: item.isPassword ? (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() =>
+                                item.key === "password"
+                                  ? setShowPassword(!showPassword)
+                                  : setShowConfirmPassword(!showConfirmPassword)
+                              }
+                              edge="end"
+                            >
+                              {item.key === "password"
+                                ? showPassword
+                                  ? <VisibilityOffIcon />
+                                  : <VisibilityIcon />
+                                : showConfirmPassword
+                                ? <VisibilityOffIcon />
+                                : <VisibilityIcon />}
+                            </IconButton>
+                          </InputAdornment>
+                        ) : null,
+                      }}
                       inputProps={
                         item.isDateInput
                           ? {
@@ -572,172 +707,42 @@ const UserProfile = () => {
                           : {}
                       }
                     />
-                  )
-                ) : (
-                  <Typography
+                  </Box>
+                ))}
+                <Box sx={{ mt: 3, display: "flex", justifyContent: { xs: "center", sm: "flex-end" } }}>
+                  <Button
+                    variant="contained"
                     sx={{
-                      flex: 1,
-                      textAlign: { md: "left" },
-                      fontSize: { xs: "0.9rem", md: "1rem" },
-                    }}
-                  >
-                    {item.isPassword
-                      ? "********"
-                      : item.key === "loyaltyPoints"
-                      ? loyaltyPoints
-                      : item.isDate
-                      ? formatDate(user[item.key])
-                      : user[item.key] || "Not specified"}
-                  </Typography>
-                )}
-              </Box>
-              {item.key === "loyaltyPoints" && (
-                <Box sx={{ mt: 0.5, textAlign: { xs: "center", md: "left" } }}>
-                  <Typography
-                    variant="caption"
-                    sx={{ color: "text.secondary", fontSize: "0.8rem" }}
-                  >
-                    For every 100 points, you can redeem them and use the coupon
-                    code to avail a 10% discount.
-                  </Typography>
-                </Box>
-              )}
-            </Box>
-          ))}
-
-          <Box
-            sx={{
-              mt: 3,
-              display: "flex",
-              gap: 1.5,
-              justifyContent: "center",
-              flexWrap: "wrap",
-            }}
-          >
-            {editMode ? (
-              <Button
-                variant="contained"
-                sx={{
-                  px: 3,
-                  py: 0.5,
-                  borderRadius: 6,
-                  minWidth: { xs: "90px", sm: "110px" },
-                  background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
-                  textTransform: "uppercase",
-                  "&:hover": {
-                    background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
-                  },
-                  "&:disabled": {
-                    background: "#E8E8E8",
-                    color: "#A0A0A0",
-                    boxShadow: "none",
-                  },
-                }}
-                onClick={handleSave}
-                disabled={Object.values(errors).some((error) => error)}
-              >
-                Save
-              </Button>
-            ) : (
-              <Button
-                variant="contained"
-                sx={{
-                  px: 3,
-                  py: 0.5,
-                  borderRadius: 6,
-                  minWidth: { xs: "90px", sm: "110px" },
-                  background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
-                  color: "#FFFFFF",
-                  fontWeight: "bold",
-                  boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
-                  textTransform: "uppercase",
-                  "&:hover": {
-                    background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
-                  },
-                }}
-                onClick={handleEdit}
-              >
-                Edit
-              </Button>
-            )}
-            <Button
-              variant="contained"
-              sx={{
-                px: 3,
-                py: 0.5,
-                borderRadius: 6,
-                minWidth: { xs: "90px", sm: "110px" },
-                background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
-                color: "#FFFFFF",
-                fontWeight: "bold",
-                boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
-                textTransform: "uppercase",
-                "&:hover": {
-                  background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
-                },
-                "&:disabled": {
-                  background: "#E8E8E8",
-                  color: "#A0A0A0",
-                  boxShadow: "none",
-                },
-              }}
-              onClick={handleRedeem}
-              disabled={loyaltyPoints < 100 || coupon !== null}
-            >
-              Redeem
-            </Button>
-          </Box>
-
-          {coupon && (
-            <Grow in={true} timeout={500}>
-              <CouponContainer>
-                <Typography>
-                  Congratulations! You've received a {coupon.discount} discount!
-                </Typography>
-                {/* <CouponCode>Coupon Code: {coupon.code}</CouponCode> */}
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: 1,
-                    mt: 1,
-                  }}
-                >
-                  <CouponCode>Coupon Code: {coupon.code}</CouponCode>
-                  <IconButton
-                    onClick={handleCopy}
-                    sx={{
-                      color: "#FFF",
-                      bgcolor: "rgba(255, 255, 255, 0.2)",
+                      px: 3,
+                      py: 0.5,
+                      borderRadius: 6,
+                      background: "linear-gradient(90deg, #FF99CC, #CC66CC)",
+                      color: "#FFFFFF",
+                      fontWeight: "bold",
+                      boxShadow: "0px 2px 8px rgba(0,0,0,0.2)",
+                      textTransform: "uppercase",
                       "&:hover": {
-                        bgcolor: "rgba(255, 255, 255, 0.3)",
+                        background: "linear-gradient(90deg, #FF80BF, #B34FB3)",
                       },
-                      p: 0.5,
+                      "&:disabled": {
+                        background: "#E8E8E8",
+                        color: "#A0A0A0",
+                        boxShadow: "none",
+                      },
                     }}
-                    aria-label="Copy coupon code"
+                    onClick={handleSave}
+                    disabled={Object.values(errors).some((error) => error)}
+                    aria-label="Save Changes"
                   >
-                    {copied ? (
-                      <Typography
-                        variant="caption"
-                        sx={{ color: "#FFF", fontSize: "0.8rem" }}
-                      >
-                        Copied!
-                      </Typography>
-                    ) : (
-                      <ContentCopyIcon fontSize="small" />
-                    )}
-                  </IconButton>
+                    Save Changes
+                  </Button>
                 </Box>
-              </CouponContainer>
-            </Grow>
+              </CardContent>
+            </Card>
           )}
-        </CardContent>
-      </Card>
-    </Box>
+        </Box>
+      </Box>
+    </ErrorBoundary>
   );
 };
 

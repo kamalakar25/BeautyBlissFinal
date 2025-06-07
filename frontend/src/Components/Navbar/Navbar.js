@@ -3,27 +3,41 @@ import { Link, useLocation } from "react-router-dom";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Navbar.css";
 import { NotificationContext } from "../NotificationContext.js";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faHome,
+  faSearch,
+  faBell,
+  faUser,
+  faSignOutAlt,
+  faBook,
+  faMoneyBill,
+  faQuestionCircle,
+  faUsers,
+  faCalendarCheck,
+  faFileInvoiceDollar,
+  faCog,
+  faCut, faSpa, faStethoscope
+} from "@fortawesome/free-solid-svg-icons";
 
 const Navbar = () => {
   const context = useContext(NotificationContext);
-  const { notificationCount = 0, fetchNotificationCount = () => {} } =
-    context || {};
+  const { notificationCount = 0, fetchNotificationCount = () => {} } = context || {};
   const [isNavActive, setIsNavActive] = useState(false);
   const [userRole, setUserRole] = useState("");
   const [isScrolled, setIsScrolled] = useState(false);
   const [showLanguageModal, setShowLanguageModal] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth <= 767);
   const navbarRef = useRef(null);
   const location = useLocation();
 
-  // Google Translate Integration
   useEffect(() => {
     const scriptId = "google-translate-script";
     if (!document.getElementById(scriptId)) {
       const script = document.createElement("script");
       script.id = scriptId;
       script.type = "text/javascript";
-      script.src =
-        "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
       document.body.appendChild(script);
     }
 
@@ -38,7 +52,6 @@ const Navbar = () => {
   useEffect(() => {
     const role = localStorage.getItem("userRole");
     setUserRole(role || "");
-    // console.log("Navbar: User role set to", role);
 
     if (role === "User" || role === "ServiceProvider") {
       fetchNotificationCount();
@@ -66,8 +79,13 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    // console.log("Navbar: Notification count updated:", notificationCount);
-  }, [notificationCount]);
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth <= 767);
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const toggleNav = () => {
     setIsNavActive(!isNavActive);
@@ -87,64 +105,40 @@ const Navbar = () => {
     setShowLanguageModal(!showLanguageModal);
   };
 
-  const renderNavLinks = () => {
-    const isActiveLink = (path) => (location.pathname === path ? "active" : "");
+  const isActiveLink = (path) => (location.pathname === path ? "active" : "");
 
+  const renderNavLinks = () => {
     if (!userRole) {
       return (
         <>
           <li style={{ "--i": 1 }}>
-            <Link
-              to="/"
-              className={isActiveLink("/")}
-              onClick={handleLinkClick}
-            >
-              <b>Home</b>
+            <Link to="/" className={isActiveLink("/")} onClick={handleLinkClick}>
+              <FontAwesomeIcon icon={faHome} className="nav-icon" />
+              <span className="nav-text">Home</span>
             </Link>
           </li>
           <li style={{ "--i": 2 }}>
-            <Link
-              to="/salon"
-              className={isActiveLink("/salon")}
-              onClick={handleLinkClick}
-            >
-              <b>Salon</b>
+            <Link to="/salon" className={isActiveLink("/salon")} onClick={handleLinkClick}>
+              <FontAwesomeIcon icon={faCut} className="nav-icon" />
+              <span className="nav-text">Salon</span>
             </Link>
           </li>
           <li style={{ "--i": 3 }}>
-            <Link
-              to="/beauty"
-              className={isActiveLink("/beauty")}
-              onClick={handleLinkClick}
-            >
-              <b>Beauty</b>
+            <Link to="/beauty" className={isActiveLink("/beauty")} onClick={handleLinkClick}>
+              <FontAwesomeIcon icon={faSpa} className="nav-icon" />
+              <span className="nav-text">Beauty</span>
             </Link>
           </li>
           <li style={{ "--i": 4 }}>
-            <Link
-              to="/skincare"
-              className={isActiveLink("/skincare")}
-              onClick={handleLinkClick}
-            >
-              <b>Doctor</b>
+            <Link to="/skincare" className={isActiveLink("/skincare")} onClick={handleLinkClick}>
+              <FontAwesomeIcon icon={faStethoscope} className="nav-icon" />
+              <span className="nav-text">Doctor</span>
             </Link>
           </li>
           <li style={{ "--i": 5 }} className="logout-item">
-            <div>
-              <label htmlFor="google_translate_element" style={{fontWeight: "bold", textTransform: "capitalize"}}>language</label>
-            </div>
-            <div
-              id="google_translate_element"
-              className="custom-translate-dropdown me-3"
-            ></div>
-          </li>
-          <li style={{ "--i": 6 }} className="logout-item">
-            <Link
-              to="/login"
-              className={isActiveLink("/login")}
-              onClick={handleLinkClick}
-            >
-              <b>Login</b>
+            <Link to="/login" className={isActiveLink("/login")} onClick={handleLinkClick}>
+              <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+              <span className="nav-text">Login</span>
             </Link>
           </li>
         </>
@@ -156,83 +150,49 @@ const Navbar = () => {
         return (
           <>
             <li style={{ "--i": 1 }}>
-              <Link
-                to="/users"
-                className={isActiveLink("/users")}
-                onClick={handleLinkClick}
-              >
-                Users
+              <Link to="/users" className={isActiveLink("/users")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faUsers} className="nav-icon" />
+                <span className="nav-text">Users</span>
               </Link>
             </li>
-            <li style={{ "--i": 2 }}>
-              <Link
-                to="/serviceProviders"
-                className={isActiveLink("/serviceProviders")}
-                onClick={handleLinkClick}
-              >
-                Providers
-              </Link>
-            </li>
+          
             <li style={{ "--i": 3 }}>
-              <Link
-                to="/bookingDetails"
-                className={isActiveLink("/bookingDetails")}
-                onClick={handleLinkClick}
-              >
-                Bookings
+              <Link to="/bookingDetails" className={isActiveLink("/bookingDetails")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCalendarCheck} className="nav-icon" />
+                <span className="nav-text">Bookings</span>
               </Link>
             </li>
             <li style={{ "--i": 4 }}>
-              <Link
-                to="/revenue"
-                className={isActiveLink("/revenue")}
-                onClick={handleLinkClick}
-              >
-                Revenue
+              <Link to="/revenue" className={isActiveLink("/revenue")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faFileInvoiceDollar} className="nav-icon" />
+                <span className="nav-text">Revenue</span>
+              </Link>
+            </li>
+              <li style={{ "--i": 2 }}>
+              <Link to="/serviceProviders" className={isActiveLink("/serviceProviders")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faUsers} className="nav-icon" />
+                <span className="nav-text">Providers</span>
               </Link>
             </li>
             <li style={{ "--i": 5 }}>
-              <Link
-                to="/approvals"
-                className={isActiveLink("/approvals")}
-                onClick={handleLinkClick}
-              >
-                Approvals
+              <Link to="/approvals" className={isActiveLink("/approvals")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCog} className="nav-icon" />
+                <span className="nav-text">Approvals</span>
               </Link>
             </li>
             <li style={{ "--i": 6 }}>
-              <Link
-                to="/complaints"
-                className={isActiveLink("/complaints")}
-                onClick={handleLinkClick}
-              >
-                Complaints
+              <Link to="/complaints" className={isActiveLink("/complaints")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faQuestionCircle} className="nav-icon" />
+                <span className="nav-text">Complaints</span>
               </Link>
             </li>
             <li style={{ "--i": 7 }}>
-              <Link
-                to="/AdminFaqs"
-                className={isActiveLink("/AdminFaqs")}
-                onClick={handleLinkClick}
-              >
-                Faqs
+              <Link to="/adminFaqs" className={isActiveLink("/adminFaqs")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faBook} className="nav-icon" />
+                <span className="nav-text">Faqs</span>
               </Link>
             </li>
             <li style={{ "--i": 8 }} className="logout-item">
-              <div>
-                <label
-                  htmlFor="google_translate_element"
-                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
-                >
-                  language
-                </label>
-              </div>
-              <div
-                id="google_translate_element"
-                className="custom-translate-dropdown me-3"
-              ></div>
-            </li>
-            <li style={{ "--i": 9 }} className="logout-item">
               <Link
                 to="/login"
                 onClick={() => {
@@ -240,7 +200,8 @@ const Navbar = () => {
                   handleLinkClick();
                 }}
               >
-                <b style={{ color: "red" }}>Logout</b>
+                <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+                <span className="nav-text">Logout</span>
               </Link>
             </li>
           </>
@@ -249,98 +210,58 @@ const Navbar = () => {
       case "ServiceProvider":
         return (
           <>
-            <li style={{ "--i": 9 }}>
-              <Link
-                to="/SpHome"
-                className={isActiveLink("/SpHome")}
-                onClick={handleLinkClick}
-              >
-                Home
-              </Link>
-            </li>
             <li style={{ "--i": 1 }}>
-              <Link
-                to="/services"
-                className={isActiveLink("/services")}
-                onClick={handleLinkClick}
-              >
-                Add Service
+              <Link to="/spHome" className={isActiveLink("/spHome")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faHome} className="nav-icon" />
+                <span className="nav-text">Home</span>
               </Link>
             </li>
             <li style={{ "--i": 2 }}>
-              <Link
-                to="/AddEmployee"
-                className={isActiveLink("/AddEmployee")}
-                onClick={handleLinkClick}
-              >
-                Emp Management
+              <Link to="/services" className={isActiveLink("/services")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCog} className="nav-icon" />
+                <span className="nav-text">Add Service</span>
               </Link>
             </li>
             <li style={{ "--i": 3 }}>
-              <Link
-                to="/SpBookingDetails"
-                className={isActiveLink("/SpBookingDetails")}
-                onClick={handleLinkClick}
-              >
-                Bookings
+              <Link to="/addEmployee" className={isActiveLink("/addEmployee")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faUsers} className="nav-icon" />
+                <span className="nav-text">Emp Management</span>
               </Link>
             </li>
             <li style={{ "--i": 4 }}>
-              <Link
-                to="/SPpaymentDetails"
-                className={isActiveLink("/SPpaymentDetails")}
-                onClick={handleLinkClick}
-              >
-                Payments
+              <Link to="/spBookingDetails" className={isActiveLink("/spBookingDetails")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCalendarCheck} className="nav-icon" />
+                <span className="nav-text">Bookings</span>
               </Link>
             </li>
             <li style={{ "--i": 5 }}>
-              <Link
-                to="/Enquiries"
-                className={isActiveLink("/Enquiries")}
-                onClick={handleLinkClick}
-              >
-                Enquiries
+              <Link to="/spPaymentDetails" className={isActiveLink("/spPaymentDetails")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faMoneyBill} className="nav-icon" />
+                <span className="nav-text">Payments</span>
               </Link>
             </li>
             <li style={{ "--i": 6 }}>
-              <Link
-                to="/SpNotifications"
-                className={isActiveLink("/SpNotifications")}
-                onClick={handleLinkClick}
-              >
-                <span className="notification-wrapper">
-                  <i className="fas fa-bell"></i>
-                  {notificationCount > 0 && (
-                    <span className="notification-badge">
-                      {notificationCount}
-                    </span>
-                  )}
-                </span>
+              <Link to="/enquiries" className={isActiveLink("/enquiries")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faQuestionCircle} className="nav-icon" />
+                <span className="nav-text">Enquiries</span>
               </Link>
             </li>
             <li style={{ "--i": 7 }}>
-              <Link
-                to="/SpProfile"
-                className={isActiveLink("/SpProfile")}
-                onClick={handleLinkClick}
-              >
-                Profile
+              <Link to="/spNotifications" className={isActiveLink("/spNotifications")} onClick={handleLinkClick}>
+                <span className="notification-wrapper">
+                  <FontAwesomeIcon icon={faBell} className="nav-icon" />
+                  {notificationCount > 0 && (
+                    <span className="notification-badge">{notificationCount}</span>
+                  )}
+                </span>
+                <span className="nav-text">Notifications</span>
               </Link>
             </li>
-            <li style={{ "--i": 8 }} className="logout-item">
-              <div>
-                <label
-                  htmlFor="google_translate_element"
-                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
-                >
-                  language
-                </label>
-              </div>
-              <div
-                id="google_translate_element"
-                className="custom-translate-dropdown me-3"
-              ></div>
+            <li style={{ "--i": 8 }}>
+              <Link to="/spProfile" className={isActiveLink("/spProfile")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faUser} className="nav-icon" />
+                <span className="nav-text">Profile</span>
+              </Link>
             </li>
             <li style={{ "--i": 9 }} className="logout-item">
               <Link
@@ -350,110 +271,114 @@ const Navbar = () => {
                   handleLinkClick();
                 }}
               >
-                <b style={{ color: "red" }}>Logout</b>
+                <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+                <span className="nav-text">Logout</span>
               </Link>
             </li>
           </>
         );
 
       case "User":
+        // Mobile (320px to 767px) and Tablet (768px to 1024px): Hide Salon, Beauty, Doctor, Notifications
+        if (window.innerWidth < 1024) {
+          return (
+            <>
+              <li style={{ "--i": 1 }}>
+                <Link to="/" className={isActiveLink("/")} onClick={handleLinkClick}>
+                  <FontAwesomeIcon icon={faHome} className="nav-icon" />
+                  <span className="nav-text">Home</span>
+                </Link>
+              </li>
+              <li style={{ "--i": 2 }}>
+                <Link to="/bookings" className={isActiveLink("/bookings")} onClick={handleLinkClick}>
+                  <FontAwesomeIcon icon={faCalendarCheck} className="nav-icon" />
+                  <span className="nav-text">Bookings</span>
+                </Link>
+              </li>
+              <li style={{ "--i": 3 }}>
+                <Link to="/userEnquiries" className={isActiveLink("/userEnquiries")} onClick={handleLinkClick}>
+                  <FontAwesomeIcon icon={faQuestionCircle} className="nav-icon" />
+                  <span className="nav-text">Enquiries</span>
+                </Link>
+              </li>
+              <li style={{ "--i": 4 }}>
+                <Link to="/userProfile" className={isActiveLink("/userProfile")} onClick={handleLinkClick}>
+                  <FontAwesomeIcon icon={faUser} className="nav-icon" />
+                  <span className="nav-text">Profile</span>
+                </Link>
+              </li>
+              <li style={{ "--i": 5 }} className="logout-item">
+                <Link
+                  to="/login"
+                  onClick={() => {
+                    handleLogout();
+                    handleLinkClick();
+                  }}
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+                  <span className="nav-text">Logout</span>
+                </Link>
+              </li>
+            </>
+          );
+        }
+        // Desktop (>1024px): Show all items
         return (
           <>
             <li style={{ "--i": 1 }}>
-              <Link
-                to="/"
-                className={isActiveLink("/")}
-                onClick={handleLinkClick}
-              >
-                <b>Home</b>
+              <Link to="/" className={isActiveLink("/")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faHome} className="nav-icon" />
+                <span className="nav-text">Home</span>
               </Link>
             </li>
             <li style={{ "--i": 2 }}>
-              <Link
-                to="/salon"
-                className={isActiveLink("/salon")}
-                onClick={handleLinkClick}
-              >
-                <b>Salon</b>
+              <Link to="/salon" className={isActiveLink("/salon")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCut} className="nav-icon" />
+                <span className="nav-text">Salon</span>
               </Link>
             </li>
             <li style={{ "--i": 3 }}>
-              <Link
-                to="/beauty"
-                className={isActiveLink("/beauty")}
-                onClick={handleLinkClick}
-              >
-                <b>Beauty</b>
+              <Link to="/beauty" className={isActiveLink("/beauty")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faSpa} className="nav-icon" />
+                <span className="nav-text">Beauty</span>
               </Link>
             </li>
             <li style={{ "--i": 4 }}>
-              <Link
-                to="/skincare"
-                className={isActiveLink("/skincare")}
-                onClick={handleLinkClick}
-              >
-                <b>Doctor</b>
+              <Link to="/skincare" className={isActiveLink("/skincare")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faStethoscope} className="nav-icon" />
+                <span className="nav-text">Doctor</span>
               </Link>
             </li>
             <li style={{ "--i": 5 }}>
-              <Link
-                to="/bookings"
-                className={isActiveLink("/bookings")}
-                onClick={handleLinkClick}
-              >
-                <b>Bookings</b>
+              <Link to="/bookings" className={isActiveLink("/bookings")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faCalendarCheck} className="nav-icon" />
+                <span className="nav-text">Bookings</span>
               </Link>
             </li>
             <li style={{ "--i": 6 }}>
-              <Link
-                to="/UserEnquiries"
-                className={isActiveLink("/UserEnquiries")}
-                onClick={handleLinkClick}
-              >
-                <b>Enquiries</b>
+              <Link to="/userEnquiries" className={isActiveLink("/userEnquiries")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faQuestionCircle} className="nav-icon" />
+                <span className="nav-text">Enquiries</span>
               </Link>
             </li>
             <li style={{ "--i": 7 }}>
-              <Link
-                to="/UserNotifications"
-                className={isActiveLink("/UserNotifications")}
-                onClick={handleLinkClick}
-              >
+              <Link to="/userNotifications" className={isActiveLink("/userNotifications")} onClick={handleLinkClick}>
                 <span className="notification-wrapper">
-                  <i className="fas fa-bell"></i>
+                  <FontAwesomeIcon icon={faBell} className="nav-icon" />
                   {notificationCount > 0 && (
-                    <span className="notification-badge">
-                      {notificationCount}
-                    </span>
+                    <span className="notification-badge">{notificationCount}</span>
                   )}
-                  <b>Notifications</b>
                 </span>
+                <span className="nav-text">Notifications</span>
               </Link>
             </li>
             <li style={{ "--i": 8 }}>
-              <Link
-                to="/UserProfile"
-                className={isActiveLink("/UserProfile")}
-                onClick={handleLinkClick}
-              >
-                <b>Profile</b>
+              <Link to="/userProfile" className={isActiveLink("/userProfile")} onClick={handleLinkClick}>
+                <FontAwesomeIcon icon={faUser} className="nav-icon" />
+                <span className="nav-text">Profile</span>
               </Link>
             </li>
             <li style={{ "--i": 9 }} className="logout-item">
-              <div>
-                <label
-                  htmlFor="google_translate_element"
-                  style={{ fontWeight: "bold", textTransform: "capitalize" }}
-                >
-                  language
-                </label>
-              </div>
-              <div
-                id="google_translate_element"
-                className="custom-translate-dropdown me-3"
-              ></div>
-            </li>
-            <li style={{ "--i": 10 }} className="logout-item">
               <Link
                 to="/login"
                 onClick={() => {
@@ -461,7 +386,8 @@ const Navbar = () => {
                   handleLinkClick();
                 }}
               >
-                <b style={{ color: "red" }}>Logout</b>
+                <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+                <span className="nav-text">Logout</span>
               </Link>
             </li>
           </>
@@ -473,42 +399,56 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      className={`navbar ${isScrolled ? "scrolled" : ""}`}
-      style={{
-        position: "fixed",
-        top: 0,
-        width: "100%",
-        zIndex: 10,
-      }}
-      ref={navbarRef}
-    >
-      <div className="navbar-container">
-        <div className="navbar-logo">
-          <Link to="/" style={{ textDecoration: "none" }}>
-            <h1
-              style={{
-                background: "linear-gradient(to right, #f710b9, #9b45fc)", // Your gradient colors
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                fontFamily: "times new roman",
-                fontStyle: "cursive",
-                fontWeight: "550",
-                fontSize: "1.5rem",
-              }}
-            >
-              BeautyBliss
-            </h1>
-          </Link>
+    <>
+      <nav
+        className={`navbar desktop-navbar ${isScrolled ? "scrolled" : ""}`}
+        style={{
+          position: "fixed",
+          top: 0,
+          width: "100%",
+          zIndex: 10,
+        }}
+        ref={navbarRef}
+      >
+        <div className="navbar-container">
+          <div className="navbar-logo">
+            <Link to="/" style={{ textDecoration: "none" }}>
+              <h1
+                style={{
+                  background: "linear-gradient(to right, rgb(171 19 130), rgb(91 24 68))",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  fontFamily: "times new roman",
+                  fontStyle: "cursive",
+                  fontWeight: "550",
+                  fontSize: "1.5rem",
+                }}
+              >
+                BeautyBliss
+              </h1>
+            </Link>
+          </div>
+          <button className="navbar-toggle" onClick={toggleNav}>
+            ☰
+          </button>
+          <ul className={`navbar-links ${isNavActive ? "active" : ""}`}>
+            {renderNavLinks()}
+          </ul>
         </div>
-        <button className="navbar-toggle" onClick={toggleNav}>
-          ☰
-        </button>
-        <ul className={`navbar-links ${isNavActive ? "active" : ""}`}>
+      </nav>
+
+      <nav className="tablet-sidebar">
+        <ul className="sidebar-links">
           {renderNavLinks()}
         </ul>
-      </div>
-    </nav>
+      </nav>
+
+      <nav className="mobile-bottom-nav">
+        <ul className="bottom-nav-links">
+          {renderNavLinks()}
+        </ul>
+      </nav>
+    </>
   );
 };
 

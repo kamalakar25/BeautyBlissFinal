@@ -4,12 +4,74 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
+import {
+  format,
+  startOfMonth,
+  endOfMonth,
+  startOfWeek,
+  endOfWeek,
+  eachDayOfInterval,
+  addMonths,
+  subMonths,
+  isSameDay,
+  addDays,
+} from "date-fns";
+
 const BASE_URL = process.env.REACT_APP_API_URL;
 
 const BookSlot = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const parlor = location.state?.parlor || {};
+
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
+
+  // Update screen size state on resize
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktop(window.innerWidth >= 1024);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  // Sample generateDateOptions function (replace with your own if needed)
+  const generateDateOptions = () => {
+    const today = new Date();
+    return Array.from({ length: 7 }, (_, i) => {
+      const date = addDays(today, i);
+      return {
+        value: format(date, "yyyy-MM-dd"),
+        label: format(date, "MMM d"),
+      };
+    });
+  };
+
+  // Get days for the current month
+  const getMonthDays = () => {
+    const start = startOfWeek(startOfMonth(currentDate), { weekStartsOn: 1 });
+    const end = endOfWeek(endOfMonth(currentDate), { weekStartsOn: 1 });
+    return eachDayOfInterval({ start, end });
+  };
+
+  // Handle date selection
+  const handleDateSelect = (date) => {
+    setFormData((prev) => ({
+      ...prev,
+      date: format(date, "yyyy-MM-dd"),
+      time: "",
+    }));
+  };
+
+  // Navigate to previous/next month (for small screens)
+  const goToPreviousMonth = () => setCurrentDate(subMonths(currentDate, 1));
+  const goToNextMonth = () => setCurrentDate(addMonths(currentDate, 1));
+
+  // Determine if a day is in the current month
+  const isInCurrentMonth = (day) => {
+    return day.getMonth() === currentDate.getMonth();
+  };
 
   // Initialize form data
   const [formData, setFormData] = useState({
@@ -559,24 +621,7 @@ const BookSlot = () => {
   }, {});
 
   // Generate date options for the next 7 days
-  const generateDateOptions = () => {
-    const dates = [];
-    const today = new Date();
 
-    for (let i = 1; i <= 7; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() + i);
-      dates.push({
-        value: date.toISOString().split("T")[0],
-        label: date.toLocaleDateString("en-US", {
-          weekday: "short",
-          month: "short",
-          day: "numeric",
-        }),
-      });
-    }
-    return dates;
-  };
 
   // Render service checkboxes
   const renderServiceCheckboxes = () => {
@@ -1151,72 +1196,198 @@ const BookSlot = () => {
                 )}
 
                 {/* Date Selection */}
-                <h3
-                  style={{
-                    fontSize: "16px",
-                    fontWeight: "bold",
-                    marginBottom: "6px",
-                  }}
-                  ref={dateRef}
-                >
-                  Select Date
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "6px",
-                    marginBottom: "12px",
-                  }}
-                >
-                  {generateDateOptions().map((dateOption) => (
-                    <button
-                      key={dateOption.value}
-                      style={{
-                        padding: "8px",
-                        borderRadius: "4px",
-                        border:
-                          formData.date === dateOption.value
-                            ? "none"
-                            : "1px solid #E91E63",
-                        background:
-                          formData.date === dateOption.value
-                            ? "linear-gradient(135deg, #E91E63, #F06292)"
-                            : "transparent",
-                        color:
-                          formData.date === dateOption.value
-                            ? "#fff"
-                            : "#E91E63",
-                        cursor: "pointer",
-                        fontSize: "12px",
-                        fontWeight: "bold",
-                        textAlign: "center",
-                        flex: "1 1 80px",
-                        maxWidth: "100px",
-                      }}
-                      onClick={() =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          date: dateOption.value,
-                          time: "",
-                        }))
-                      }
-                    >
-                      {dateOption.label}
-                    </button>
-                  ))}
-                </div>
-                {errors.date && (
-                  <p
+                <div>
+                  <h3
                     style={{
-                      color: "red",
-                      fontSize: "12px",
+                      fontSize: "16px",
+                      fontWeight: "bold",
                       marginBottom: "6px",
                     }}
+                    ref={dateRef}
                   >
-                    {errors.date}
-                  </p>
-                )}
+                    Select Date
+                  </h3>
+                  {isDesktop ? (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexWrap: "wrap",
+                        gap: "6px",
+                        marginBottom: "12px",
+                      }}
+                    >
+                      {generateDateOptions().map((dateOption) => (
+                        <button
+                          key={dateOption.value}
+                          style={{
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border:
+                              formData.date === dateOption.value
+                                ? "none"
+                                : "1px solid #E91E63",
+                            background:
+                              formData.date === dateOption.value
+                                ? "linear-gradient(135deg, #E91E63, #F06292)"
+                                : "transparent",
+                            color:
+                              formData.date === dateOption.value
+                                ? "#fff"
+                                : "#E91E63",
+                            cursor: "pointer",
+                            fontSize: "12px",
+                            fontWeight: "bold",
+                            textAlign: "center",
+                            flex: "1 1 80px",
+                            maxWidth: "100px",
+                          }}
+                          onClick={() =>
+                            setFormData((prev) => ({
+                              ...prev,
+                              date: dateOption.value,
+                              time: "",
+                            }))
+                          }
+                        >
+                          {dateOption.label}
+                        </button>
+                      ))}
+                    </div>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "6px",
+                        marginBottom: "12px",
+                        background: "#fff",
+                        padding: "12px",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                        maxWidth: "300px",
+                        width: "100%",
+                      }}
+                    >
+                      {/* Navigation for Month View */}
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          marginBottom: "8px",
+                        }}
+                      >
+                        <button
+                          onClick={goToPreviousMonth}
+                          style={{
+                            padding: "6px 10px",
+                            border: "1px solid #E91E63",
+                            borderRadius: "4px",
+                            background: "transparent",
+                            color: "#E91E63",
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Prev
+                        </button>
+                        <span style={{ fontSize: "14px", fontWeight: "bold" }}>
+                          {format(currentDate, "MMMM yyyy")}
+                        </span>
+                        <button
+                          onClick={goToNextMonth}
+                          style={{
+                            padding: "6px 10px",
+                            border: "1px solid #E91E63",
+                            borderRadius: "4px",
+                            background: "transparent",
+                            color: "#E91E63",
+                            cursor: "pointer",
+                            fontWeight: "bold",
+                            fontSize: "12px",
+                          }}
+                        >
+                          Next
+                        </button>
+                      </div>
+                      {/* Weekday Headers */}
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(7, 1fr)",
+                          gap: "2px",
+                          textAlign: "center",
+                          fontSize: "10px",
+                          fontWeight: "bold",
+                          color: "#333",
+                        }}
+                      >
+                        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map(
+                          (day) => (
+                            <div key={day}>{day}</div>
+                          )
+                        )}
+                      </div>
+                      {/* Calendar Days */}
+                      <div
+                        style={{
+                          display: "grid",
+                          gridTemplateColumns: "repeat(7, 1fr)",
+                          gap: "2px",
+                        }}
+                      >
+                        {getMonthDays().map((day) => (
+                          <button
+                            key={day.toString()}
+                            onClick={() => handleDateSelect(day)}
+                            disabled={!isInCurrentMonth(day)}
+                            style={{
+                              padding: "6px",
+                              borderRadius: "4px",
+                              border: isSameDay(new Date(formData.date), day)
+                                ? "none"
+                                : "1px solid #E91E63",
+                              background: isSameDay(
+                                new Date(formData.date),
+                                day
+                              )
+                                ? "linear-gradient(135deg, #E91E63, #F06292)"
+                                : isInCurrentMonth(day)
+                                ? "transparent"
+                                : "#f0f0f0",
+                              color: isSameDay(new Date(formData.date), day)
+                                ? "#fff"
+                                : isInCurrentMonth(day)
+                                ? "#E91E63"
+                                : "#aaa",
+                              cursor: isInCurrentMonth(day)
+                                ? "pointer"
+                                : "not-allowed",
+                              fontSize: "10px",
+                              fontWeight: "bold",
+                              textAlign: "center",
+                              aspectRatio: "1 / 1",
+                            }}
+                          >
+                            {format(day, "d")}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                  {errors.date && (
+                    <p
+                      style={{
+                        color: "red",
+                        fontSize: "12px",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      {errors.date}
+                    </p>
+                  )}
+                </div>
 
                 {/* Time Selection */}
                 {availableTimeSlots.length > 0 && (

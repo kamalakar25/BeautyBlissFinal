@@ -196,7 +196,7 @@
 .table-header {
   padding: 0.75rem;
   text-align: center;
-  background-color: #a01e43;
+  background-color: #fb646b;
   /* background: linear-gradient(135deg, #201548 0%, #3a2e7a 100%); */
   color: #ffffff;
   text-transform: uppercase;
@@ -627,29 +627,29 @@
 
 /* Alternating row colors for desktop table */
 .bookings-table-desktop tbody tr:nth-child(odd) {
-  background-color: #f195ae;
+  background-color: white;
 }
 
 .bookings-table-desktop tbody tr:nth-child(even) {
-  background-color: #f8cad7;
+  background-color: white;
 }
 
 /* Ensure S.No column matches the row's alternating background color */
 .bookings-table-desktop tbody tr:nth-child(odd) td:first-child {
-  background-color: #f195ae;
+  background-color: white;
 }
 
 .bookings-table-desktop tbody tr:nth-child(even) td:first-child {
-  background-color: #f8cad7;
+  background-color: white;
 }
 
 /* Alternating background colors for mobile booking cards */
 .mobile-bookings-list .booking-card:nth-child(odd) {
-  background-color: #f195ae;
+  background-color: white;
 }
 
 .mobile-bookings-list .booking-card:nth-child(even) {
-  background-color: #f8cad7;
+  background-color: white;
 }
 
 /* Responsive styles for Booking Analytics filter options on small screens */

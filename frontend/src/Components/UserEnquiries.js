@@ -5,6 +5,7 @@ import { Tooltip, Badge } from "@mui/material";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import SearchIcon from "@mui/icons-material/Search";
 import ContactSupportIcon from "@mui/icons-material/ContactSupport";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { motion } from "framer-motion";
 import axios from "axios";
 
@@ -21,6 +22,7 @@ const UserEnquiries = () => {
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
   const [supportText, setSupportText] = useState("");
   const [showSupportModal, setShowSupportModal] = useState(false);
+  const [expandedCard, setExpandedCard] = useState(null); // New state for tracking expanded card
   const itemsPerPage = 5;
 
   // Fetch enquiries from backend using email
@@ -178,6 +180,10 @@ const UserEnquiries = () => {
     }
   };
 
+  const toggleCard = (enquiryId) => {
+    setExpandedCard(expandedCard === enquiryId ? null : enquiryId);
+  };
+
   return (
     <div
       style={{
@@ -199,7 +205,7 @@ const UserEnquiries = () => {
             border-bottom: 5px solid #FB646B;
           }
           .header-title {
-            color:rgb(244, 61, 70);
+            color: rgb(244, 61, 70);
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
@@ -240,7 +246,7 @@ const UserEnquiries = () => {
             transition: background-color 0.3s ease;
           }
           .btn-filter:hover {
-            background-color: rgb(254, 171, 175);;
+            background-color: rgb(254, 171, 175);
           }
           .btn-clear {
             background-color: #2D2828;
@@ -352,10 +358,123 @@ const UserEnquiries = () => {
             transition: background-color 0.3s ease;
           }
           .status-btn:hover {
-            background-color:rgb(254, 171, 175);;
+            background-color: rgb(254, 171, 175);
           }
           .status-btn.active {
             background-color: rgba(246, 16, 185, 1.00);
+          }
+          .card-container {
+            display: none;
+            flex-direction: column;
+            gap: 1.5rem;
+            padding: 0;
+          }
+          .card {
+            background-color: #FFEBF1;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+          }
+          .card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+            background-color: rgba(251, 100, 107, 0.15);
+          }
+          .card-header {
+            padding: 1.2rem;
+            cursor: pointer;
+            border-bottom: 1px solid rgba(251, 100, 107, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+          }
+          .card-header-content {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+            text-align: left;
+          }
+          .card-header-title {
+            font-weight: 600;
+            color: #FB646B;
+            font-size: 1rem;
+          }
+          .card-header-email {
+            font-size: 0.85rem;
+            color: #2D2828;
+            opacity: 0.7;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .card-header-enquiry {
+            font-size: 0.9rem;
+            color: #2D2828;
+            word-break: break-word;
+          }
+          .dropdown-icon {
+            color: #FB646B;
+            font-size: 1.2rem;
+          }
+          .card-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0.6rem 1.2rem;
+            border-bottom: 1px solid rgba(251, 100, 107, 0.3);
+            font-size: 0.95rem;
+          }
+          .card-item:last-child {
+            border-bottom: none;
+          }
+          .card-label {
+            font-weight: 600;
+            color: #FB646B;
+            flex: 1;
+            text-align: left;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+          }
+          .card-value {
+            flex: 1.5;
+            text-align: right;
+            word-break: break-word;
+          }
+          .card-value .badge {
+            font-size: 0.85rem;
+            padding: 0.5rem 1rem;
+          }
+          .card-value .shop-details {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 0.3rem;
+          }
+          .card-value .shop-details small {
+            font-size: 0.8rem;
+            color: #2D2828;
+            opacity: 0.7;
+          }
+          /* Mobile view: Hide table, show cards */
+          @media screen and (min-width: 320px) and (max-width: 768px) {
+            .table-responsive {
+              display: none !important;
+            }
+            .card-container {
+              display: flex !important;
+            }
+            .pagination {
+              flex-wrap: wrap !important;
+              gap: 0.6rem !important;
+              justify-content: center !important;
+            }
+            .pagination-btn {
+              padding: 0.4rem 1.2rem !important;
+              font-size: 0.9rem !important;
+            }
+            .pagination-info {
+              font-size: 0.9rem !important;
+            }
           }
         `}
       </style>
@@ -502,47 +621,105 @@ const UserEnquiries = () => {
                 )}
               </div>
             ) : (
-              <div className="table-responsive">
-                <table className="table table-hover">
-                  <thead>
-                    <tr>
-                      <th scope="col">ID</th>
-                      <th scope="col">Enquiry</th>
-                      <th scope="col">Response</th>
-                      <th scope="col">Shop</th>
-                      <th scope="col">Date</th>
-                      <th scope="col">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {paginatedEnquiries.map((enquiry) => (
-                      <tr key={enquiry.id}>
-                        <td className="align-middle">{enquiry.id}</td>
-                        <td className="align-middle">
-                          {enquiry.serviceRequested}
-                        </td>
-                        <td className="align-middle">{enquiry.spMessage}</td>
-                        <td className="align-middle">
-                          <div className="d-flex flex-column">
-                            <span className="fw-semibold">
-                              {enquiry.shopName}
-                            </span>
-                            <small style={{ color: "#2D2828", opacity: 0.7 }}>
-                              {enquiry.shopEmail}
-                            </small>
-                          </div>
-                        </td>
-                        <td className="align-middle">
-                          {formatDate(enquiry.dateSubmitted)}
-                        </td>
-                        <td className="align-middle">
-                          {getStatusBadge(enquiry.status)}
-                        </td>
+              <>
+                {/* Desktop Table */}
+                <div className="table-responsive">
+                  <table className="table table-hover">
+                    <thead>
+                      <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Enquiry</th>
+                        <th scope="col">Response</th>
+                        <th scope="col">Shop</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Status</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    </thead>
+                    <tbody>
+                      {paginatedEnquiries.map((enquiry) => (
+                        <tr key={enquiry.id}>
+                          <td className="align-middle">{enquiry.id}</td>
+                          <td className="align-middle">{enquiry.serviceRequested}</td>
+                          <td className="align-middle">{enquiry.spMessage}</td>
+                          <td className="align-middle">
+                            <div className="d-flex flex-column">
+                              <span className="fw-semibold">{enquiry.shopName}</span>
+                              <small style={{ color: "#2D2828", opacity: 0.7 }}>
+                                {enquiry.shopEmail}
+                              </small>
+                            </div>
+                          </td>
+                          <td className="align-middle">{formatDate(enquiry.dateSubmitted)}</td>
+                          <td className="align-middle">{getStatusBadge(enquiry.status)}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+                {/* Mobile Cards */}
+                <div className="card-container">
+                  {paginatedEnquiries.map((enquiry) => (
+                    <motion.div
+                      className="card"
+                      key={enquiry.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <div
+                        className="card-header"
+                        onClick={() => toggleCard(enquiry.id)}
+                      >
+                        <div className="card-header-content">
+                          <span className="card-header-title">{enquiry.shopName}</span>
+                          <span className="card-header-email">{enquiry.shopEmail}</span>
+                          <span className="card-header-enquiry">{enquiry.serviceRequested}</span>
+                        </div>
+                        {expandedCard !== enquiry.id && (
+                          <ExpandMoreIcon className="dropdown-icon" />
+                        )}
+                      </div>
+                      {expandedCard === enquiry.id && (
+                        <motion.div
+                          className="card-body"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          <div className="card-item">
+                            <span className="card-label">ID</span>
+                            <span className="card-value">{enquiry.id}</span>
+                          </div>
+                          <div className="card-item">
+                            <span className="card-label">Enquiry</span>
+                            <span className="card-value">{enquiry.serviceRequested}</span>
+                          </div>
+                          <div className="card-item">
+                            <span className="card-label">Response</span>
+                            <span className="card-value">{enquiry.spMessage}</span>
+                          </div>
+                          <div className="card-item">
+                            <span className="card-label">Shop</span>
+                            <div className="card-value shop-details">
+                              <span className="fw-semibold">{enquiry.shopName}</span>
+                              <small>{enquiry.shopEmail}</small>
+                            </div>
+                          </div>
+                          <div className="card-item">
+                            <span className="card-label">Date</span>
+                            <span className="card-value">{formatDate(enquiry.dateSubmitted)}</span>
+                          </div>
+                          <div className="card-item">
+                            <span className="card-label">Status</span>
+                            <span className="card-value">{getStatusBadge(enquiry.status)}</span>
+                          </div>
+                        </motion.div>
+                      )}
+                    </motion.div>
+                  ))}
+                </div>
+              </>
             )}
           </div>
         </div>
@@ -553,9 +730,10 @@ const UserEnquiries = () => {
             <div className="col-12">
               <div className="pagination d-flex justify-content-center align-items-center">
                 <button
-                  onClick={handlePreviousPage}
+                  className="btn btn"
+                  onClick={() => handlePreviousPage()}
                   disabled={currentPage === 1}
-                  className="pagination-btn"
+                  // className="pagination-btn"
                 >
                   Previous
                 </button>
@@ -563,10 +741,9 @@ const UserEnquiries = () => {
                   Page {currentPage} of {totalPages}
                 </span>
                 <button
-                  onClick={handleNextPage}
+                  onClick={() => handleNextPage()}
                   disabled={currentPage === totalPages}
-                  className="pagination-btn"
-                >
+                  className="pagination-btn">
                   Next
                 </button>
               </div>

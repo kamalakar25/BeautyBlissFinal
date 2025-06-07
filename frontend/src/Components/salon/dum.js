@@ -49,10 +49,6 @@ const Home = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const itemsPerPage = 5;
 
-
-
-
-  
   const handleClick = () => {
     navigate("/salon");
     window.scrollTo(0, 0);
@@ -307,18 +303,19 @@ const Home = () => {
           gap: "20px",
           justifyContent: "space-between",
           alignItems: "center",
-          overflow: "hidden",
+          // maxHeight: "calc(100vh - 40px)", // Prevents it from growing too large
+          overflow: "hidden", // Contains content
         }}
       >
         {/* Left Section: Text and Button */}
         <div
           style={{
             flex: "1 1 50%",
-            minWidth: "250px",
+            minWidth: "250px", // Reduced minWidth to allow shrinking at 320px
             paddingRight: "10px",
-            textAlign: "center",
+            textAlign: "center", // Center text on small screens
           }}
-          className="text-left md:text-left"
+          className="text-left md:text-left" // Left align on medium and larger screens
         >
           <h1
             style={{
@@ -358,7 +355,7 @@ const Home = () => {
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              margin: "0 auto",
+              margin: "0 auto", // Center button on small screens
             }}
             onClick={() => {
               navigate("/salon");
@@ -375,9 +372,9 @@ const Home = () => {
               gap: "10px",
               marginTop: "20px",
               flexWrap: "wrap",
-              justifyContent: "center",
+              justifyContent: "center", // Center items on small screens
             }}
-            className="md:justify-start"
+            className="md:justify-start" // Left align items on medium and larger screens
           >
             <div
               style={{
@@ -461,99 +458,541 @@ const Home = () => {
         </div>
 
         {/* Right Section: Image Collage (2 images on top, 3 images on bottom) */}
-       <div
-  style={{
-    flex: "1 1 40%",
-    minWidth: "250px",
-    display: "grid",
-    gridTemplateRows: "auto auto",
-    gap: "5px",
-    marginTop: "30px",
-    height: "450px",
-  }}
->
-  {/* Top Row: 2 Images */}
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr",
-      gap: "5px",
-    }}
-  >
-    <div
-      style={{
-        borderRadius: "8px",
-        overflow: "hidden",
-        height: "190px",
-      }}
-    >
-      <img
-        src={collageImage1}
-        alt="Collage Image 1"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-    </div>
-    <div
-      style={{
-        borderRadius: "8px",
-        overflow: "hidden",
-        height: "190px",
-      }}
-    >
-      <img
-        src={collageImage2}
-        alt="Collage Image 2"
-        style={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-        }}
-      />
-    </div>
-  </div>
-
-  {/* Bottom Row: 3 Images */}
-  <div
-    style={{
-      display: "grid",
-      gridTemplateColumns: "1fr 1fr 1fr",
-      gap: "5px",
-    }}
-  >
-    {[collageImage3, collageImage4, collageImage5].map((img, index) => (
-      <div
-        key={`collage-image-${index + 3}`}
-        style={{
-          borderRadius: "8px",
-          overflow: "hidden",
-          height: "100%",
-        }}
-      >
-        <img
-          src={img}
-          alt={`Collage Image ${index + 3}`}
+        <div
           style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
+            flex: "1 1 40%",
+            minWidth: "250px", // Reduced minWidth to allow shrinking at 320px
+            display: "grid",
+            gridTemplateRows: "1fr 1fr",
+            gap: "5px",
+            height: "450px",
           }}
-        />
-      </div>
-    ))}
-  </div>
-</div>
+        >
+          {/* Top Row: 2 Images */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "5px",
+            }}
+          >
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={collageImage1}
+                alt="Collage Image 1"
+                style={{
+                  width: "100%",
+                  height: "190px",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={collageImage2}
+                alt="Collage Image 2"
+                style={{
+                  width: "100%",
+                  height: "190px",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Bottom Row: 3 Images */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr 1fr",
+              gap: "5px",
+            }}
+          >
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={collageImage3}
+                alt="Collage Image 3"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={collageImage4}
+                alt="Collage Image 4"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+            <div
+              style={{
+                borderRadius: "8px",
+                overflow: "hidden",
+              }}
+            >
+              <img
+                src={collageImage5}
+                alt="Collage Image 5"
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                }}
+              />
+            </div>
+          </div>
+        </div>
       </main>
       <style>
-  
+        {`
+    /* Main container */
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Left section */
+    .left-section {
+      flex: 1 1 50%;
+      min-width: 250px;
+      padding-right: 10px;
+    }
+
+    .hero-title {
+      font-size: 48px;
+      font-weight: bold;
+      color: #000;
+      font-family: Arial, sans-serif;
+      line-height: 1.2;
+      margin-bottom: 15px;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: #000;
+      font-family: Arial, sans-serif;
+      margin-bottom: 20px;
+    }
+
+    .cta-button {
+      background-color: #fff;
+      border: 1px solid #000;
+      border-radius: 20px;
+      padding: 10px 30px;
+      font-size: 16px;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      color: #000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icons-section {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    .icon-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-image {
+      width: 30px;
+      height: 30px;
+    }
+
+    .icon-text {
+      font-size: 14px;
+      color: #000;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Right section: Image collage */
+    .right-section {
+      flex: 1 1 40%;
+      min-width: 250px;
+      display: grid;
+      grid-template-rows: 1fr 1fr;
+      gap: 5px;
+      height: 450px;
+    }
+
+    .top-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 5px;
+    }
+
+    .bottom-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 5px;
+    }
+
+    .image-container {
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .collage-image {
+      width: 100%;
+      height: 190px;
+      object-fit: cover;
+    }
+
+    .collage-image-bottom {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 1400px) {
+      .main-container {
+        padding: 15px;
+        gap: 15px;
+      }
+
+      .hero-title {
+        font-size: 42px;
+        line-height: 1.2;
+      }
+
+      .right-section {
+        height: 400px;
+      }
+
+      .collage-image {
+        height: 170px;
+      }
+    }
+
+    @media (max-width: 1200px) {
+      .main-container {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .hero-title {
+        font-size: 38px;
+      }
+
+      .hero-subtitle {
+        font-size: 16px;
+      }
+
+      .right-section {
+        height: 360px;
+      }
+
+      .collage-image {
+        height: 150px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .main-container {
+        padding: 10px;
+        gap: 10px;
+      }
+
+      .hero-title {
+        font-size: 34px;
+      }
+
+      .hero-subtitle {
+        font-size: 15px;
+      }
+
+      .cta-button {
+        padding: 8px 25px;
+        font-size: 15px;
+      }
+
+      .right-section {
+        height: 340px;
+      }
+
+      .collage-image {
+        height: 140px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .main-container {
+        flex-direction: column;
+        padding: 10px;
+        gap: 15px;
+        max-height: none; /* Remove max-height for better content fit */
+        overflow: visible; /* Allow content to expand */
+      }
+
+      .left-section {
+        flex: 1;
+        padding-right: 0;
+        text-align: center;
+        width: 100%;
+      }
+
+      .right-section {
+        flex: 1;
+        height: auto; /* Dynamic height for images */
+        width: 100%;
+      }
+
+      .hero-title {
+        font-size: 32px;
+      }
+
+      .icons-section {
+        justify-content: center;
+        gap: 12px;
+      }
+
+      .collage-image {
+        height: 160px;
+      }
+
+      .collage-image-bottom {
+        height: 160px; /* Consistent height for bottom row */
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        padding: 8px;
+        gap: 12px;
+      }
+
+      .left-section {
+        padding: 0.5rem;
+      }
+
+      .hero-title {
+        font-size: 28px;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 14px;
+        padding: 0 0.5rem;
+      }
+
+      .cta-button {
+        padding: 8px 20px;
+        font-size: 14px;
+        margin: 0 auto;
+      }
+
+      .icon-text {
+        font-size: 13px;
+      }
+
+      .right-section {
+        height: auto;
+        display: block; /* Ensure visibility */
+        overflow: visible;
+      }
+
+      .collage-image {
+        width: 100%;
+        max-width: 450px;
+        height: auto;
+        max-height: 200px;
+        display: block;
+      }
+
+      .collage-image-bottom {
+        width: 100%;
+        max-width: 450px;
+        height: auto;
+        max-height: 200px;
+        display: block;
+      }
+
+      .top-row, .bottom-row {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .main-container {
+        padding: 6px;
+        gap: 10px;
+      }
+
+      .left-section {
+        padding: 0.4rem;
+      }
+
+      .hero-title {
+        font-size: 24px;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 13px;
+        padding: 0 0.4rem;
+      }
+
+      .cta-button {
+        padding: 6px 18px;
+        font-size: 13px;
+      }
+
+      .icon-image {
+        width: 25px;
+        height: 25px;
+      }
+
+      .icon-text {
+        font-size: 12px;
+      }
+
+      .collage-image {
+        max-width: 340px;
+        max-height: 180px;
+      }
+
+      .collage-image-bottom {
+        max-width: 340px;
+        max-height: 180px;
+      }
+    }
+
+    @media (max-width: 400px) {
+      .main-container {
+        padding: 5px;
+        gap: 8px;
+      }
+
+      .left-section {
+        padding: 0.3rem;
+      }
+
+      .hero-title {
+        font-size: 20px;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 12px;
+        padding: 0 0.3rem;
+      }
+
+      .cta-button {
+        padding: 5px 15px;
+        font-size: 12px;
+      }
+
+      .icon-image {
+        width: 22px;
+        height: 22px;
+      }
+
+      .icon-text {
+        font-size: 11px;
+      }
+
+      .collage-image {
+        max-width: 280px;
+        max-height: 160px;
+      }
+
+      .collage-image-bottom {
+        max-width: 280px;
+        max-height: 160px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .main-container {
+        padding: 4px;
+        gap: 6px;
+      }
+
+      .left-section {
+        padding: 0.2rem;
+      }
+
+      .hero-title {
+        font-size: 18px;
+        line-height: 1.2;
+      }
+
+      .hero-subtitle {
+        font-size: 11px;
+        padding: 0 0.2rem;
+      }
+
+      .cta-button {
+        padding: 4px 12px;
+        font-size: 11px;
+      }
+
+      .icon-image {
+        width: 20px;
+        height: 20px;
+      }
+
+      .icon-text {
+        font-size: 10px;
+      }
+
+      .collage-image {
+        max-width: 240px;
+        max-height: 140px;
+      }
+
+      .collage-image-bottom {
+        max-width: 240px;
+        max-height: 140px;
+      }
+    }
+  `}
       </style>
       <div
         className="container-fluid"
         style={{
           backgroundColor: "#fad9e3",
+          // minHeight: '100vh',
           padding: "2rem 0",
           overflow: "hidden",
         }}
@@ -561,6 +1000,551 @@ const Home = () => {
         <style>
           {`
           
+          /* Button styles */
+.btn-conteiner {
+  display: flex;
+  justify-content: center;
+  --color-text: rgb(244,245,247);
+  --color-background: #fb646b;
+  --color-outline: #fb646b;
+  --color-shadow: #fb646b;
+} 
+
+.btn-content {
+  display: flex;
+  align-items: center;
+  padding: 6px 15px !important;
+  text-decoration: none;
+  font-family: 'Playfair Display SC', serif !important;
+  font-weight: 100 !important;
+  font-size: 14px !imporatnt;
+  color: var(--color-text);
+  background: #fb646b !important;
+  transition: all 0.5s ease;
+  border-radius: 50px;
+  box-shadow: 0 5px 15px var(--color-shadow);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+/* Main layout */
+.hero-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 0;
+  height: 100%;
+  padding: 1rem;
+}
+
+.left-section {
+  flex: 0 0 55%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+.right-section {
+  flex: 0 0 45%;
+  position: relative;
+  height: 500px;
+}
+
+.text-content {
+  padding-right: 1.5rem;
+  padding-top: 1rem;
+  font-family: 'Playfair Display SC', serif !important;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #201548;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.hero-subtitle {
+  font-size: 1.1rem;
+  color: #201548;
+  margin-bottom: 1rem;
+  max-width: 380px;
+  line-height: 1.4;
+}
+
+.primary-image {
+  width: 100%;
+  height: 80%;
+  object-fit: cover;
+  border-radius: 5px 5px 5px 180px;
+  position: absolute;
+  left: -55px;
+  background-size: cover;
+  border: 2px transparent solid;
+}
+
+.secondary-image {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  border-radius: 5px 180px 5px 5px;
+  margin-top: 3rem;
+  border: 2px transparent solid;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1400px) {
+  .hero-container {
+    max-width: 1200px;
+    padding: 1rem;
+    gap: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.4rem;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    max-width: 360px;
+  }
+
+  .primary-image {
+    width: 98%;
+    height: 80%;
+    left: -20px;
+    border-radius: 5px 5px 5px 100px;
+  }
+
+  .secondary-image {
+    width: 98%;
+    height: 280px;
+    margin-top: 2rem;
+    border-radius: 5px 100px 5px 5px;
+  }
+}
+
+@media (max-width: 1200px) {
+  .hero-container {
+    max-width: 1000px;
+    padding: 0.8rem;
+    gap: 0.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 1.05rem;
+    max-width: 340px;
+  }
+
+  .primary-image {
+    width: 98%;
+    height: 75%;
+    left: -10px;
+    border-radius: 5px 5px 5px 80px;
+  }
+  
+  .secondary-image {
+    width: 98%;
+    height: 250px;
+    margin-top: 1.5rem;
+    border-radius: 5px 80px 5px 5px;
+  }
+
+  .button-group {
+    gap: 0.7rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero-container {
+    max-width: 900px;
+    padding: 0.8rem;
+    gap: 0.8rem;
+  }
+
+  .left-section {
+    padding: 0.8rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+    line-height: 1.2;
+  }
+
+  .hero-subtitle {
+    font-size: 1rem;
+    max-width: 320px;
+  }
+
+  .primary-image {
+    width: 100%;
+    height: auto;
+    max-height: 400px;
+    position: relative;
+    left: 0;
+    margin: 0 auto;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+  }
+  
+  .secondary-image {
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    margin: 1.2rem auto;
+    border-radius: 10px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .button-group {
+    gap: 0.6rem;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-container {
+    flex-direction: column;
+    padding: 0.6rem;
+    gap: 1rem;
+    max-width: 100%;
+  }
+  
+  .left-section {
+    flex: 1;
+    padding: 0.6rem;
+    width: 100%;
+    align-items: center;
+  }
+  
+  .right-section {
+    flex: 1;
+    height: auto;
+    width: 100%;
+    padding: 0.6rem;
+  }
+  
+  .text-content {
+    padding: 0;
+    margin-bottom: 1rem;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .hero-title {
+    font-size: 1.9rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.95rem;
+    max-width: 100%;
+    padding: 0 0.5rem;
+  }
+  
+  .primary-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    max-height: 350px;
+    margin: 0 auto;
+    border-radius: 10px;
+    display: block;
+    object-fit: cover;
+  }
+  
+  .secondary-image {
+    width: 100%;
+    max-width: 600px;
+    height: auto;
+    max-height: 300px;
+    margin: 1rem auto;
+    border-radius: 10px;
+    display: block;
+    object-fit: cover;
+  }
+  
+  .button-group {
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0 0.5rem;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-container {
+    padding: 0.5rem;
+    gap: 0.8rem;
+  }
+
+  .left-section {
+    padding: 0.5rem;
+    align-items: center;
+  }
+
+  .right-section {
+    padding: 0.5rem;
+    height: auto;
+    display: block; /* Ensure container is visible */
+    position: relative;
+    overflow: visible; /* Prevent clipping of images */
+  }
+
+  .hero-title {
+    font-size: 1.7rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.9rem;
+    padding: 0 0.5rem;
+  }
+  
+  .btn-content {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+  
+  .primary-image {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    max-height: 280px;
+    margin: 0 auto;
+    border-radius: 8px;
+    display: block !important; /* Override any hiding classes */
+    object-fit: cover;
+    position: relative;
+    visibility: visible; /* Ensure visibility */
+  }
+  
+  .secondary-image {
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    max-height: 250px;
+    margin: 0.8rem auto;
+    border-radius: 8px;
+    display: block !important; /* Override any hiding classes */
+    object-fit: cover;
+    position: relative;
+    visibility: visible; /* Ensure visibility */
+  }
+  
+  .button-group {
+    gap: 0.5rem;
+    justify-content: center;
+    padding: 0 0.5rem;
+  }
+
+  .text-content {
+    text-align: center;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero-container {
+    padding: 0.4rem;
+  }
+
+  .left-section {
+    padding: 0.4rem;
+  }
+
+  .right-section {
+    padding: 0.4rem;
+  }
+
+  .hero-title {
+    font-size: 1.4rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.85rem;
+    padding: 0 0.4rem;
+  }
+  
+  .btn-content {
+    padding: 5px 12px;
+    font-size: 11px;
+  }
+  
+  .primary-image {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    max-height: 220px;
+    margin: 0 auto;
+    border-radius: 8px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .secondary-image {
+    width: 100%;
+    max-width: 340px;
+    height: auto;
+    max-height: 200px;
+    margin: 0.6rem auto;
+    border-radius: 8px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .button-group {
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 0 0.4rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .hero-container {
+    padding: 0.3rem;
+  }
+
+  .left-section {
+    padding: 0.3rem;
+  }
+
+  .right-section {
+    padding: 0.3rem;
+  }
+
+  .hero-title {
+    font-size: 1.2rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.8rem;
+    padding: 0 0.3rem;
+  }
+  
+  .btn-content {
+    padding: 4px 10px;
+    font-size: 10px;
+  }
+  
+  .primary-image {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    max-height: 180px;
+    margin: 0 auto;
+    border-radius: 8px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .secondary-image {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    max-height: 160px;
+    margin: 0.5rem auto;
+    border-radius: 8px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .button-group {
+    gap: 0.3rem;
+    padding: 0 0.3rem;
+  }
+}
+
+@media (max-width: 320px) {
+  .hero-container {
+    padding: 0.2rem;
+  }
+
+  .left-section {
+    padding: 0.2rem;
+  }
+
+  .right-section {
+    padding: 0.2rem;
+  }
+
+  .hero-title {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+  
+  .hero-subtitle {
+    font-size: 0.75rem;
+    padding: 0 0.2rem;
+  }
+  
+  .btn-content {
+    padding: 3px 8px;
+    font-size: 9px;
+  }
+  
+  .primary-image {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    max-height: 150px;
+    margin: 0 auto;
+    border-radius: 6px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .secondary-image {
+    width: 100%;
+    max-width: 240px;
+    height: auto;
+    max-height: 140px;
+    margin: 0.4rem auto;
+    border-radius: 6px;
+    display: block !important;
+    object-fit: cover;
+    position: relative;
+    visibility: visible;
+  }
+  
+  .button-group {
+    gap: 0.2rem;
+    padding: 0 0.2rem;
+  }
+}
+
       /* Button styles */
       .btn-conteiner {
         display: flex;
@@ -574,11 +1558,11 @@ const Home = () => {
       .btn-content {
         display: flex;
         align-items: center;
-        padding: 6px 15px !important ;
+        padding: 6px 15px !important ; /* Reduced padding from 10px 25px */
         text-decoration: none;
         font-family: 'Playfair Display SC', serif !important;
         font-weight: 100 !important;
-        font-size: 14px !imporatnt;
+        font-size: 14px !imporatnt; /* Reduced font size from 16px */
         color: var(--color-text);
         background: #fb646b !important;
         transition: all 0.5s ease;
@@ -778,8 +1762,8 @@ const Home = () => {
         }
         
         .btn-content {
-          padding: 6px 16px;
-          font-size: 12px;
+          padding: 6px 16px; /* Further reduced padding */
+          font-size: 12px; /* Further reduced font size */
         }
         
         .primary-image {
@@ -810,8 +1794,8 @@ const Home = () => {
         }
         
         .btn-content {
-          padding: 5px 14px;
-          font-size: 11px;
+          padding: 5px 14px; /* Further reduced padding */
+          font-size: 11px; /* Further reduced font size */
         }
         
         .primary-image {
@@ -837,8 +1821,8 @@ const Home = () => {
         }
         
         .btn-content {
-          padding: 4px 12px;
-          font-size: 10px;
+          padding: 4px 12px; /* Further reduced padding */
+          font-size: 10px; /* Further reduced font size */
         }
         
         .primary-image {
@@ -919,7 +1903,9 @@ const Home = () => {
         <div
           className="container-fluid"
           style={{
-            backgroundColor: "#fad9e3",
+            backgroundColor: "#fad9e3", // Light pink background matching the image
+
+            // minHeight: '100vh',
           }}
         >
           <div className="row align-items-center">
@@ -962,25 +1948,25 @@ const Home = () => {
                     title: "Precision Haircuts",
                     description:
                       "Tailored cuts to suit your style and face shape, crafted by master stylists.",
-                    image: card1,
+                    image: card1, // Replace with actual image path
                   },
                   {
                     title: "Balayage & Highlights",
                     description:
                       "Vibrant, hand-painted color for a natural, glowing finish.",
-                    image: card2,
+                    image: card2, // Replace with actual image path
                   },
                   {
                     title: "Facial",
                     description:
                       "Rejuvenate your skin with customized facials for a radiant, glowing complexion.",
-                    image: card3,
+                    image: card3, // Replace with actual image path
                   },
                   {
                     title: "Precision Haircuts",
                     description:
                       "Tailored cuts to suit your style and face shape, crafted by our master stylists.",
-                    image: card4,
+                    image: card4, // Replace with actual image path
                   },
                 ].map((service, i) => (
                   <div key={i} className="col-md-3 col-sm-12 mb-4">
@@ -990,20 +1976,20 @@ const Home = () => {
                       viewport={{ once: false, amount: 0.3 }}
                       transition={{ duration: 0.5, delay: i * 0.1 }}
                       style={{
-                        backgroundColor: "#f0afc1",
+                        backgroundColor: "#f0afc1", // Light pink card background
                         borderRadius: "15px",
                         textAlign: "center",
                         boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-                        overflow: "hidden",
-                        height: "350px",
-                        display: "flex",
-                        flexDirection: "column",
+                        overflow: "hidden", // Ensure image doesn't overflow the card
+                        height: "350px", // Fixed height for the entire card
+                        display: "flex", // Use flexbox to control internal layout
+                        flexDirection: "column", // Stack image and content vertically
                       }}
                     >
                       <div
                         style={{
                           width: "100%",
-                          height: "220px",
+                          height: "220px", // Fixed height for image section
                           position: "relative",
                         }}
                       >
@@ -1012,9 +1998,9 @@ const Home = () => {
                           alt={service.title}
                           style={{
                             width: "100%",
-                            height: "100%",
-                            objectFit: "cover",
-                            borderRadius: "10px 10px 0 0",
+                            height: "100%", // Ensure the image takes the full height of the container
+                            objectFit: "cover", // Cover the entire area, cropping if needed
+                            borderRadius: "10px 10px 0 0", // Round only the top corners
                             position: "absolute",
                             top: 0,
                             left: 0,
@@ -1024,11 +2010,11 @@ const Home = () => {
                       <div
                         style={{
                           padding: "15px",
-                          flex: "1 1 auto",
-                          display: "flex",
-                          flexDirection: "column",
-                          justifyContent: "space-between",
-                          overflow: "hidden",
+                          flex: "1 1 auto", // Allow content to grow and fill remaining space
+                          display: "flex", // Use flexbox to manage title and description
+                          flexDirection: "column", // Stack title and description
+                          justifyContent: "space-between", // Distribute space evenly
+                          overflow: "hidden", // Prevent content from overflowing
                         }}
                       >
                         <h4
@@ -1047,12 +2033,12 @@ const Home = () => {
                             color: "#0e0f0f",
                             fontSize: "0.9rem",
                             textTransform: "uppercase",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis",
+                            overflow: "hidden", // Hide excess text
+                            textOverflow: "ellipsis", // Add ellipsis for truncated text
                             display: "-webkit-box",
-                            WebkitLineClamp: 3,
-                            WebkitBoxOrient: "vertical",
-                            margin: 0,
+                            WebkitLineClamp: 3, // Limit to 3 lines of text
+                            WebkitBoxOrient: "vertical", // Required for line clamping
+                            margin: 0, // Remove default margin for consistency
                           }}
                         >
                           {service.description}
@@ -1103,7 +2089,7 @@ const Home = () => {
                 style={{
                   fontSize: "2.8rem",
                   fontWeight: "800",
-                  color: "#000000",
+                  color: "#000000", // Black color as in the image
                   letterSpacing: "-0.01em",
                   marginBottom: "8px",
                 }}
@@ -1115,7 +2101,7 @@ const Home = () => {
                 className="lead mb-5"
                 style={{
                   fontSize: "1.1rem",
-                  color: "#000000",
+                  color: "#000000", // Black color as in the image
                   maxWidth: "550px",
                   margin: "0 auto",
                   fontWeight: "400",
@@ -1171,7 +2157,7 @@ const Home = () => {
                   viewport={{ once: false, amount: 0.3 }}
                   onClick={() => handleBeautyClick(card.name)}
                   transition={{ delay: card.delay, duration: 0.8 }}
-                  style={{ maxWidth: "250px" }}
+                  style={{ maxWidth: "250px" }} // Adjusted card width to match image
                 >
                   <div
                     className="card shadow-sm rounded-3 border-0"
@@ -1197,13 +2183,13 @@ const Home = () => {
                     <div className="card-body text-center">
                       <h5
                         className="card-title fw-bold"
-                        style={{ fontSize: "1.1rem", color: "#1e90ff" }}
+                        style={{ fontSize: "1.1rem", color: "#1e90ff" }} // Blue color for titles as in the image
                       >
                         {card.title}
                       </h5>
                       <p
                         className="card-text"
-                        style={{ fontSize: "0.9rem", color: "#000000" }}
+                        style={{ fontSize: "0.9rem", color: "#000000" }} // Black text for descriptions
                       >
                         {card.text}
                       </p>
@@ -1516,13 +2502,95 @@ const Home = () => {
         </div>
       )}
       {/* Inline styles for responsiveness */}
-      
+      <style>
+        {`
+          @media (max-width: 768px) {
+            main {
+              flex-direction: column;
+              padding: 15px;
+              margin: 5px;
+              gap: 15px;
+            }
+            main > div:first-child {
+              padding-right: 0;
+            }
+            h1 {
+              font-size: 36px;
+              margin-bottom: 10px;
+            }
+            p {
+              font-size: 16px;
+              margin-bottom: 15px;
+            }
+            button {
+              padding: 8px 20px;
+              font-size: 14px;
+            }
+            div[style*="gridTemplateRows"] {
+              height: 300px;
+            }
+          }
+          @media (max-width: 480px) {
+            h1 {
+              font-size: 28px;
+            }
+            p {
+              font-size: 14px;
+            }
+            div[style*="gridTemplateRows"] {
+              height: 250px;
+            }
+            div[style*="gridTemplateRows"] > div:nth-child(1) {
+              grid-template-columns: 1fr;
+              height: 50%;
+            }
+            div[style*="gridTemplateRows"] > div:nth-child(2) {
+              grid-template-columns: 1fr;
+              height: 50%;
+            }
+          }
+          @media (max-width: 320px) {
+            main {
+              padding: 10px; /* Reduced padding to fit content */
+              margin: 5px; /* Reduced margin */
+              gap: 10px; /* Reduced gap between sections */
+            }
+            main > div:first-child, main > div:last-child {
+              min-width: 0; /* Remove minWidth to allow full shrinking */
+              width: 100%; /* Ensure it takes full width of container */
+            }
+            h1 {
+              font-size: 24px; /* Further reduced font size */
+              margin-bottom: 8px;
+            }
+            p {
+              font-size: 12px; /* Further reduced font size */
+              margin-bottom: 10px;
+            }
+            button {
+              padding: 6px 15px; /* Reduced button size */
+              font-size: 12px;
+            }
+            div[style*="gridTemplateRows"] {
+              height: 200px; /* Further reduced height to prevent overflow */
+            }
+            div[style*="flex"] > div {
+              gap: 5px; /* Reduced gap in icons section */
+            }
+            div[style*="flex"] > div > div {
+              flex-direction: column; /* Stack icon and text vertically */
+              align-items: flex-start;
+              gap: 5px;
+            }
+            div[style*="flex"] > div > div > span {
+              font-size: 12px; /* Reduced font size for icon text */
+            }
+          }
+        `}
+      </style>
       <LeadCaptureForm /> <Faq /> <Footer />
     </div>
   );
 };
-
-
-
 
 export default Home;

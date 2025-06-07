@@ -1,4 +1,6 @@
 import FilterListIcon from '@mui/icons-material/FilterList';
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 import {
   Box,
   Checkbox,
@@ -9,6 +11,7 @@ import {
   MenuItem,
   Select,
   Typography,
+
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import {
@@ -87,6 +90,8 @@ const BookingPage = () => {
     monthly: false,
     yearly: false,
   });
+  // New state for tracking expanded cards
+  const [expandedCards, setExpandedCards] = useState(new Set());
   const itemsPerPage = 5;
   const isMobile = screenWidth <= 768;
 
@@ -107,7 +112,6 @@ const BookingPage = () => {
           `${BASE_URL}/api/users/sp/bookings/${email}`
         );
         const data = await response.json();
-        // console.log("Fetched bookings:", data);
         setBookings(data);
 
         // Set default min and max dates for graph
@@ -222,7 +226,6 @@ const BookingPage = () => {
 
   // Handle refund action
   const openRefundModal = (booking) => {
-    // console.log("Selected booking for refund:", booking);
     setSelectedBooking(booking);
     setIsRefundModalOpen(true);
   };
@@ -263,7 +266,6 @@ const BookingPage = () => {
         alert('Failed to process refund action');
       }
     } catch (error) {
-      // console.error("Error processing refund action:", error);
       alert('Error processing refund action');
     }
   };
@@ -278,7 +280,6 @@ const BookingPage = () => {
       }
       return 'N/A';
     } catch (e) {
-      // console.error("Invalid date format:", date);
       return 'N/A';
     }
   };
@@ -296,7 +297,6 @@ const BookingPage = () => {
 
   // Clear filters for graph
   const clearGraphFilters = () => {
-    // Reset to default min and max dates based on bookings
     if (bookings.length > 0) {
       const validDates = bookings
         .filter(
@@ -337,7 +337,6 @@ const BookingPage = () => {
       setGraphMaxDate(value);
     }
 
-    // Validate dates
     const min = type === 'min' ? new Date(value) : new Date(graphMinDate);
     const max = type === 'max' ? new Date(value) : new Date(graphMaxDate);
     if (min && max && !isNaN(min.getTime()) && !isNaN(max.getTime())) {
@@ -364,7 +363,6 @@ const BookingPage = () => {
     let data = [];
 
     if (graphCategory === 'Service') {
-      // Aggregate total amount by service (subtract refunded amounts for approved refunds)
       const serviceMap = filteredBookings.reduce((acc, booking) => {
         const service = booking.service || 'Unknown';
         acc[service] =
@@ -379,7 +377,6 @@ const BookingPage = () => {
       labels = Object.keys(serviceMap);
       data = Object.values(serviceMap);
     } else if (graphCategory === 'Payment Date') {
-      // Filter bookings by graph date range
       const dateFilteredBookings = filteredBookings.filter((booking) => {
         if (!booking.date) return false;
         const bookingDate = new Date(booking.date);
@@ -392,7 +389,6 @@ const BookingPage = () => {
         );
       });
 
-      // Aggregate by selected time period
       const dateMap = dateFilteredBookings.reduce((acc, booking) => {
         if (!booking.date) return acc;
         const date = new Date(booking.date);
@@ -522,6 +518,27 @@ const BookingPage = () => {
         return <Bar data={data} options={chartOptions} />;
     }
   };
+
+  // Calculate pagination range (max 5 pages)
+  const getPaginationRange = () => {
+    const rangeSize = 5;
+    const halfRange = Math.floor(rangeSize / 2);
+    let start = Math.max(1, currentPage - halfRange);
+    let end = Math.min(totalPages, start + rangeSize - 1);
+
+    // Adjust start if end is at totalPages
+    if (end === totalPages) {
+      start = Math.max(1, end - rangeSize + 1);
+    }
+
+    const pages = Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    const showLeftEllipsis = start > 1;
+    const showRightEllipsis = end < totalPages;
+
+    return { pages, showLeftEllipsis, showRightEllipsis };
+  };
+
+  const { pages, showLeftEllipsis, showRightEllipsis } = getPaginationRange();
 
   return (
     <Box
@@ -885,89 +902,269 @@ const BookingPage = () => {
         </Box>
 
         {isLoading ? (
-          <div className="loading">Loading bookings...</div>
+          <div style={{ textAlign: 'center', color: '#fb646b', fontSize: '1.2rem', padding: '20px' }}>
+            Loading bookings...
+          </div>
         ) : (
           <>
             <div className="bookings-table">
               {isMobile ? (
-                <div className="mobile-bookings-list">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', padding: '0 10px' }}>
                   {currentItems.length > 0 ? (
-                    currentItems.map((booking, index) => (
-                      <div key={index} className="booking-card">
-                        <p className="booking-field">
-                          <strong>S.No:</strong> {indexOfFirstItem + index + 1}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Transaction ID:</strong>{" "}
-                          {booking.transactionId || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Customer:</strong>{" "}
-                          {booking.customerName || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Customer Email:</strong>{" "}
-                          {booking.customerEmail || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Selected Employee:</strong>{" "}
-                          {booking.favoriteEmployee || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Service:</strong> {booking.service || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Payment Date:</strong>{" "}
-                          {formatDate(booking.date)}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Payment Status:</strong>{" "}
-                          {booking.paymentStatus || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Amount:</strong> {booking.amount || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>Refund Amount:</strong>{" "}
-                          {booking.refundedAmount || "N/A"}
-                        </p>
-                        <p className="booking-field">
-                          <strong>UPI ID:</strong> {booking.upiId || "N/A"}
-                        </p>
-                        <div className="booking-actions">
-                          <p className="booking-field">
-                            <strong>REFUND:</strong>
-                          </p>
-                          {booking.paymentStatus === "CANCELLED" &&
-                          booking.refundedAmount > 0 &&
-                          booking.refundStatus === "PENDING" ? (
-                            <button
-                              onClick={() => openRefundModal(booking)}
-                              className="action-btn refund-btn"
+                    currentItems.map((booking, index) => {
+                      const isExpanded = expandedCards.has(indexOfFirstItem + index);
+                      const toggleExpand = () => {
+                        setExpandedCards((prev) => {
+                          const newSet = new Set(prev);
+                          if (newSet.has(indexOfFirstItem + index)) {
+                            newSet.delete(indexOfFirstItem + index);
+                          } else {
+                            newSet.add(indexOfFirstItem + index);
+                          }
+                          return newSet;
+                        });
+                      };
+
+                      return (
+                        <div
+                          key={index}
+                          onClick={toggleExpand}
+                          style={{
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            borderRadius: '8px',
+                            padding: '12px',
+                            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.1)',
+                            cursor: 'pointer',
+                            transition: 'all 0.3s ease',
+                            border: '1px solid #e2e8f0',
+                          }}
+                        >
+                          <div
+                            style={{
+                              display: 'flex',
+                              flexWrap: 'wrap',
+                              justifyContent: 'space-between',
+                              alignItems: 'center',
+                              gap: '8px',
+                              padding: '8px 0',
+                            }}
+                          >
+                            
+                            <p
+                              style={{
+                                flex: '1 1 45%',
+                                margin: '4px 0',
+                                fontSize: '0.9rem',
+                                color: '#0e0f0f',
+                                
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                              title={booking.customerEmail || 'N/A'}
                             >
-                              Process Refund
-                            </button>
-                          ) : (
-                            <span
-                              className={`refund-status ${
-                                booking.refundStatus === "APPROVED"
-                                  ? "approved"
-                                  : booking.refundStatus === "REJECTED"
-                                  ? "rejected"
-                                  : ""
-                              }`}
+                              <strong style={{ color: '#fb646b' }}>Email:</strong> {booking.customerEmail || 'N/A'}
+                            </p>
+                            <p
+                              style={{
+                                flex: '1 1 45%',
+                                margin: '4px 0',
+                                fontSize: '0.9rem',
+                                color: '#0e0f0f',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                              title={booking.customerName || 'N/A'}
                             >
-                              {booking.refundStatus || "N/A"}
-                            </span>
+                              <strong style={{ color: '#fb646b' }}>Customer:</strong> {booking.customerName || 'N/A'}
+                            </p>
+                            <p
+                              style={{
+                                flex: '1 1 45%',
+                                margin: '4px 0',
+                                fontSize: '0.9rem',
+                                color: '#0e0f0f',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                              title={booking.service || 'N/A'}
+                            >
+                              <strong style={{ color: '#fb646b' }}>Service:</strong> {booking.service || 'N/A'}
+                            </p>
+                            <p
+                              style={{
+                                flex: '1 1 45%',
+                                margin: '4px 0',
+                                fontSize: '0.9rem',
+                                color: '#0e0f0f',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                              }}
+                            >
+                              <strong style={{ color: '#fb646b' }}>Amount:</strong> {booking.amount || 'N/A'}
+                            </p>
+                          </div>
+                          {isExpanded && (
+                            <div
+                              style={{
+                                padding: '8px 0',
+                                borderTop: '1px solid #e2e8f0',
+                                marginTop: '8px',
+                                backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                              }}
+                            >
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                }}
+                              >
+                                <strong style={{ color: '#fb646b' }}>S.No:</strong> {indexOfFirstItem + index + 1}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={booking.transactionId || 'N/A'}
+                              >
+                                <strong style={{ color: '#fb646b' }}>Transaction ID:</strong> {booking.transactionId || 'N/A'}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={booking.favoriteEmployee || 'N/A'}
+                              >
+                                <strong style={{ color: '#fb646b' }}>Selected Employee:</strong> {booking.favoriteEmployee || 'N/A'}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                }}
+                              >
+                                <strong style={{ color: '#fb646b' }}>Payment Date:</strong> {formatDate(booking.date)}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                }}
+                              >
+                                <strong style={{ color: '#fb646b' }}>Payment Status:</strong> {booking.paymentStatus || 'N/A'}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                }}
+                              >
+                                <strong style={{ color: '#fb646b' }}>Refund Amount:</strong> {booking.refundedAmount || 'N/A'}
+                              </p>
+                              <p
+                                style={{
+                                  margin: '4px 0',
+                                  fontSize: '0.9rem',
+                                  color: '#0e0f0f',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap',
+                                }}
+                                title={booking.upiId || 'N/A'}
+                              >
+                                <strong style={{ color: '#fb646b' }}>UPI ID:</strong> {booking.upiId || 'N/A'}
+                              </p>
+                              <div
+                                style={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  gap: '8px',
+                                  marginTop: '8px',
+                                      height: '95px',
+                                }}
+                              >
+                                <p
+                                  style={{
+                                    margin: '4px 0',
+                                    fontSize: '0.9rem',
+                                    color: '#0e0f0f',
+                                  }}
+                                >
+                                  <strong style={{ color: '#fb646b' }}>REFUND:</strong>
+                                </p>
+                                {booking.paymentStatus === 'CANCELLED' &&
+                                booking.refundedAmount > 0 &&
+                                booking.refundStatus === 'PENDING' ? (
+                                  <button
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      openRefundModal(booking);
+                                    }}
+                                    style={{
+                                      padding: '6px 12px',
+                                      borderRadius: '4px',
+                                      backgroundColor: '#fb646b',
+                                      color: '#ffffff',
+                                      border: 'none',
+                                      cursor: 'pointer',
+                                      fontSize: '0.9rem',
+                                      transition: 'all 0.3s ease',
+                                    }}
+                                    onMouseOver={(e) => (e.target.style.backgroundColor = '#e42b5f')}
+                                    onMouseOut={(e) => (e.target.style.backgroundColor = '#fb646b')}
+                                  >
+                                    Process Refund
+                                  </button>
+                                ) : (
+                                  <span
+                                    style={{
+                                      fontSize: '0.9rem',
+                                      color:
+                                        booking.refundStatus === 'APPROVED'
+                                          ? 'green'
+                                          : booking.refundStatus === 'REJECTED'
+                                          ? 'red'
+                                          : '#0e0f0f',
+                                      fontWeight: booking.refundStatus ? 'bold' : 'normal',
+                                    }}
+                                  >
+                                    {booking.refundStatus || 'N/A'}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
                           )}
                         </div>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
-                    <div className="no-bookings">
+                    <div
+                      style={{
+                        textAlign: 'center',
+                        color: '#fb646b',
+                        fontSize: '1.2rem',
+                        padding: '20px',
+                      }}
+                    >
                       {filterText
                         ? `No bookings found for "${filterText}"`
-                        : "No bookings available"}
+                        : 'No bookings available'}
                     </div>
                   )}
                 </div>
@@ -1090,25 +1287,160 @@ const BookingPage = () => {
 
             {/* Pagination Controls */}
             {filteredBookings.length > itemsPerPage && (
-              <div className="pagination">
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="pagination-btn"
+          
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: { xs: 1, sm: 2 },
+              mt: 3,
+              flexWrap: 'nowrap',
+            }}
+          >
+            <Box
+              component="button"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              sx={{
+                p: { xs: '8px', sm: '10px 24px' },
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fb646b',
+                color: '#ffffff',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                fontWeight: '600',
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
+                '&:hover': {
+                  ...(currentPage !== 1
+                    ? {
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
+                    : {}),
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
+                },
+              }}
+            >
+              {isMobile ? <ArrowBackIos sx={{ fontSize: '1rem' }} /> : 'Previous'}
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: { xs: 0.5, sm: 1 },
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                // Removed overflowX: 'auto' to prevent scrollbars
+              }}
+            >
+              {showLeftEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
                 >
-                  Previous
-                </button>
-                <span className="pagination-info">
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="pagination-btn"
+                  ...
+                </Box>
+              )}
+              {pages.map((page) => (
+                <Box
+                  key={page}
+                  component="button"
+                  onClick={() => paginate(page)}
+                  sx={{
+                    p: { xs: '6px', sm: '8px' },
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: page === currentPage ? '#fb646b' : 'transparent',
+                    color: page === currentPage ? '#ffffff' : '#0e0f0f',
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    minWidth: { xs: '30px', sm: '40px' },
+                    height: { xs: '30px', sm: '40px' },
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: page === currentPage ? '#e65a60' : '#f1f5f9',
+                      transform: 'scale(1.1)',
+                    },
+                  }}
                 >
-                  Next
-                </button>
-              </div>
+                  {page}
+                </Box>
+              ))}
+              {showRightEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ...
+                </Box>
+              )}
+            </Box>
+            <Box
+              component="button"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              sx={{
+                p: { xs: '8px', sm: '10px 24px' },
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fb646b',
+                color: '#ffffff',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                fontWeight: '600',
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
+                '&:hover': {
+                  ...(currentPage !== totalPages
+                    ? {
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
+                    : {}),
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
+                },
+              }}
+            >
+              {isMobile ? <ArrowForwardIos sx={{ fontSize: '1rem' }} /> : 'Next'}
+            </Box>
+          </Box>
+       
             )}
 
             {/* Graph Section */}

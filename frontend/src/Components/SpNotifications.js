@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { FaBell, FaCalendarAlt, FaCheckCircle, FaTimes } from "react-icons/fa";
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -194,6 +195,17 @@ const SpNotifications = () => {
     }
   };
 
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "Booking":
+        return <FaCalendarAlt />;
+      case "NewService":
+        return <FaCheckCircle />;
+      default:
+        return <FaBell />;
+    }
+  };
+
   return (
     <div
       style={{
@@ -209,11 +221,12 @@ const SpNotifications = () => {
             to { opacity: 1; transform: translateY(0); }
           }
           .notification-container {
-            max-width: 800px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            padding: 0 1rem;
           }
           .notification-box {
             border-radius: 10px;
@@ -222,39 +235,61 @@ const SpNotifications = () => {
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeIn 0.5s ease-out;
-            border-left: 4px solid rgb(245 100 169);
             position: relative;
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            background-color: #fff;
+            background-color:rgb(175, 114, 149);
+            color: #fff;
+            gap: 1.5rem;
           }
           .notification-box.unread {
-            border-left: 4px solid rgb(252, 98, 84);
-            background-color: rgb(226, 120, 110) !important;
+            background-color: #f25d9c;
+            border-left: 4px solid #ffeb3b;
           }
           .notification-box:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
           }
+          .notification-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+          }
           .notification-content {
             flex: 1;
-            color: #0e0f0f;
-            font-size: 0.9rem;
+            font-size: 1rem;
           }
           .notification-content h4 {
             margin: 0;
             font-size: 1.1rem;
             font-weight: 600;
+            color: #fff;
           }
           .notification-content p {
             margin: 0.5rem 0 0;
-            color: #555;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
           }
           .notification-time {
             font-size: 0.8rem;
-            color: #888;
-            text-align: right;
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.3rem;
+          }
+          .unread-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #fff;
+            border-radius: 50%;
+            position: absolute;
+            right: 15px;
+            top: 15px;
           }
           .modal {
             position: fixed;
@@ -269,6 +304,7 @@ const SpNotifications = () => {
             z-index: 1000;
           }
           .modal-content {
+            background: white;
             padding: 2rem;
             border-radius: 12px;
             width: 90%;
@@ -279,62 +315,91 @@ const SpNotifications = () => {
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             animation: fadeIn 0.3s ease-out;
           }
+          .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+          }
+          .modal-title {
+            margin: 0;
+            color: #fff;
+            font-size: 1.5rem;
+          }
           .close-btn {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
+            background: none;
+            border: none;
             font-size: 1.5rem;
             cursor: pointer;
+            color: #fefefe;
             transition: color 0.3s ease;
+                // margin-left: 382px;
           }
           .close-btn:hover {
-            color: #201548;
+            color: #f25d9c;
           }
-          .modal-content p {
-            margin: 0.5rem 0;
-            font-size: 0.95rem;
-            color: #0e0f0f;
+          .modal-body {
+            margin-bottom: 1.5rem;
           }
-          .modal-content p strong {
-            color: #201548;
+          .modal-body p {
+            margin: 0.8rem 0;
+            font-size: 1rem;
+            color: #555;
+          }
+          .modal-body strong {
+            color: #f25d9c;
             margin-right: 0.5rem;
           }
           .confirm-btn {
-            color: #fff;
+            background-color: #f25d9c;
+            color: white;
             border: none;
-            padding: 0.5rem 1rem;
+            padding: 0.8rem 1.5rem;
             border-radius: 5px;
             cursor: pointer;
             margin-top: 1rem;
+            font-size: 1rem;
             transition: background 0.3s ease;
+            display: block;
+            width: 100%;
           }
           .confirm-btn:hover {
-            background: #36257d;
+            background-color: #e04b8a;
           }
           .confirm-btn:disabled {
-            background: #888;
+            background: #ccc;
             cursor: not-allowed;
           }
           .no-notifications {
             text-align: center;
             font-size: 1.2rem;
-            color: #555;
+            color: #888;
             margin-top: 2rem;
+            padding: 2rem;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
           }
           .error-message {
             text-align: center;
             color: #ff6f61;
             font-size: 1rem;
             margin-top: 1rem;
+            padding: 1rem;
+            background: white;
+            border-radius: 5px;
           }
           @media (max-width: 768px) {
-            .notification-container {
-              padding: 0 1rem;
-            }
             .notification-box {
-              flex-direction: column;
-              align-items: flex-start;
-              gap: 0.5rem;
+              padding: 0.8rem;
+              gap: 1rem;
+            }
+            .notification-icon {
+              width: 40px;
+              height: 40px;
+              font-size: 1.2rem;
             }
             .notification-content h4 {
               font-size: 1rem;
@@ -342,32 +407,26 @@ const SpNotifications = () => {
             .notification-content p {
               font-size: 0.85rem;
             }
-            .notification-time {
-              font-size: 0.75rem;
-            }
             .modal-content {
               padding: 1.5rem;
               width: 95%;
             }
-            .modal-content p {
-              font-size: 0.9rem;
-            }
           }
-          @media (max-width: 600px) {
+          @media (max-width: 480px) {
             .notification-box {
-              padding: 0.8rem;
+              padding: 0.7rem;
+              gap: 0.8rem;
             }
-            .notification-content h4 {
-              font-size: 0.9rem;
-            }
-            .notification-content p {
-              font-size: 0.8rem;
+            .notification-icon {
+              width: 36px;
+              height: 36px;
+              font-size: 1.1rem;
             }
             .modal-content {
-              padding: 1rem;
+              padding: 1.2rem;
             }
-            .modal-content p {
-              font-size: 0.85rem;
+            .modal-title {
+              font-size: 1.3rem;
             }
           }
         `}
@@ -377,7 +436,7 @@ const SpNotifications = () => {
         <h1
           style={{
             textAlign: "center",
-            color: "rgb(216, 79, 164)",
+            color: "#f25d9c",
             marginBottom: "2rem",
             fontSize: "1.8rem",
           }}
@@ -393,35 +452,18 @@ const SpNotifications = () => {
                 notification.isRead ? "" : "unread"
               }`}
               onClick={() => handleNotificationClick(notification)}
-              style={{
-                backgroundColor: "rgb(235, 217, 222)",
-              }}
             >
+              <div className="notification-icon">
+                {getNotificationIcon(notification.type)}
+              </div>
               <div className="notification-content">
-                <h4 style={{ color: "rgb(24, 4, 20)" }}>
-                  {notification.title}
-                </h4>
+                <h4>{notification.title}</h4>
                 <p>{notification.message}</p>
-                {notification.type === "Booking" && (
-                  <p>
-                    <strong style={{ color: "rgb(24, 4, 20)" }}>
-                      Booking ID:
-                    </strong>{" "}
-                    {notification.bookingId}
-                  </p>
-                )}
-                {notification.type === "NewService" && (
-                  <p>
-                    <strong style={{ color: "rgb(24, 4, 20)" }}>
-                      Service ID:
-                    </strong>{" "}
-                    {notification.serviceId}
-                  </p>
-                )}
+                <div className="notification-time">
+                  {formatDateTime(notification.createdAt)}
+                </div>
               </div>
-              <div className="notification-time">
-                {formatDateTime(notification.createdAt)}
-              </div>
+              {!notification.isRead && <div className="unread-dot"></div>}
             </div>
           ))
         ) : (
@@ -430,113 +472,52 @@ const SpNotifications = () => {
       </div>
 
       {isModalOpen && selectedNotification && (
-        <div
-          className="modal show d-flex align-items-center justify-content-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.5)" }}
-          onClick={handleBackdropClick}
-          tabIndex="-1"
-        >
-          <div
-            className="modal-dialog modal-dialog-centered"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              className="modal-content shadow p-3 rounded"
-              style={{ backgroundColor: "rgb(247, 222, 229)" }}
-            >
-              <div className="d-flex justify-content-between align-items-center border-bottom pb-2 mb-3">
-                <h5
-                  className="modal-title mb-0"
-                  style={{ color: "rgb(223, 82, 119)" }}
-                >
-                  {selectedNotification.title}
-                </h5>
-                <button
-                  type="button"
-                  className="btn-close"
-                  aria-label="Close"
-                  onClick={closeModal}
-                  style={{
-                    backgroundColor: "#fb646b",
-                    color: "white",
-                    padding: "5px",
-                    borderRadius: "4px",
-                  }}
-                ></button>
-              </div>
+        <div className="modal" onClick={handleBackdropClick}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{selectedNotification.title}</h2>
+              <button className="close-btn" onClick={closeModal}>
+                <FaTimes />
+              </button>
+            </div>
+            <div className="modal-body">
+              <p>
+                <strong>Message:</strong> {selectedNotification.message}
+              </p>
+              <p>
+                <strong>Time:</strong> {formatDateTime(selectedNotification.createdAt)}
+              </p>
 
-              <div className="modal-body">
-                <p>
-                  <strong style={{ color: "rgb(213 11 139)" }}>Message:</strong>{" "}
-                  {selectedNotification.message}
-                </p>
-                <p>
-                  <strong style={{ color: "rgb(213 11 139)" }}>Time:</strong>{" "}
-                  {formatDateTime(selectedNotification.createdAt)}
-                </p>
-
-                {selectedNotification.type === "Booking" && (
-                  <>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
-                        Booking ID:
-                      </strong>{" "}
-                      {selectedNotification.bookingId}
-                    </p>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
-                        Customer Name:
-                      </strong>{" "}
-                      {selectedNotification.userDetails?.name || "N/A"}
-                    </p>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
-                        Customer Email:
-                      </strong>{" "}
-                      {selectedNotification.userDetails?.email || "N/A"}
-                    </p>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
-                        Customer Phone:
-                      </strong>{" "}
-                      {selectedNotification.userDetails?.phone || "N/A"}
-                    </p>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
-                        Service:
-                      </strong>{" "}
-                      {selectedNotification.message.match(
-                        /for (.*?)(?: by|$)/
-                      )?.[1] || "N/A"}
-                    </p>
-                    {/* <button
-                      className='confirm-btn'
-                      onClick={() => handleConfirmBooking(selectedNotification)}
-                      disabled={selectedNotification.title.includes('Confirmed')}
-                      style={{
-                        backgroundColor: '#fb646b',
-                        color: '#fff',
-                        border: 'none',
-                        padding: '0.5rem 1rem',
-                        borderRadius: '5px',
-                        cursor: selectedNotification.title.includes('Confirmed') ? 'not-allowed' : 'pointer',
-                        marginTop: '1rem',
-                      }}
-                    >
-                      Confirm Booking
-                    </button> */}
-                  </>
-                )}
-
-                {selectedNotification.type === "NewService" && (
+              {selectedNotification.type === "Booking" && (
+                <>
                   <p>
-                    <strong style={{ color: "rgb(213 11 139)" }}>
-                      Service ID:
-                    </strong>{" "}
-                    {selectedNotification.serviceId}
+                    <strong>Booking ID:</strong> {selectedNotification.bookingId}
                   </p>
-                )}
-              </div>
+                  <p>
+                    <strong>Customer Name:</strong>{" "}
+                    {selectedNotification.userDetails?.name || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Customer Email:</strong>{" "}
+                    {selectedNotification.userDetails?.email || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Customer Phone:</strong>{" "}
+                    {selectedNotification.userDetails?.phone || "N/A"}
+                  </p>
+                  <p>
+                    <strong>Service:</strong>{" "}
+                    {selectedNotification.message.match(/for (.*?)(?: by|$)/)?.[1] || "N/A"}
+                  </p>
+                 
+                </>
+              )}
+
+              {selectedNotification.type === "NewService" && (
+                <p>
+                  <strong>Service ID:</strong> {selectedNotification.serviceId}
+                </p>
+              )}
             </div>
           </div>
         </div>

@@ -36,7 +36,7 @@ const PLACEHOLDER_IMAGE = "https://via.placeholder.com/70?text=No+Image";
 
 // Styled components with updated color scheme
 const StyledListItem = styled(ListItem)(({ theme }) => ({
-  background: "#ffffff", // Container color
+  background: "#ffffff",
   borderRadius: "16px",
   marginBottom: theme.spacing(2),
   padding: theme.spacing(2),
@@ -44,22 +44,19 @@ const StyledListItem = styled(ListItem)(({ theme }) => ({
   maxHeight: "140px",
   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
   transition: "transform 0.3s ease, box-shadow 0.3s ease",
-  borderLeft: `4px solid #FB646B`, // Date and time border color
+  borderLeft: `4px solid #FB646B`,
   "&:hover": {
     transform: "translateY(-6px)",
     boxShadow: "0 8px 24px rgba(0, 0, 0, 0.12)",
   },
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(1.5),
-    // maxHeight: "120px",
   },
   [`@media (max-width: 360px)`]: {
     padding: theme.spacing(1.2),
-    // maxHeight: "100px",
   },
   [`@media (max-width: 320px)`]: {
     padding: theme.spacing(1),
-    // maxHeight: "90px",
   },
 }));
 
@@ -68,7 +65,7 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
   height: 80,
   borderRadius: "12px",
   objectFit: "cover",
-  border: "2px solid #FB646B", // Date and time border color
+  border: "2px solid #FB646B",
   [theme.breakpoints.down("sm")]: {
     width: 60,
     height: 60,
@@ -84,9 +81,9 @@ const StyledAvatar = styled(Avatar)(({ theme }) => ({
 }));
 
 const ActionButton = styled(IconButton)(({ theme }) => ({
-  color: "#FB646B", // Filter button color
+  color: "#FB646B",
   "&:hover": {
-    backgroundColor: "#FFEBF1", // Filter card color
+    backgroundColor: "#FFEBF1",
   },
   padding: theme.spacing(1.2),
   [theme.breakpoints.down("sm")]: {
@@ -107,8 +104,8 @@ const ModalContent = styled(Box)(({ theme }) => ({
   transform: "translate(-50%, -50%)",
   width: "90%",
   maxWidth: 420,
-  backgroundColor: "#ffffff", // Container color
-  color: "#2D2828", // Text color
+  backgroundColor: "#ffffff",
+  color: "#2D2828",
   boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
   padding: theme.spacing(4),
   borderRadius: "20px",
@@ -133,7 +130,7 @@ const ModalContent = styled(Box)(({ theme }) => ({
 }));
 
 const FilterContainer = styled(Box)(({ theme }) => ({
-  background: "#FFEBF1", // Filter card color
+  background: "#FFEBF1",
   borderRadius: "16px",
   boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
   padding: theme.spacing(3),
@@ -143,6 +140,7 @@ const FilterContainer = styled(Box)(({ theme }) => ({
   gap: theme.spacing(2.5),
   justifyContent: "center",
   alignItems: "center",
+  position: "relative",
   [theme.breakpoints.down("sm")]: {
     padding: theme.spacing(2),
     gap: theme.spacing(2),
@@ -159,7 +157,7 @@ const FilterContainer = styled(Box)(({ theme }) => ({
 
 const StyledFormControl = styled(FormControl)(({ theme }) => ({
   minWidth: 120,
-  backgroundColor: "#ffffff", // Container color
+  backgroundColor: "#ffffff",
   borderRadius: "10px",
   "& .MuiInputBase-root": {
     backgroundColor: "#ffffff",
@@ -167,17 +165,17 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
   },
   "& .MuiInputLabel-root": {
     fontSize: "0.95rem",
-    color: "#FB646B", // Filter text color
-    fontFamily: "'Playfair Display', serif",
+    color: "#FB646B",
+    fontFamily: "'Play', sans-serif",
     paddingLeft: theme.spacing(0),
     marginLeft: theme.spacing(0),
   },
   "& .MuiSelect-icon": {
-    color: "#FB646B", // Filter text color
+    color: "#FB646B",
   },
   "&:hover": {
     "& .MuiInputBase-root": {
-      backgroundColor: "#FFEBF1", // Filter card color
+      backgroundColor: "#FFEBF1",
     },
   },
   [theme.breakpoints.down("sm")]: {
@@ -193,29 +191,29 @@ const StyledFormControl = styled(FormControl)(({ theme }) => ({
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
   minWidth: { xs: 220, sm: 320 },
-  backgroundColor: "#ffffff", // Container color
+  backgroundColor: "#ffffff",
   borderRadius: "10px",
   "& .MuiInputBase-input": {
     fontSize: "0.95rem",
-    color: "#2D2828", // Text color
+    color: "#2D2828",
     padding: theme.spacing(1.5),
     fontFamily: "'Lora', serif",
   },
   "& .MuiInputLabel-root": {
     fontSize: "0.95rem",
-    color: "#FB646B", // Filter text color
-    fontFamily: "'Playfair Display', serif",
+    color: "#FB646B",
+    fontFamily: "'Play', sans-serif",
     paddingLeft: theme.spacing(0),
   },
   "& .MuiOutlinedInput-root": {
     "& fieldset": {
-      borderColor: "#FB646B", // Date and time border color
+      borderColor: "#FB646B",
     },
     "&:hover fieldset": {
-      borderColor: "#F710B9", // Booking title color
+      borderColor: "#F710B9",
     },
     "&.Mui-focused fieldset": {
-      borderColor: "#FB646B", // Date and time border color
+      borderColor: "#FB646B",
     },
   },
   [theme.breakpoints.down("sm")]: {
@@ -230,10 +228,10 @@ const StyledTextField = styled(TextField)(({ theme }) => ({
 }));
 
 const StyledResetButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "#FB646B", // Book now button color
+  backgroundColor: "#FB646B",
   color: "#ffffff",
   "&:hover": {
-    backgroundColor: "#C71585", // Darker shade for hover
+    backgroundColor: "#C71585",
   },
   fontSize: "0.9rem",
   fontFamily: "'Lora', serif",
@@ -260,10 +258,10 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   height: "50px",
   [theme.breakpoints.down("sm")]: {
     display: "block",
-    color: "#FB646B", // Filter button color
-    backgroundColor: "#ffffff", // Container color
+    color: "#FB646B",
+    backgroundColor: "#ffffff",
     "&:hover": {
-      backgroundColor: "#FFEBF1", // Filter card color
+      backgroundColor: "#FFEBF1",
     },
     padding: theme.spacing(1.2),
     borderRadius: "50%",
@@ -277,10 +275,10 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
 }));
 
 const EnquiryButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "#FB646B", // Book now button color
+  backgroundColor: "#FB646B",
   color: "#ffffff",
   "&:hover": {
-    backgroundColor: "#C71585", // Darker shade for hover
+    backgroundColor: "#C71585",
   },
   fontSize: "0.9rem",
   fontFamily: "'Lora', serif",
@@ -302,10 +300,10 @@ const EnquiryButton = styled(Button)(({ theme }) => ({
 }));
 
 const SendEnquiryButton = styled(Button)(({ theme }) => ({
-  backgroundColor: "#D946EF", // Book now button color
+  backgroundColor: "#D946EF",
   color: "#ffffff",
   "&:hover": {
-    backgroundColor: "#C71585", // Darker shade for hover
+    backgroundColor: "#C71585",
   },
   "&.Mui-disabled": {
     backgroundColor: "#D1D5DB",
@@ -330,7 +328,28 @@ const SendEnquiryButton = styled(Button)(({ theme }) => ({
   },
 }));
 
-// Haversine formula and parseParlorLocation (unchanged)
+const CloseButton = styled(IconButton)(({ theme }) => ({
+  position: "absolute",
+  top: theme.spacing(1),
+  right: theme.spacing(2),
+  color: "#ffffff",
+  backgroundColor: "#FB646B",
+  "&:hover": {
+    backgroundColor: "#C71585",
+  },
+  padding: "10px",
+  [theme.breakpoints.down("sm")]: {
+    padding: "8px",
+  },
+  [`@media (max-width: 360px)`]: {
+    padding: "7px",
+  },
+  [`@media (max-width: 320px)`]: {
+    padding: "6px",
+  },
+}));
+
+// Haversine formula and parseParlorLocation
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
   if (
     !lat1 ||
@@ -374,7 +393,7 @@ const parseParlorLocation = (location) => {
   return { lat, lon };
 };
 
-// Fisher-Yates shuffle function (unchanged)
+// Fisher-Yates shuffle function
 const shuffleArray = (array) => {
   const newArray = [...array];
   for (let i = newArray.length - 1; i > 0; i--) {
@@ -517,9 +536,9 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
               variant="subtitle1"
               sx={{
                 fontWeight: "bold",
-                color: "#2D2828", // Text color
+                color: "#2D2828",
                 fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.2rem" },
-                fontFamily: "'Playfair Display', serif",
+                fontFamily: "'Play', sans-serif",
                 paddingLeft: "14px",
                 [`@media (max-width: 360px)`]: {
                   fontSize: "0.9rem",
@@ -537,7 +556,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#2D2828", // Text color
+                  color: "#2D2828",
                   fontSize: { xs: "0.85rem", sm: "0.9rem", md: "0.95rem" },
                   fontFamily: "'Lora', serif",
                   lineHeight: 1.5,
@@ -554,7 +573,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "#F710B9", // Booking title color
+                  color: "#F710B9",
                   fontWeight: "bold",
                   fontSize: { xs: "0.85rem", sm: "0.9rem", md: "0.95rem" },
                   fontFamily: "'Lora', serif",
@@ -574,7 +593,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                   variant="body2"
                   sx={{
                     fontSize: { xs: "0.85rem", sm: "0.9rem", md: "0.95rem" },
-                    color: "#FF80DD", // Review color
+                    color: "#FF80DD",
                     fontFamily: "'Lora', serif",
                     lineHeight: 1.5,
                     [`@media (max-width: 360px)`]: {
@@ -591,7 +610,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                   className="fa fa-star"
                   style={{
                     marginLeft: "6px",
-                    color: "#FF80DD", // Review color
+                    color: "#FF80DD",
                     fontSize: "0.95rem",
                     [`@media (max-width: 360px)`]: {
                       fontSize: "0.8rem",
@@ -606,7 +625,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                   sx={{
                     fontSize: { xs: "0.85rem", sm: "0.9rem", md: "0.95rem" },
                     ml: 1,
-                    color: "#2D2828", // Text color
+                    color: "#2D2828",
                     fontFamily: "'Lora', serif",
                     lineHeight: 1.5,
                     [`@media (max-width: 360px)`]: {
@@ -624,7 +643,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 variant="body2"
                 sx={{
                   fontSize: { xs: "0.85rem", sm: "0.9rem", md: "0.95rem" },
-                  color: "#2D2828", // Text color
+                  color: "#2D2828",
                   fontFamily: "'Lora', serif",
                   lineHeight: 1.5,
                   [`@media (max-width: 360px)`]: {
@@ -674,9 +693,9 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
             textAlign="center"
             sx={{
               fontSize: { xs: "1.4rem", sm: "1.5rem", md: "1.6rem" },
-              color: "#F710B9", // Booking title color
+              color: "#F710B9",
               fontWeight: "bold",
-              fontFamily: "'Playfair Display', serif",
+              fontFamily: "'Play', sans-serif",
               paddingBottom: "10px",
               [`@media (max-width: 360px)`]: {
                 fontSize: "1.3rem",
@@ -707,7 +726,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 },
                 "& .MuiInputLabel-root": {
                   fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Playfair Display', serif",
+                  fontFamily: "'Play', sans-serif",
                   [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
                 },
               }}
@@ -740,7 +759,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 },
                 "& .MuiInputLabel-root": {
                   fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Playfair Display', serif",
+                  fontFamily: "'Play', sans-serif",
                   [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
                 },
               }}
@@ -764,7 +783,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 to="/login"
                 style={{
                   textDecoration: "none",
-                  color: "#FB646B", // Filter text color
+                  color: "#FB646B",
                   fontSize: { xs: "0.85rem", sm: "0.9rem" },
                   fontFamily: "'Lora', serif",
                   padding: "6px 14px",
@@ -787,7 +806,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 type="submit"
                 variant="contained"
                 sx={{
-                  backgroundColor: "#D946EF", // Book now button color
+                  backgroundColor: "#D946EF",
                   color: "#ffffff",
                   "&:hover": { backgroundColor: "#C71585" },
                   fontSize: { xs: "0.85rem", sm: "0.9rem" },
@@ -807,9 +826,9 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 variant="outlined"
                 onClick={handleCloseModal}
                 sx={{
-                  borderColor: "#FB646B", // Filter text color
-                  color: "#FB646B", // Filter text color
-                  "&:hover": { borderColor: "#F710B9", color: "#F710B9" }, // Booking title color
+                  borderColor: "#FB646B",
+                  color: "#FB646B",
+                  "&:hover": { borderColor: "#F710B9", color: "#F710B9" },
                   fontSize: { xs: "0.85rem", sm: "0.9rem" },
                   fontFamily: "'Lora', serif",
                   padding: { xs: "10px 24px", sm: "12px 28px" },
@@ -830,7 +849,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
                 fontSize: { xs: "0.85rem", sm: "0.9rem" },
                 fontFamily: "'Lora', serif",
                 mt: 2.5,
-                color: "#2D2828", // Text color
+                color: "#2D2828",
                 padding: "10px 14px",
                 [`@media (max-width: 320px)`]: { fontSize: "0.8rem" },
               }}
@@ -838,7 +857,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
               Don't have an account?{" "}
               <Link
                 to="/signup"
-                style={{ textDecoration: "none", color: "#FB646B" }} // Filter text color
+                style={{ textDecoration: "none", color: "#FB646B" }}
               >
                 Sign up
               </Link>
@@ -850,7 +869,7 @@ const ParlorListItem = ({ parlor, onImageClick, userLocation }) => {
   );
 };
 
-// Google Maps Autocomplete hook (unchanged)
+// Google Maps Autocomplete hook
 const useGoogleMapsAutocomplete = (
   inputRef,
   setLocationInput,
@@ -1146,12 +1165,10 @@ const Product = () => {
 
     return "";
   };
-  
 
   useEffect(() => {
     const newDesignation = getActiveDesignation();
     const newService = getActiveService();
-    // const newService = location.state?.service || "";
     setDesignationFilter(newDesignation);
     setServiceFilter(newService);
   }, [location.pathname, location.state]);
@@ -1248,10 +1265,35 @@ const Product = () => {
     setShowFilters(false);
   };
 
+  // Animation variants for the FilterContainer in mobile view
+  const filterVariants = {
+    hidden: {
+      y: "100vh",
+      opacity: 0,
+    },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: {
+        type: "spring",
+        stiffness: 100,
+        damping: 20,
+        duration: 0.5,
+      },
+    },
+    exit: {
+      y: "100vh",
+      opacity: 0,
+      transition: {
+        duration: 0.6,
+      },
+    },
+  };
+
   return (
     <Box
       sx={{
-        backgroundColor: "#fad9e3", // Background color
+        backgroundColor: "#fad9e3",
         minHeight: "100vh",
         py: { xs: 5, sm: 6 },
       }}
@@ -1259,11 +1301,10 @@ const Product = () => {
       <Container
         maxWidth="xl"
         sx={{
-          backgroundColor: "#fad9e3", // Container color
+          backgroundColor: "#fad9e3",
           px: { xs: 2.5, sm: 3.5 },
           py: { xs: 3, sm: 4 },
           borderRadius: "16px",
-          // boxShadow: "0 4px 20px rgba(0, 0, 0, 0.08)",
           maxWidth: {
             xs: "100%",
             sm: "95%",
@@ -1275,10 +1316,10 @@ const Product = () => {
         <style>
           {`
           h2.text-primary {
-            font-family: 'Playfair Display', serif;
+            font-family: 'Play', sans-serif;
             font-weight: 700;
             font-size: 2.5rem;
-            color: #F710B9; /* Booking title color */
+            color: #F710B9;
             position: relative;
             margin-bottom: 2.5rem;
             text-align: center;
@@ -1293,7 +1334,7 @@ const Product = () => {
             transform: translateX(-50%);
             width: 120px;
             height: 4px;
-            background: #FB646B; /* Date and time border color */
+            background: #FB646B;
             borderRadius: 2px;
           }
 
@@ -1348,161 +1389,217 @@ const Product = () => {
           </FilterToggleButton>
         </Box>
         {(showFilters || window.innerWidth >= 600) && (
-          <FilterContainer>
-            <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
-              <StyledTextField
-                label="Your Location"
-                value={locationInput}
-                onChange={(e) => setLocationInput(e.target.value)}
-                inputRef={autocompleteInputRef}
-                placeholder="Search for any place (e.g., salon, spa)"
-                className="mt-2"
-              />
-              <IconButton
-                onClick={() =>
-                  window.open(
-                    getGoogleMapsUrlFromCoords(
-                      userLocation?.lat,
-                      userLocation?.lon
-                    ),
-                    "_blank"
-                  )
-                }
-                disabled={!userLocation}
+        <motion.div
+  variants={filterVariants}
+  initial={window.innerWidth < 600 ? "hidden" : false}
+  animate={window.innerWidth < 600 && showFilters ? "visible" : false}
+  exit={window.innerWidth < 600 ? "exit" : false}
+  style={{
+    position: window.innerWidth < 600 ? "fixed" : "relative",
+    bottom: window.innerWidth < 600 ? 0 : "auto",
+    left: window.innerWidth < 600 ? 0 : "auto",
+    right: window.innerWidth < 600 ? 0 : "auto",
+    zIndex: window.innerWidth < 600 ? 1000 : "auto",
+    backgroundColor: window.innerWidth < 600 ? "#fad9e3" : "transparent",
+    padding: window.innerWidth < 600 ? "16px" : 0,
+    boxShadow:
+      window.innerWidth < 600 ? "0 -4px 20px rgba(0, 0, 0, 0.08)" : "none",
+    borderTopLeftRadius: window.innerWidth < 600 ? "16px" : 0,
+    borderTopRightRadius: window.innerWidth < 600 ? "16px" : 0,
+  }}
+>
+  <FilterContainer>
+    {window.innerWidth < 600 && showFilters && (
+   <div
+  style={{
+    width: "100%",
+    display: "flex",
+    justifyContent: "center",
+    marginBottom: "12px",
+    position: "relative",
+  }}
+>
+  <CloseButton
+    onClick={handleToggleFilters}
+    style={{
+      width: "28px",
+      height: "25px",        // 1 px is almost invisible; adjust as needed
+      backgroundColor: "red",// “#red” isn’t a valid colour
+      borderRadius: "5px",
+      fontSize: "10px",
+      padding: "6px",
+      boxShadow: "0 2px 6px rgba(0,0,0,0.1)",
+      zIndex: 1001,
+      position: "absolute",
+      top: "-5px",           // keeps the button nudged upward
+      left: "92%",           // ⬅ centre point of parent
+      transform: "translateX(-50%)", // pull it back by half its own width
+    }}
+  >
+    ✕
+  </CloseButton>
+</div>
+
+
+    )}
+
+    <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+      <StyledTextField
+        label="Your Location"
+        value={locationInput}
+        onChange={(e) => setLocationInput(e.target.value)}
+        inputRef={autocompleteInputRef}
+        placeholder="Search for any place (e.g., salon, spa)"
+        className="mt-2"
+      />
+      <IconButton
+        onClick={() =>
+          window.open(
+            getGoogleMapsUrlFromCoords(userLocation?.lat, userLocation?.lon),
+            "_blank"
+          )
+        }
+        disabled={!userLocation}
+        sx={{
+          color: "#FB646B",
+          "&:hover": { backgroundColor: "#FFEBF1" },
+          p: { xs: 1.2, sm: 1.5 },
+          [`@media (max-width: 320px)`]: { p: 1 },
+        }}
+      >
+        <i
+          className="fa fa-map"
+          style={{
+            fontSize: "1.3rem",
+          }}
+        ></i>
+      </IconButton>
+    </Box>
+
+    <StyledFormControl className="mt-2">
+      <InputLabel>Category</InputLabel>
+      <Select
+        value={designationFilter}
+        onChange={handleDesignationChange}
+        label="Category"
+        sx={{
+          fontSize: { xs: "0.9rem", sm: "0.95rem" },
+          fontFamily: "'Lora', serif",
+          [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
+        }}
+      >
+        <MenuItem value="All Products">All Services</MenuItem>
+        <MenuItem value="Salon">Salon</MenuItem>
+        <MenuItem value="Beauty_Parler">Beauty Parlor</MenuItem>
+        <MenuItem value="Doctor">Skincare Specialist</MenuItem>
+      </Select>
+    </StyledFormControl>
+
+    <StyledFormControl className="mt-2">
+      <InputLabel>Rating</InputLabel>
+      <Select
+        value={ratingFilter}
+        onChange={handleRatingChange}
+        label="Rating"
+        sx={{
+          fontSize: { xs: "0.9rem", sm: "0.95rem" },
+          fontFamily: "'Lora', serif",
+          [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
+        }}
+      >
+        {ratingOptions.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Typography
                 sx={{
-                  color: "#FB646B", // Filter button color
-                  "&:hover": { backgroundColor: "#FFEBF1" }, // Filter card color
-                  p: { xs: 1.2, sm: 1.5 },
-                  [`@media (max-width: 320px)`]: { p: 1 },
+                  color: "#FF80DD",
+                  mr: 1,
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  [`@media (max-width: 320px)`]: {
+                    fontSize: "0.85rem",
+                  },
                 }}
               >
-                <i
-                  className="fa fa-map"
-                  style={{
-                    fontSize: { xs: "1.2rem", sm: "1.3rem" },
-                    [`@media (max-width: 320px)`]: { fontSize: "1.1rem" },
-                  }}
-                ></i>
-              </IconButton>
+                {option.stars}
+              </Typography>
+              <Typography
+                sx={{
+                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
+                  fontFamily: "'Lora', serif",
+                  [`@media (max-width: 320px)`]: {
+                    fontSize: "0.85rem",
+                  },
+                }}
+              >
+                {option.label}
+              </Typography>
             </Box>
-            <StyledFormControl className="mt-2">
-              <InputLabel>Category</InputLabel>
-              <Select
-                value={designationFilter}
-                onChange={handleDesignationChange}
-                label="Category"
-                sx={{
-                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Lora', serif",
-                  [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
-                }}
-              >
-                <MenuItem value="All Products">All Services</MenuItem>
-                <MenuItem value="Salon">Salon</MenuItem>
-                <MenuItem value="Beauty_Parler">Beauty Parlor</MenuItem>
-                <MenuItem value="Doctor">Skincare Specialist</MenuItem>
-              </Select>
-            </StyledFormControl>
-            <StyledFormControl className="mt-2">
-              <InputLabel>Rating</InputLabel>
-              <Select
-                value={ratingFilter}
-                onChange={handleRatingChange}
-                label="Rating"
-                sx={{
-                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Lora', serif",
-                  [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
-                }}
-              >
-                {ratingOptions.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Box sx={{ display: "flex", alignItems: "center" }}>
-                      <Typography
-                        sx={{
-                          color: "#FF80DD", // Review color
-                          mr: 1,
-                          fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                          [`@media (max-width: 320px)`]: {
-                            fontSize: "0.85rem",
-                          },
-                        }}
-                      >
-                        {option.stars}
-                      </Typography>
-                      <Typography
-                        sx={{
-                          fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                          fontFamily: "'Lora', serif",
-                          [`@media (max-width: 320px)`]: {
-                            fontSize: "0.85rem",
-                          },
-                        }}
-                      >
-                        {option.label}
-                      </Typography>
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Select>
-            </StyledFormControl>
-            <StyledFormControl className="mt-2">
-              <InputLabel>Distance</InputLabel>
-              <Select
-                value={distanceFilter}
-                onChange={handleDistanceChange}
-                label="Distance"
-                sx={{
-                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Lora', serif",
-                  [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
-                }}
-              >
-                <MenuItem value="all">All Distances</MenuItem>
-                <MenuItem value="0-1">0-1 km</MenuItem>
-                <MenuItem value="0-3">0-3 km</MenuItem>
-                <MenuItem value="0-5">0-5 km</MenuItem>
-                <MenuItem value="more">More than 5 km</MenuItem>
-              </Select>
-            </StyledFormControl>
-            <StyledFormControl className="mt-2">
-              <InputLabel>Service</InputLabel>
-              <Select
-                value={serviceFilter}
-                onChange={handleServiceChange}
-                label="Service"
-                sx={{
-                  fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                  fontFamily: "'Lora', serif",
-                  [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
-                }}
-              >
-                <MenuItem value="">All Services</MenuItem>
-                {(designationFilter === "All Products"
-                  ? allServices
-                  : roleOptions[designationFilter] || []
-                ).map((service) => (
-                  <MenuItem key={service} value={service}>
-                    {service}
-                  </MenuItem>
-                ))}
-              </Select>
-            </StyledFormControl>
-            <StyledResetButton
-              variant="contained"
-              onClick={handleResetFilters}
-              className="mt-2"
-            >
-              Clear Filters
-            </StyledResetButton>
-            <EnquiryButton
-              variant="contained"
-              onClick={handleEnquiryButtonClick}
-              className="mt-2"
-            >
-              Send Enquiry
-            </EnquiryButton>
-          </FilterContainer>
+          </MenuItem>
+        ))}
+      </Select>
+    </StyledFormControl>
+
+    <StyledFormControl className="mt-2">
+      <InputLabel>Distance</InputLabel>
+      <Select
+        value={distanceFilter}
+        onChange={handleDistanceChange}
+        label="Distance"
+        sx={{
+          fontSize: { xs: "0.9rem", sm: "0.95rem" },
+          fontFamily: "'Lora', serif",
+          [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
+        }}
+      >
+        <MenuItem value="all">All Distances</MenuItem>
+        <MenuItem value="0-1">0-1 km</MenuItem>
+        <MenuItem value="0-3">0-3 km</MenuItem>
+        <MenuItem value="0-5">0-5 km</MenuItem>
+        <MenuItem value="more">More than 5 km</MenuItem>
+      </Select>
+    </StyledFormControl>
+
+    <StyledFormControl className="mt-2">
+      <InputLabel>Service</InputLabel>
+      <Select
+        value={serviceFilter}
+        onChange={handleServiceChange}
+        label="Service"
+        sx={{
+          fontSize: { xs: "0.9rem", sm: "0.95rem" },
+          fontFamily: "'Lora', serif",
+          [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
+        }}
+      >
+        <MenuItem value="">All Services</MenuItem>
+        {(designationFilter === "All Products"
+          ? allServices
+          : roleOptions[designationFilter] || []
+        ).map((service) => (
+          <MenuItem key={service} value={service}>
+            {service}
+          </MenuItem>
+        ))}
+      </Select>
+    </StyledFormControl>
+
+    <StyledResetButton
+      variant="contained"
+      onClick={handleResetFilters}
+      className="mt-2"
+    >
+      Clear Filters
+    </StyledResetButton>
+    <EnquiryButton
+      variant="contained"
+      onClick={handleEnquiryButtonClick}
+      className="mt-2"
+    >
+      Send Enquiry
+    </EnquiryButton>
+  </FilterContainer>
+</motion.div>
+
         )}
         <List
           sx={{
@@ -1519,7 +1616,7 @@ const Product = () => {
               align="center"
               sx={{
                 fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
-                color: "#2D2828", // Text color
+                color: "#2D2828",
                 fontFamily: "'Lora', serif",
                 padding: "20px",
                 [`@media (max-width: 360px)`]: { fontSize: "0.95rem" },
@@ -1534,7 +1631,7 @@ const Product = () => {
               align="center"
               sx={{
                 fontSize: { xs: "1rem", sm: "1.1rem", md: "1.3rem" },
-                color: "#2D2828", // Text color
+                color: "#2D2828",
                 fontFamily: "'Lora', serif",
                 padding: "20px",
                 [`@media (max-width: 360px)`]: { fontSize: "0.95rem" },
@@ -1572,7 +1669,7 @@ const Product = () => {
                 width: "100%",
                 maxHeight: "90vh",
                 overflowY: "auto",
-                backgroundColor: "#ffffff", // Container color
+                backgroundColor: "#ffffff",
               }}
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -1582,8 +1679,8 @@ const Product = () => {
                 <h3
                   className="m-0"
                   style={{
-                    color: "#F710B9", // Booking title color
-                    fontFamily: "'Playfair Display', serif",
+                    color: "#F710B9",
+                    fontFamily: "'Play', sans-serif",
                     fontSize: { xs: "1.4rem", sm: "1.5rem", md: "1.6rem" },
                     [`@media (max-width: 360px)`]: { fontSize: "1.3rem" },
                     [`@media (max-width: 320px)`]: { fontSize: "1.2rem" },
@@ -1594,7 +1691,7 @@ const Product = () => {
                 <button
                   className="btn border-0"
                   onClick={handleCloseModal}
-                  style={{ color: "#FB646B" }} // Filter text color
+                  style={{ color: "#FB646B" }}
                 >
                   <i
                     className="bi bi-x-lg"
@@ -1641,7 +1738,7 @@ const Product = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: "#2D2828", // Text color
+                      color: "#2D2828",
                       fontStyle: "italic",
                       fontFamily: "'Lora', serif",
                       fontSize: { xs: "0.85rem", sm: "0.9rem" },
@@ -1655,7 +1752,7 @@ const Product = () => {
                   <Typography
                     variant="body2"
                     sx={{
-                      color: "#2D2828", // Text color
+                      color: "#2D2828",
                       fontStyle: "italic",
                       fontFamily: "'Lora', serif",
                       fontSize: { xs: "0.85rem", sm: "0.9rem" },
@@ -1670,10 +1767,10 @@ const Product = () => {
                     sx={{
                       maxHeight: "220px",
                       overflowY: "auto",
-                      border: "1px solid #FB646B", // Date and time border color
+                      border: "1px solid #FB646B",
                       borderRadius: "10px",
                       p: 2,
-                      bgcolor: "#FFEBF1", // Filter card color
+                      bgcolor: "#FFEBF1",
                       [`@media (max-width: 320px)`]: {
                         maxHeight: "200px",
                         p: 1.5,
@@ -1682,8 +1779,7 @@ const Product = () => {
                   >
                     {serviceProviders
                       .filter(
-                        (provider) =>
-                          provider.designation === selectedDesignation
+                        (provider) => provider.designation === selectedDesignation
                       )
                       .map((provider) => {
                         const providerCoords = parseParlorLocation(
@@ -1702,9 +1798,9 @@ const Product = () => {
                             key={provider._id}
                             sx={{
                               p: 1.5,
-                              borderBottom: "1px solid #FB646B", // Date and time border color
+                              borderBottom: "1px solid #FB646B",
                               "&:last-child": { borderBottom: "none" },
-                              bgcolor: "#ffffff", // Container color
+                              bgcolor: "#ffffff",
                               borderRadius: "8px",
                               mb: 0.5,
                               [`@media (max-width: 320px)`]: { p: 1 },
@@ -1714,8 +1810,8 @@ const Product = () => {
                               variant="body2"
                               sx={{
                                 fontWeight: "bold",
-                                color: "#F710B9", // Booking title color
-                                fontFamily: "'Playfair Display', serif",
+                                color: "#F710B9",
+                                fontFamily: "'Play', sans-serif",
                                 fontSize: {
                                   xs: "0.9rem",
                                   sm: "0.95rem",
@@ -1731,7 +1827,7 @@ const Product = () => {
                             <Typography
                               variant="body2"
                               sx={{
-                                color: "#2D2828", // Text color
+                                color: "#2D2828",
                                 fontFamily: "'Lora', serif",
                                 fontSize: { xs: "0.85rem", sm: "0.9rem" },
                                 [`@media (max-width: 320px)`]: {
@@ -1739,13 +1835,12 @@ const Product = () => {
                                 },
                               }}
                             >
-                              {provider.designation} | Rating:{" "}
-                              {provider.spRating}
+                              {provider.designation} | Rating: {provider.spRating}
                             </Typography>
                             <Typography
                               variant="body2"
                               sx={{
-                                color: "#2D2828", // Text color
+                                color: "#2D2828",
                                 fontFamily: "'Lora', serif",
                                 fontSize: { xs: "0.85rem", sm: "0.9rem" },
                                 [`@media (max-width: 320px)`]: {
@@ -1768,8 +1863,8 @@ const Product = () => {
                   className="form-label fw-semibold text-dark"
                   style={{
                     fontSize: { xs: "0.9rem", sm: "0.95rem" },
-                    fontFamily: "'Playfair Display', serif",
-                    color: "#2D2828", // Text color
+                    fontFamily: "'Play', sans-serif",
+                    color: "#2D2828",
                     [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
                   }}
                 >
@@ -1787,7 +1882,7 @@ const Product = () => {
                     fontFamily: "'Lora', serif",
                     padding: "14px",
                     borderRadius: "10px",
-                    borderColor: "#FB646B", // Date and time border color
+                    borderColor: "#FB646B",
                     [`@media (max-width: 320px)`]: {
                       fontSize: "0.85rem",
                       padding: "12px",
@@ -1813,9 +1908,9 @@ const Product = () => {
                   variant="outlined"
                   onClick={handleCloseModal}
                   sx={{
-                    borderColor: "#FB646B", // Filter text color
-                    color: "#FB646B", // Filter text color
-                    "&:hover": { borderColor: "#F710B9", color: "#F710B9" }, // Booking title color
+                    borderColor: "#FB646B",
+                    color: "#FB646B",
+                    "&:hover": { borderColor: "#F710B9", color: "#F710B9" },
                     fontSize: { xs: "0.85rem", sm: "0.9rem" },
                     fontFamily: "'Lora', serif",
                     padding: { xs: "10px 24px", sm: "12px 28px" },
@@ -1843,7 +1938,7 @@ const Product = () => {
             sx: {
               borderRadius: "12px",
               padding: { xs: "14px", sm: "18px" },
-              backgroundColor: "#ffffff", // Container color
+              backgroundColor: "#ffffff",
               [`@media (max-width: 320px)`]: { padding: "12px" },
             },
           }}
@@ -1852,8 +1947,8 @@ const Product = () => {
             id="success-dialog-title"
             sx={{
               fontSize: { xs: "1.2rem", sm: "1.3rem", md: "1.5rem" },
-              color: "#F710B9", // Booking title color
-              fontFamily: "'Playfair Display', serif",
+              color: "#F710B9",
+              fontFamily: "'Play', sans-serif",
               padding: "14px 18px",
               [`@media (max-width: 320px)`]: { fontSize: "1.1rem" },
             }}
@@ -1864,7 +1959,7 @@ const Product = () => {
             <Typography
               sx={{
                 fontSize: { xs: "0.9rem", sm: "0.95rem", md: "1rem" },
-                color: "#2D2828", // Text color
+                color: "#2D2828",
                 fontFamily: "'Lora', serif",
                 padding: "10px 14px",
                 [`@media (max-width: 320px)`]: { fontSize: "0.85rem" },
@@ -1877,7 +1972,7 @@ const Product = () => {
             <Button
               onClick={handleSuccessDialogClose}
               sx={{
-                backgroundColor: "#D946EF", // Book now button color
+                backgroundColor: "#D946EF",
                 color: "#ffffff",
                 "&:hover": { backgroundColor: "#C71585" },
                 fontSize: { xs: "0.85rem", sm: "0.9rem" },

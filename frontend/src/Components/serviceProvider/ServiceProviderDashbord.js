@@ -1,6 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import axios from 'axios';
+import {
+  Box,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material';
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 import './AddEmployee.css';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
@@ -12,7 +19,6 @@ const SuccessMessage = ({ message, onClose, screenWidth }) => {
   }, [onClose]);
 
   const isAddService = message.toLowerCase().includes('added');
-  const isMobile = screenWidth <= 768;
 
   return createPortal(
     <>
@@ -50,7 +56,7 @@ const SuccessMessage = ({ message, onClose, screenWidth }) => {
 const AdminPage = () => {
   const [employees, setEmployees] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const employeesPerPage = 4;
+  const employeesPerPage = 1;
   const [showForm, setShowForm] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
@@ -64,13 +70,17 @@ const AdminPage = () => {
   const [errors, setErrors] = useState({});
   const [showSuccess, setShowSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
-
+  const [expandedEmployee, setExpandedEmployee] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     salary: '',
     experience: ''
   });
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
   const svgIconRef = useRef(null);
 
   useEffect(() => {
@@ -105,7 +115,7 @@ const AdminPage = () => {
       const response = await axios.get(`${BASE_URL}/api/admin/get-manpower/${email}`);
       setEmployees(response.data.reverse());
     } catch (error) {
-      // console.error('Error fetching employees:', error);
+      console.error('Error fetching employees:', error);
     }
   };
 
@@ -225,7 +235,7 @@ const AdminPage = () => {
     setEditIndex(globalIndex);
     setShowForm(true);
     setErrors({});
-    if (screenWidth <= 768) {
+    if (isMobile) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -251,7 +261,7 @@ const AdminPage = () => {
           setCurrentPage(totalPages);
         }
       } catch (error) {
-        // console.error('Error deleting employee:', error);
+        console.error('Error deleting employee:', error);
       }
     }, 1000);
   };
@@ -269,6 +279,10 @@ const AdminPage = () => {
     setShowDustbin(false);
   };
 
+  const toggleAccordion = (employeeId) => {
+    setExpandedEmployee(expandedEmployee === employeeId ? null : employeeId);
+  };
+
   const indexOfLastEmployee = currentPage * employeesPerPage;
   const indexOfFirstEmployee = indexOfLastEmployee - employeesPerPage;
   const currentEmployees = employees.slice(indexOfFirstEmployee, indexOfLastEmployee);
@@ -277,16 +291,35 @@ const AdminPage = () => {
   const handleNextPage = () => {
     if (currentPage < totalPages) {
       setCurrentPage(currentPage + 1);
+      setExpandedEmployee(null);
     }
   };
 
   const handlePreviousPage = () => {
     if (currentPage > 1) {
       setCurrentPage(currentPage - 1);
+      setExpandedEmployee(null);
     }
   };
 
-  const isMobile = screenWidth <= 768;
+  const getPaginationRange = () => {
+    const rangeSize = 5;
+    const halfRange = Math.floor(rangeSize / 2);
+    let start = Math.max(1, currentPage - halfRange);
+    let end = Math.min(totalPages, start + rangeSize - 1);
+
+    if (end === totalPages) {
+      start = Math.max(1, end - rangeSize + 1);
+    }
+
+    const pages = Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    const showLeftEllipsis = start > 1;
+    const showRightEllipsis = end < totalPages;
+
+    return { pages, showLeftEllipsis, showRightEllipsis };
+  };
+
+  const { pages, showLeftEllipsis, showRightEllipsis } = getPaginationRange();
 
   return (
     <div className="admin-page">
@@ -479,99 +512,114 @@ const AdminPage = () => {
             {currentEmployees.map((emp, index) => (
               <div
                 key={emp._id}
-                className={`employee-card ${
-                  deletingEmployeeId === emp._id ? 'deleting' : ''
-                }`}
-                style={{
-                  animationDelay: `${index * 0.1}s`
-                }}
+                className={`employee-card ${deletingEmployeeId === emp._id ? 'deleting' : ''}`}
+                style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className="employee-field">
-                  <strong className="field-label">Name:</strong>
-                  <span className="field-value">{emp.name}</span>
+                <div
+                  className="accordion-header"
+                  onClick={() => toggleAccordion(emp._id)}
+                  role="button"
+                  aria-expanded={expandedEmployee === emp._id}
+                  aria-controls={`accordion-content-${emp._id}`}
+                >
+                  <span className="accordion-title">{emp.name}</span>
+                  <svg
+                    className={`accordion-icon ${expandedEmployee === emp._id ? 'rotate' : ''}`}
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
                 </div>
-                <div className="employee-field">
-                  <strong className="field-label">Phone:</strong>
-                  <span className="field-value">{emp.phone}</span>
-                </div>
-                <div className="employee-field">
-                  <strong className="field-label">Salary:</strong>
-                  <span className="field-value">₹{emp.salary}</span>
-                </div>
-                <div className="employee-field">
-                  <strong className="field-label">Experience:</strong>
-                  <span className="field-value">{emp.experience}</span>
-                </div>
-                <div className="employee-field">
-                  <strong className="field-label">Actions:</strong>
-                  <div className="action-buttons">
-                    <div className="action-wrapper">
-                      <button
-                        className="edit-btn"
-                        onClick={() => handleEdit(index)}
-                        onMouseEnter={() =>
-                          setShowTooltip((prev) => ({
-                            ...prev,
-                            [`edit_${emp._id}`]: true
-                          }))
-                        }
-                        onMouseLeave={() =>
-                          setShowTooltip((prev) => ({
-                            ...prev,
-                            [`edit_${emp._id}`]: false
-                          }))
-                        }
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                          className="edit-icon"
+                <div
+                  id={`accordion-content-${emp._id}`}
+                  className={`accordion-content ${expandedEmployee === emp._id ? 'expanded' : ''}`}
+                >
+                  <div className="employee-field">
+                    <strong className="field-label">Phone:</strong>
+                    <span className="field-value">{emp.phone}</span>
+                  </div>
+                  <div className="employee-field">
+                    <strong className="field-label">Salary:</strong>
+                    <span className="field-value">₹{emp.salary}</span>
+                  </div>
+                  <div className="employee-field">
+                    <strong className="field-label">Experience:</strong>
+                    <span className="field-value">{emp.experience}</span>
+                  </div>
+                  <div className="employee-field">
+                    <strong className="field-label">Actions:</strong>
+                    <div className="action-buttons">
+                      <div className="action-wrapper">
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleEdit(index)}
+                          onMouseEnter={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: true }))
+                          }
+                          onMouseLeave={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: false }))
+                          }
+                          onTouchStart={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: true }))
+                          }
+                          onTouchEnd={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: false }))
+                          }
                         >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth="2"
-                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
-                          />
-                        </svg>
-                        Edit
-                      </button>
-                      <span
-                        className={`tooltip ${
-                          showTooltip[`edit_${emp._id}`] ? 'visible' : ''
-                        }`}
-                      >
-                        Edit
-                      </span>
-                    </div>
-                    <div className="action-wrapper">
-                      <button
-                        className="edit-btn"
-                        onClick={() => handleDeleteClick(emp._id)}
-                        onMouseEnter={() =>
-                          setShowTooltip((prev) => ({
-                            ...prev,
-                            [`delete_${emp._id}`]: true
-                          }))
-                        }
-                        onMouseLeave={() =>
-                          setShowTooltip((prev) => ({
-                            ...prev,
-                            [`delete_${emp._id}`]: false
-                          }))
-                        }
-                      >
-                       Delete
-                      </button>
-                      <span
-                        className={`tooltip ${
-                          showTooltip[`delete_${emp._id}`] ? 'visible' : ''
-                        }`}
-                      >
-                        Delete
-                      </span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            className="edit-icon"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                            />
+                          </svg>
+                          Edit
+                        </button>
+                        <span
+                          className={`tooltip ${showTooltip[`edit_${emp._id}`] ? 'visible' : ''}`}
+                        >
+                          Edit
+                        </span>
+                      </div>
+                      <div className="action-wrapper">
+                        <button
+                          className="edit-btn"
+                          onClick={() => handleDeleteClick(emp._id)}
+                          onMouseEnter={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: true }))
+                          }
+                          onMouseLeave={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: false }))
+                          }
+                          onTouchStart={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: true }))
+                          }
+                          onTouchEnd={() =>
+                            setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: false }))
+                          }
+                        >
+                          Delete
+                        </button>
+                        <span
+                          className={`tooltip ${showTooltip[`delete_${emp._id}`] ? 'visible' : ''}`}
+                        >
+                          Delete
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -598,9 +646,7 @@ const AdminPage = () => {
                   <tr
                     key={emp._id}
                     className={deletingEmployeeId === emp._id ? 'deleting' : ''}
-                    style={{
-                      animationDelay: `${(indexOfFirstEmployee + index) * 0.1}s`
-                    }}
+                    style={{ animationDelay: `${(indexOfFirstEmployee + index) * 0.1}s` }}
                   >
                     <td>{emp.name}</td>
                     <td>{emp.phone}</td>
@@ -613,16 +659,10 @@ const AdminPage = () => {
                             className="edit-btn"
                             onClick={() => handleEdit(index)}
                             onMouseEnter={() =>
-                              setShowTooltip((prev) => ({
-                                ...prev,
-                                [`edit_${emp._id}`]: true
-                              }))
+                              setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: true }))
                             }
                             onMouseLeave={() =>
-                              setShowTooltip((prev) => ({
-                                ...prev,
-                                [`edit_${emp._id}`]: false
-                              }))
+                              setShowTooltip((prev) => ({ ...prev, [`edit_${emp._id}`]: false }))
                             }
                           >
                             <svg
@@ -642,9 +682,7 @@ const AdminPage = () => {
                             Edit
                           </button>
                           <span
-                            className={`tooltip ${
-                              showTooltip[`edit_${emp._id}`] ? 'visible' : ''
-                            }`}
+                            className={`tooltip ${showTooltip[`edit_${emp._id}`] ? 'visible' : ''}`}
                           >
                             Edit
                           </span>
@@ -654,24 +692,16 @@ const AdminPage = () => {
                             className="edit-btn"
                             onClick={() => handleDeleteClick(emp._id)}
                             onMouseEnter={() =>
-                              setShowTooltip((prev) => ({
-                                ...prev,
-                                [`delete_${emp._id}`]: true
-                              }))
+                              setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: true }))
                             }
                             onMouseLeave={() =>
-                              setShowTooltip((prev) => ({
-                                ...prev,
-                                [`delete_${emp._id}`]: false
-                              }))
+                              setShowTooltip((prev) => ({ ...prev, [`delete_${emp._id}`]: false }))
                             }
                           >
-                         Delete
+                            Delete
                           </button>
                           <span
-                            className={`tooltip ${
-                              showTooltip[`delete_${emp._id}`] ? 'visible' : ''
-                            }`}
+                            className={`tooltip ${showTooltip[`delete_${emp._id}`] ? 'visible' : ''}`}
                           >
                             Delete
                           </span>
@@ -694,25 +724,160 @@ const AdminPage = () => {
       </div>
 
       {employees.length > employeesPerPage && (
-        <div className="pagination">
-          <button
-            className="pagination-btn"
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: { xs: 1, sm: 2 },
+            mt: 3,
+            flexWrap: 'nowrap',
+          }}
+        >
+          <Box
+            component="button"
             onClick={handlePreviousPage}
             disabled={currentPage === 1}
+            sx={{
+              p: { xs: '8px', sm: '10px 24px' },
+              borderRadius: '30px',
+              border: 'none',
+              background: '#fb646b',
+              color: '#ffffff',
+              fontSize: { xs: '0.85rem', sm: '0.9rem' },
+              fontWeight: '600',
+              cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+              minWidth: { xs: '40px', sm: '100px' },
+              height: { xs: '40px', sm: 'auto' },
+              '&:hover': {
+                ...(currentPage !== 1
+                  ? {
+                      background: '#ffffff',
+                      color: '#0e0f0f',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                    }
+                  : {}),
+              },
+              '&:disabled': {
+                opacity: 0.5,
+                boxShadow: 'none',
+              },
+            }}
           >
-            Previous
-          </button>
-          <span className="pagination-info">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            className="pagination-btn"
+            {isMobile ? <ArrowBackIos sx={{ fontSize: '1rem' }} /> : 'Previous'}
+          </Box>
+          <Box
+            sx={{
+              display: 'flex',
+              gap: { xs: 0.5, sm: 1 },
+              alignItems: 'center',
+              flexWrap: 'nowrap',
+            }}
+          >
+            {showLeftEllipsis && (
+              <Box
+                sx={{
+                  fontSize: { xs: '0.85rem', sm: '1rem' },
+                  color: '#0e0f0f',
+                  p: { xs: '6px', sm: '8px' },
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                ...
+              </Box>
+            )}
+            {pages.map((page) => (
+              <Box
+                key={page}
+                component="button"
+                onClick={() => {
+                  setCurrentPage(page);
+                  setExpandedEmployee(null);
+                }}
+                sx={{
+                  p: { xs: '6px', sm: '8px' },
+                  borderRadius: '50%',
+                  border: 'none',
+                  background: page === currentPage ? '#fb646b' : 'transparent',
+                  color: page === currentPage ? '#ffffff' : '#0e0f0f',
+                  fontSize: { xs: '0.85rem', sm: '1rem' },
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  minWidth: { xs: '30px', sm: '40px' },
+                  height: { xs: '30px', sm: '40px' },
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  transition: 'all 0.3s ease',
+                  '&:hover': {
+                    background: page === currentPage ? '#e65a60' : '#f1f5f9',
+                    transform: 'scale(1.1)',
+                  },
+                }}
+              >
+                {page}
+              </Box>
+            ))}
+            {showRightEllipsis && (
+              <Box
+                sx={{
+                  fontSize: { xs: '0.85rem', sm: '1rem' },
+                  color: '#0e0f0f',
+                  p: { xs: '6px', sm: '8px' },
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
+                ...
+              </Box>
+            )}
+          </Box>
+          <Box
+            component="button"
             onClick={handleNextPage}
             disabled={currentPage === totalPages}
+            sx={{
+              p: { xs: '8px', sm: '10px 24px' },
+              borderRadius: '30px',
+              border: 'none',
+              background: '#fb646b',
+              color: '#ffffff',
+              fontSize: { xs: '0.85rem', sm: '0.9rem' },
+              fontWeight: '600',
+              cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+              minWidth: { xs: '40px', sm: '100px' },
+              height: { xs: '40px', sm: 'auto' },
+              '&:hover': {
+                ...(currentPage !== totalPages
+                  ? {
+                      background: '#ffffff',
+                      color: '#0e0f0f',
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                    }
+                  : {}),
+              },
+              '&:disabled': {
+                opacity: 0.5,
+                boxShadow: 'none',
+              },
+            }}
           >
-            Next
-          </button>
-        </div>
+            {isMobile ? <ArrowForwardIos sx={{ fontSize: '1rem' }} /> : 'Next'}
+          </Box>
+        </Box>
       )}
     </div>
   );

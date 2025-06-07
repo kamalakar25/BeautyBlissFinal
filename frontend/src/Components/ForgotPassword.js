@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Typography, Paper, TextField, Button, InputAdornment, IconButton } from '@mui/material';
+import { Box, Typography, TextField, Button, InputAdornment, IconButton, useMediaQuery, useTheme } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import { motion } from 'framer-motion';
 import axios from 'axios';
+import Ravi1 from './Assets/ForgotPasswordImage.jpeg'; // Adjust the path based on your project structure
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -29,7 +30,10 @@ const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
   useEffect(() => {
     if (location.state) {
@@ -64,7 +68,6 @@ const ForgotPassword = () => {
       alert(response.data.message); // Notify user that OTP was sent
       setIsOtpSent(true);
     } catch (error) {
-      // console.error('Error sending OTP:', error);
       alert(error.response?.data?.message || 'Failed to send OTP');
     } finally {
       setIsLoading(false);
@@ -94,7 +97,6 @@ const ForgotPassword = () => {
         setErrors((prev) => ({ ...prev, otp: 'Invalid OTP' }));
       }
     } catch (error) {
-      // console.error('Error verifying OTP:', error);
       alert(error.response?.data?.message || 'Failed to verify OTP');
       setErrors((prev) => ({ ...prev, otp: error.response?.data?.message || 'Server error' }));
     } finally {
@@ -149,7 +151,6 @@ const ForgotPassword = () => {
       alert(response.data.message); // Show success message
       navigate('/login'); // Redirect to login page
     } catch (error) {
-      // console.error('Error updating password:', error);
       alert(error.response?.data?.message || 'Failed to update password');
     } finally {
       setIsLoading(false);
@@ -159,33 +160,45 @@ const ForgotPassword = () => {
   const inputSx = {
     mb: 2,
     '& .MuiInputBase-root': {
-      borderRadius: '5px',
-      backgroundColor: 'transparent',
+      borderRadius: '8px',
+      backgroundColor: '#f5f5f5',
       color: 'black',
-      boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.4)',
+      border: 'none',
       '&:hover, &.Mui-focused': {
-        borderColor: '#1abc9c',
-        transform: 'scale(1.05)',
+        borderColor: '#ff6f91',
+        transform: 'scale(1.02)',
       },
     },
     '& .MuiInputBase-input': { color: 'black' },
-    '& .MuiInputLabel-root': { color: 'black', '&.Mui-focused': { color: 'black' } },
-    '& .MuiFormHelperText-root': { color: 'black' },
+    '& .MuiInputLabel-root': { color: '#555', '&.Mui-focused': { color: '#ff6f91' } },
+    '& .MuiFormHelperText-root': { color: '#ff6f91' },
   };
 
   const buttonSx = {
-    height: 56,
-    borderRadius: '5px',
-    backgroundColor: '#201548',
-    color: '#fff',
-    fontSize: { xs: '14px', sm: '16px' },
+    height: 50,
+    borderRadius: '25px',
+    background: 'linear-gradient(135deg, #ff6f91 0%, #ff8aa5 100%)',
+    color: '#ffffff',
+    fontSize: { xs: '16px', sm: '18px' },
+    fontWeight: 'bold',
+    textTransform: 'none',
     '&:hover': {
-      backgroundColor: '#201548',
+      background: 'linear-gradient(135deg, #ff8aa5 0%, #ff6f91 100%)',
     },
     '&:disabled': {
-      backgroundColor: '#7f8c8d',
-      color: '#bdc3c7',
+      backgroundColor: '#d3d3d3',
+      color: '#a9a9a9',
     },
+  };
+
+  // Animation variants for Framer Motion (same as Login component)
+  const childVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  const imageVariants = {
+    hover: { scale: 1.1, transition: { duration: 0.5 } },
   };
 
   return (
@@ -193,45 +206,70 @@ const ForgotPassword = () => {
       sx={{
         minHeight: '100vh',
         display: 'flex',
+        flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundImage: 'url(https://images.pexels.com/photos/7750102/pexels-photo-7750102.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: { xs: 'scroll', md: 'fixed' },
+        background: 'linear-gradient(135deg, #ffe6e6 0%, #fff5f5 100%)',
         position: 'relative',
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(0, 0, 0, 0.5)',
-          zIndex: 1,
-        },
+        px: { xs: 2, sm: 0 },
       }}
     >
-      <Paper
-        elevation={3}
+      
+      
+      {/* Content Container */}
+      <Box
         sx={{
           padding: { xs: '20px', sm: '30px' },
-          // backgroundImage: 'linear-gradient(135deg,rgba(32, 21, 72, 0.07) 0%, #201548 100%)',
-          borderRadius: '10px',
           width: { xs: '90vw', sm: '400px' },
           maxWidth: '450px',
-          zIndex: 2,
           textAlign: 'center',
-          border: '1px solid #201548',
         }}
       >
-        <Typography variant="h4" sx={{ mb: 2, color: '#0e0f0f' }}>
+        <Typography
+          variant="h5"
+          sx={{
+            mb: 1,
+            color: '#333',
+            fontWeight: 'bold',
+          }}
+        >
           Forgot Password
         </Typography>
-        <Typography variant="body1" sx={{ mb: 1, color: '#0e0f0f' }}>
+
+        {/* Add Image After "Forgot Password" Title - Visible on Mobile Only */}
+        {isMobile && (
+          <motion.div variants={childVariants} whileHover='hover'>
+            <motion.img
+              src={Ravi1}
+              alt='Login illustration'
+              variants={imageVariants}
+              style={{
+                width: '160px',
+                height: '160px',
+                borderRadius: '20px',
+                objectFit: 'cover',
+                marginBottom: '16px',
+              }}
+            />
+          </motion.div>
+        )}
+
+        <Typography
+          variant="body1"
+          sx={{
+            mb: 1,
+            color: '#666',
+          }}
+        >
           <strong>Email:</strong> {formData.email || 'Not provided'}
         </Typography>
-        <Typography variant="body1" sx={{ mb: 2, color: '#0e0f0f' }}>
+        <Typography
+          variant="body1"
+          sx={{
+            mb: 3,
+            color: '#666',
+          }}
+        >
           <strong>Role:</strong> {formData.designation || 'Not provided'}
         </Typography>
 
@@ -244,7 +282,7 @@ const ForgotPassword = () => {
               fullWidth
               sx={buttonSx}
             >
-              {isLoading ? 'Sending OTP...' : 'Send OTP'}
+              {isLoading ? 'Sending OTP...' : 'SEND OTP'}
             </Button>
           </motion.div>
         ) : !isOtpVerified ? (
@@ -292,7 +330,7 @@ const ForgotPassword = () => {
                     <IconButton
                       onClick={() => setShowPassword((prev) => !prev)}
                       disabled={isLoading}
-                      sx={{ color: 'black' }}
+                      sx={{ color: '#666' }}
                     >
                       {showPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -317,7 +355,7 @@ const ForgotPassword = () => {
                     <IconButton
                       onClick={() => setShowConfirmPassword((prev) => !prev)}
                       disabled={isLoading}
-                      sx={{ color: 'black' }}
+                      sx={{ color: '#666' }}
                     >
                       {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
                     </IconButton>
@@ -338,7 +376,7 @@ const ForgotPassword = () => {
             </motion.div>
           </>
         )}
-      </Paper>
+      </Box>
     </Box>
   );
 };

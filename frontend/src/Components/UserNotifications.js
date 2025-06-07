@@ -121,38 +121,37 @@ const UserNotifications = () => {
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             animation: fadeIn 0.5s ease-out;
-            border-left: 4px solid rgb(245 100 169);
             position: relative;
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            background-color: #f6c4d2;
+            color: #fff;
+            gap: 1.5rem;
           }
-         .notification-box.unread {
-            border-left: 4px solid rgb(252, 98, 84);
-            background-color:rgb(226, 120, 110) !important;
-          }
+         .notification-box.unread[data-type="Booking"] {
+    background-color: rgb(255, 105, 180) !important;
+    color: white !important; /* Or any other readable color */
+}
+
           .notification-box:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
           }
           .notification-content {
             flex: 1;
-            color: #0e0f0f;
+            color: #000;
             font-size: 0.9rem;
           }
           .notification-content h4 {
             margin: 0;
             font-size: 1.1rem;
             font-weight: 600;
+            color: #000;
           }
           .notification-content p {
-            margin: 0.5rem 0 0;
-            color: #555;
-          }
-          .notification-time {
-            font-size: 0.8rem;
-            color: #888;
-            text-align: right;
+            margin: 0.2rem 0 0;
+            color: #000;
+            font-size: 0.9rem;
           }
           .modal {
             position: fixed;
@@ -169,8 +168,7 @@ const UserNotifications = () => {
           .modal-content {
             padding: 2rem;
             border-radius: 12px;
-            width: 90%;
-            max-width: 600px;
+            
             max-height: 80vh;
             overflow-y: auto;
             position: relative;
@@ -208,22 +206,24 @@ const UserNotifications = () => {
               padding: 0 1rem;
             }
             .notification-box {
-              flex-direction: column;
+              flex-direction: row;
               align-items: flex-start;
-              gap: 0.5rem;
+              gap: 1rem;
+            }
+            .notification-content {
+              display: flex;
+              flex-direction: column;
             }
             .notification-content h4 {
               font-size: 1rem;
             }
             .notification-content p {
               font-size: 0.85rem;
-            }
-            .notification-time {
-              font-size: 0.75rem;
+              margin: 0;
             }
             .modal-content {
               padding: 1.5rem;
-              width: 95%;
+          
             }
             .modal-content p {
               font-size: 0.9rem;
@@ -269,33 +269,41 @@ const UserNotifications = () => {
               }`}
               onClick={() => handleNotificationClick(notification)}
               style={{
-                backgroundColor: "rgb(235, 217, 222)",
+                backgroundColor: "#f6c4d2",
               }}
+              data-type={notification.type}
             >
-              <div className="notification-content">
-                <h4 style={{ color: "rgb(24, 4, 20)" }}>
-                  {notification.title}
-                </h4>
-                <p>{notification.message}</p>
-                {notification.type === "Booking" && (
-                  <p>
-                    <strong style={{ color: "rgb(24, 4, 20)" }}>
-                      Booking ID:
-                    </strong>{" "}
-                    {notification.bookingId}
-                  </p>
-                )}
-                {notification.type === "NewService" && (
-                  <p>
-                    <strong style={{ color: "rgb(24, 4, 20)" }}>
-                      Service ID:
-                    </strong>{" "}
-                    {notification.serviceId}
-                  </p>
-                )}
+              <div
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  background: "linear-gradient(135deg, #f5c1cc 0%, #e89fb3 100%)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  flexShrink: 0,
+                }}
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#fff"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="16" y1="2" x2="16" y2="6"></line>
+                  <line x1="8" y1="2" x2="8" y2="6"></line>
+                  <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
               </div>
-              <div className="notification-time">
-                {formatDateTime(notification.createdAt)}
+              <div className="notification-content">
+                <h4>{notification.title}</h4>
+                <p>{notification.message}</p>
               </div>
             </div>
           ))
@@ -328,7 +336,7 @@ const UserNotifications = () => {
                   {selectedNotification.title}
                 </h5>
                 <button
-                  type="button"
+                  type-button
                   className="btn-close"
                   aria-label="Close"
                   onClick={closeModal}
@@ -353,12 +361,6 @@ const UserNotifications = () => {
                   <>
                     <p>
                       <strong style={{ color: "rgb(213 11 139)" }}>
-                        Booking ID:
-                      </strong>{" "}
-                      {selectedNotification.bookingId}
-                    </p>
-                    <p>
-                      <strong style={{ color: "rgb(213 11 139)" }}>
                         User Name:
                       </strong>{" "}
                       {selectedNotification.userDetails?.name || "N/A"}
@@ -376,14 +378,6 @@ const UserNotifications = () => {
                       {selectedNotification.userDetails?.phone || "N/A"}
                     </p>
                   </>
-                )}
-                {selectedNotification.type === "NewService" && (
-                  <p>
-                    <strong style={{ color: "rgb(213 11 139)" }}>
-                      Service ID:
-                    </strong>{" "}
-                    {selectedNotification.serviceId}
-                  </p>
                 )}
               </div>
             </div>

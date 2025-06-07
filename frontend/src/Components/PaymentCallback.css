@@ -1,0 +1,1595 @@
+/* Highly Custom and Unique CSS Design */
+
+/* Custom Properties */
+:root {
+    --payment-callback-primary-hue: 25;
+    --payment-callback-primary-color: hsl(var(--payment-callback-primary-hue), 76%, 31%);
+    --payment-callback-primary-light: hsl(var(--payment-callback-primary-hue), 65%, 45%);
+    --payment-callback-primary-dark: hsl(var(--payment-callback-primary-hue), 80%, 20%);
+    --payment-callback-primary-gradient: linear-gradient(135deg, var(--payment-callback-primary-color), var(--payment-callback-primary-light));
+  
+    --payment-callback-accent-hue: 35;
+    --payment-callback-accent-color: hsl(var(--payment-callback-accent-hue), 90%, 60%);
+    --payment-callback-accent-light: hsl(var(--payment-callback-accent-hue), 90%, 70%);
+    --payment-callback-accent-dark: hsl(var(--payment-callback-accent-hue), 90%, 50%);
+  
+    --payment-callback-success-color: #10b981;
+    --payment-callback-error-color: #ef4444;
+    --payment-callback-warning-color: #f59e0b;
+  
+    --payment-callback-text-primary: #1f2937;
+    --payment-callback-text-secondary: #6b7280;
+    --payment-callback-text-light: #9ca3af;
+  
+    --payment-callback-background-primary: #ffffff;
+    --payment-callback-background-secondary: #f9fafb;
+    --payment-callback-background-tertiary: #f3f4f6;
+  
+    --payment-callback-border-color: #e5e7eb;
+  
+    --payment-callback-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --payment-callback-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --payment-callback-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --payment-callback-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  
+    --payment-callback-radius-sm: 6px;
+    --payment-callback-radius-md: 12px;
+    --payment-callback-radius-lg: 20px;
+    --payment-callback-radius-xl: 30px;
+  
+    --payment-callback-spacing-xs: 4px;
+    --payment-callback-spacing-sm: 8px;
+    --payment-callback-spacing-md: 16px;
+    --payment-callback-spacing-lg: 24px;
+    --payment-callback-spacing-xl: 32px;
+    --payment-callback-spacing-2xl: 48px;
+  
+    --payment-callback-transition-fast: 0.2s;
+    --payment-callback-transition-normal: 0.3s;
+    --payment-callback-transition-slow: 0.5s;
+  
+    --payment-callback-font-primary: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --payment-callback-font-mono: "Space Mono", "Monaco", "Menlo", monospace;
+}
+
+/* Import Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap");
+
+/* Custom Selection */
+::selection {
+    /* background: var(--payment-callback-primary-light); */
+    color: white;
+}
+
+/* App-like Mobile First Design */
+.payment-callback-app-container {
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-app-container::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    /* background: radial-gradient(circle at center, transparent 30%, rgba(255, 255, 255, 0.03) 70%); */
+    animation: rotate 60s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.payment-callback-app-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%23ffffff' fill-opacity='0.05' fill-rule='evenodd'/%3E%3C/svg%3E");
+    z-index: 0;
+    pointer-events: none;
+}
+
+.payment-callback-app-content {
+    max-width: 428px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    position: relative;
+    z-index: 1;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* App Header */
+.payment-callback-app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    background: #fad9e3;
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.payment-callback-app-header::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(
+      90deg,
+      transparent 0%,
+      var(--payment-callback-primary-light) 20%,
+      var(--payment-callback-accent-color) 50%,
+      var(--payment-callback-primary-light) 80%,
+      transparent 100%
+    );
+    opacity: 0.7;
+}
+
+.payment-callback-back-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-back-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-callback-back-button:hover {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+.payment-callback-back-button:hover::before {
+    opacity: 0.5;
+}
+
+.payment-callback-back-button:active {
+    transform: scale(0.95);
+}
+
+.payment-callback-back-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--payment-callback-primary-color);
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-app-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--payment-callback-primary-color);
+    margin: 0;
+    position: relative;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    letter-spacing: 0.5px;
+}
+
+.payment-callback-app-title::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: var(--payment-callback-primary-gradient);
+    transform: scaleX(0.7);
+    opacity: 0.7;
+    border-radius: 2px;
+}
+
+.payment-callback-header-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.payment-callback-share-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-share-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-callback-share-button:hover {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.payment-callback-share-button:hover::before {
+    opacity: 0.5;
+}
+
+.payment-callback-share-button:active {
+    transform: scale(0.95);
+}
+
+.payment-callback-share-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--payment-callback-primary-color);
+    position: relative;
+    z-index: 1;
+}
+
+/* Progress Steps */
+.payment-callback-progress-container {
+    padding: 24px 20px;
+    margin: 20px 16px;
+    border-radius: var(--payment-callback-radius-lg);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-progress-container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: -1;
+    border-radius: inherit;
+}
+
+.payment-callback-progress-container::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0));
+    border-radius: inherit;
+    z-index: -1;
+}
+
+.payment-callback-progress-track {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    padding: 0 10px;
+}
+
+.payment-callback-progress-track::before {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    right: 30px;
+    height: 4px;
+    background: #e5e7eb;
+    border-radius: 4px;
+    z-index: 1;
+}
+
+.payment-callback-progress-track::after {
+    content: "";
+    position: absolute;
+    top: 20px;
+    left: 30px;
+    width: 66%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--payment-callback-primary-color), var(--payment-callback-accent-color));
+    border-radius: 4px;
+    z-index: 2;
+    box-shadow: 0 0 10px rgba(139, 69, 19, 0.3);
+}
+
+.payment-callback-progress-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 3;
+}
+
+.payment-callback-step-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    background: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.payment-callback-step-circle::before {
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    right: 2px;
+    bottom: 2px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f9fafb, #f3f4f6);
+    z-index: -1;
+}
+
+.payment-callback-progress-step.payment-callback-completed .payment-callback-step-circle {
+    background: var(--payment-callback-primary-gradient);
+    box-shadow: 0 0 0 4px rgba(139, 69, 19, 0.1), 0 8px 16px rgba(139, 69, 19, 0.2);
+}
+
+.payment-callback-progress-step.payment-callback-completed .payment-callback-step-circle::before {
+    background: var(--payment-callback-primary-gradient);
+}
+
+.payment-callback-step-number {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--payment-callback-text-secondary);
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-progress-step.payment-callback-completed .payment-callback-step-number {
+    color: white;
+}
+
+.payment-callback-step-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--payment-callback-text-secondary);
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.payment-callback-progress-step.payment-callback-completed .payment-callback-step-label {
+    color: var(--payment-callback-primary-color);
+}
+
+/* Loading Screen */
+.payment-callback-loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+}
+
+.payment-callback-loading-content {
+    text-align: center;
+    max-width: 300px;
+    position: relative;
+}
+
+.payment-callback-loading-content::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: var(--payment-callback-radius-lg);
+    z-index: -1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-loading-spinner-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.payment-callback-loading-spinner {
+    width: 60px;
+    height: 60px;
+    color: var(--payment-callback-primary-color);
+    animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+    filter: drop-shadow(0 0 8px rgba(139, 69, 19, 0.3));
+}
+
+.payment-callback-loading-pulse {
+    position: absolute;
+    top: -15px;
+    left: -15px;
+    right: -15px;
+    bottom: -15px;
+    border: 3px solid rgba(139, 69, 19, 0.2);
+    border-radius: 50%;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+.payment-callback-loading-pulse::after {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    border: 2px solid rgba(139, 69, 19, 0.1);
+    border-radius: 50%;
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite 0.5s;
+}
+
+.payment-callback-loading-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--payment-callback-primary-color);
+    margin: 0 0 8px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-loading-text {
+    font-size: 15px;
+    color: var(--payment-callback-text-secondary);
+    margin: 0 0 30px 0;
+    line-height: 1.5;
+}
+
+.payment-callback-loading-bar {
+    width: 100%;
+    height: 6px;
+    background: rgba(139, 69, 19, 0.1);
+    border-radius: 3px;
+    overflow: hidden;
+    position: relative;
+}
+
+.payment-callback-loading-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--payment-callback-primary-color), var(--payment-callback-accent-color), var(--payment-callback-primary-color));
+    background-size: 200% 100%;
+    border-radius: 3px;
+    animation: shimmer 2s infinite;
+}
+
+/* Error Screen */
+.payment-callback-error-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    padding: 40px 20px;
+}
+
+.payment-callback-error-content {
+    text-align: center;
+    max-width: 320px;
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-error-content::before {
+    content: "";
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: var(--payment-callback-radius-lg);
+    z-index: -1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-error-icon-container {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 90px;
+    height: 90px;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    border-radius: 50%;
+    margin-bottom: 24px;
+    position: relative;
+    box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+}
+
+.payment-callback-error-icon-container::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
+    background: linear-gradient(135deg, rgba(254, 226, 226, 0.5), rgba(254, 202, 202, 0.5));
+    border-radius: 50%;
+    filter: blur(10px);
+    z-index: -1;
+}
+
+.payment-callback-error-icon-container::after {
+    content: "";
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    right: 5px;
+    bottom: 5px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    z-index: -1;
+}
+
+.payment-callback-error-icon {
+    width: 40px;
+    height: 40px;
+    color: #ef4444;
+    filter: drop-shadow(0 2px 4px rgba(239, 68, 68, 0.3));
+}
+
+.payment-callback-error-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #ef4444;
+    margin: 0 0 12px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-error-message {
+    font-size: 15px;
+    color: var(--payment-callback-text-secondary);
+    margin: 0 0 32px 0;
+    line-height: 1.6;
+}
+
+.payment-callback-error-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* Main Content */
+.payment-callback-main-content {
+    padding: 0 16px 100px 16px;
+}
+
+/* Status Card */
+.payment-callback-status-card {
+    border-radius: var(--payment-callback-radius-xl);
+    padding: 30px 24px;
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    transform: translateZ(0);
+}
+
+.payment-callback-status-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    z-index: -2;
+}
+
+.payment-callback-status-card::after {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 60%);
+    opacity: 0.5;
+    z-index: -1;
+    transform: translateZ(0);
+}
+
+.payment-callback-status-card.paid {
+    background: linear-gradient(135deg, rgba(236, 253, 245, 0.8), rgba(209, 250, 229, 0.8));
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.payment-callback-status-card.paid::after {
+    background: radial-gradient(circle at center, rgba(16, 185, 129, 0.2) 0%, transparent 60%);
+}
+
+.payment-callback-status-card.failed {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.8), rgba(254, 226, 226, 0.8));
+    border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.payment-callback-status-card.failed::after {
+    background: radial-gradient(circle at center, rgba(239, 68, 68, 0.2) 0%, transparent 60%);
+}
+
+.payment-callback-status-card.pending {
+    background: linear-gradient(135deg, rgba(255, 251, 235, 0.8), rgba(254, 243, 199, 0.8));
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.payment-callback-status-card.pending::after {
+    background: radial-gradient(circle at center, rgba(245, 158, 11, 0.2) 0%, transparent 60%);
+}
+
+.payment-callback-status-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.payment-callback-status-icon-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-status-icon-container::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    right: 3px;
+    bottom: 3px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+    z-index: 0;
+}
+
+.payment-callback-status-card.paid .payment-callback-status-icon-container {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.payment-callback-status-card.failed .payment-callback-status-icon-container {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.payment-callback-status-card.pending .payment-callback-status-icon-container {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.payment-callback-status-icon {
+    width: 32px;
+    height: 32px;
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-status-icon.payment-callback-success {
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(16, 185, 129, 0.3));
+}
+
+.payment-callback-status-icon.payment-callback-error {
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(239, 68, 68, 0.3));
+}
+
+.payment-callback-status-icon.payment-callback-warning {
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(245, 158, 11, 0.3));
+}
+
+.payment-callback-status-info {
+    flex: 1;
+}
+
+.payment-callback-status-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    position: relative;
+    display: inline-block;
+}
+
+.payment-callback-status-card.paid .payment-callback-status-title {
+    color: #059669;
+}
+
+.payment-callback-status-card.failed .payment-callback-status-title {
+    color: #dc2626;
+}
+
+.payment-callback-status-card.pending .payment-callback-status-title {
+    color: #d97706;
+}
+
+.payment-callback-status-title::after {
+    content: "";
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 1px;
+    transform: scaleX(0.7);
+    transform-origin: left;
+}
+
+.payment-callback-status-card.paid .payment-callback-status-title::after {
+    background: linear-gradient(90deg, #10b981, transparent);
+}
+
+.payment-callback-status-card.failed .payment-callback-status-title::after {
+    background: linear-gradient(90deg, #ef4444, transparent);
+}
+
+.payment-callback-status-card.pending .payment-callback-status-title::after {
+    background: linear-gradient(90deg, #f59e0b, transparent);
+}
+
+.payment-callback-status-subtitle {
+    font-size: 15px;
+    color: var(--payment-callback-text-secondary);
+    margin: 0;
+    line-height: 1.4;
+}
+
+.payment-callback-status-amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--payment-callback-radius-lg);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-status-amount::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0.5;
+    z-index: -1;
+}
+
+.payment-callback-amount-label {
+    font-size: 15px;
+    color: var(--payment-callback-text-secondary);
+    font-weight: 500;
+}
+
+.payment-callback-amount-value {
+    font-size: 24px;
+    font-weight: 800;
+    background: var(--payment-callback-primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 2px 10px rgba(139, 69, 19, 0.2);
+}
+
+/* Unique Receipt Card */
+.payment-callback-receipt-card {
+    border-radius: var(--payment-callback-radius-xl);
+    margin-bottom: 30px;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transform: translateZ(0);
+}
+
+.payment-callback-receipt-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, var(--payment-callback-primary-color), var(--payment-callback-accent-color), var(--payment-callback-primary-color));
+    z-index: 10;
+}
+
+.payment-callback-receipt-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--payment-callback-primary-color), var(--payment-callback-primary-light));
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-receipt-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    opacity: 0.2;
+}
+
+.payment-callback-receipt-title-section {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.payment-callback-receipt-icon {
+    width: 28px;
+    height: 28px;
+    color: white;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.payment-callback-receipt-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.payment-callback-receipt-subtitle {
+    font-size: 13px;
+    opacity: 0.9;
+    margin: 4px 0 0 0;
+    font-family: var(--payment-callback-font-mono);
+    letter-spacing: 0.5px;
+}
+
+.payment-callback-copy-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-copy-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-callback-copy-button:hover {
+    transform: scale(1.1);
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.payment-callback-copy-button:hover::before {
+    opacity: 0.5;
+}
+
+.payment-callback-copy-button:active {
+    transform: scale(0.95);
+}
+
+.payment-callback-copy-icon {
+    width: 18px;
+    height: 18px;
+    color: white;
+    position: relative;
+    z-index: 1;
+}
+
+/* Business Section */
+.payment-callback-business-section {
+    padding: 24px;
+    background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.payment-callback-business-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url("data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23000000' fill-opacity='0.03' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E");
+    z-index: 0;
+}
+
+.payment-callback-business-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 18px;
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-business-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--payment-callback-primary-color);
+    filter: drop-shadow(0 2px 4px rgba(139, 69, 19, 0.2));
+}
+
+.payment-callback-business-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--payment-callback-primary-color);
+    margin: 0;
+    position: relative;
+}
+
+.payment-callback-business-name::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 40%;
+    height: 2px;
+    background: var(--payment-callback-primary-gradient);
+    border-radius: 1px;
+}
+
+.payment-callback-business-contacts {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    position: relative;
+    z-index: 1;
+}
+
+.payment-callback-contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--payment-callback-radius-md);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.payment-callback-contact-item:hover {
+    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.payment-callback-contact-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--payment-callback-primary-color);
+}
+
+.payment-callback-contact-item span {
+    font-size: 14px;
+    color: var(--payment-callback-text-secondary);
+}
+
+/* Details Section */
+.payment-callback-details-section,
+.payment-callback-service-section,
+.payment-callback-summary-section,
+.payment-callback-transaction-section {
+    padding: 24px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.payment-callback-details-section::before,
+.payment-callback-service-section::before,
+.payment-callback-summary-section::before,
+.payment-callback-transaction-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: var(--payment-callback-primary-gradient);
+    opacity: 0.7;
+}
+
+.payment-callback-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--payment-callback-primary-color);
+    margin: 0 0 20px 0;
+    position: relative;
+}
+
+.payment-callback-section-title::after {
+    content: "";
+    position: absolute;
+    bottom: -6px;
+    left: 0;
+    width: 60px;
+    height: 2px;
+    background: var(--payment-callback-primary-gradient);
+    border-radius: 1px;
+}
+
+.payment-callback-section-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--payment-callback-primary-color);
+    filter: drop-shadow(0 2px 4px rgba(139, 69, 19, 0.2));
+}
+
+.payment-callback-details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.payment-callback-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.payment-callback-detail-label {
+    font-size: 13px;
+    color: var(--payment-callback-text-secondary);
+    font-weight: 500;
+}
+
+.payment-callback-detail-value {
+    font-size: 15px;
+    color: var(--payment-callback-text-primary);
+    font-weight: 600;
+}
+
+/* Service Section */
+.payment-callback-service-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.payment-callback-service-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--payment-callback-radius-md);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.3s ease;
+}
+
+.payment-callback-service-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-service-item.payment-callback-primary-service {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+}
+
+.payment-callback-service-item.payment-callback-additional-service {
+    background: linear-gradient(135deg, rgba(243, 244, 246, 0.8), rgba(229, 231, 235, 0.8));
+}
+
+.payment-callback-service-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.payment-callback-service-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--payment-callback-text-primary);
+}
+
+.payment-callback-service-type {
+    font-size: 13px;
+    color: var(--payment-callback-text-secondary);
+}
+
+.payment-callback-service-price,
+.payment-callback-service-included {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--payment-callback-primary-color);
+}
+
+.payment-callback-service-included {
+    color: var(--payment-callback-success-color);
+}
+
+.payment-callback-service-divider {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--payment-callback-text-secondary);
+    margin: 12px 0;
+    position: relative;
+    text-align: center;
+}
+
+.payment-callback-service-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(0, 0, 0, 0.05);
+    z-index: 0;
+}
+
+.payment-callback-service-divider span {
+    background: var(--payment-callback-background-primary);
+    padding: 0 12px;
+    position: relative;
+    z-index: 1;
+}
+
+/* Summary Section */
+.payment-callback-summary-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-callback-summary-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--payment-callback-radius-md);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.payment-callback-summary-item.payment-callback-discount {
+    color: var(--payment-callback-success-color);
+}
+
+.payment-callback-summary-item.payment-callback-total {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.5));
+    font-weight: 700;
+}
+
+.payment-callback-summary-label {
+    font-size: 14px;
+    color: var(--payment-callback-text-secondary);
+}
+
+.payment-callback-summary-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--payment-callback-text-primary);
+}
+
+.payment-callback-summary-item.payment-callback-discount .payment-callback-summary-value {
+    color: var(--payment-callback-success-color);
+}
+
+.payment-callback-summary-item.payment-callback-total .payment-callback-summary-value {
+    background: var(--payment-callback-primary-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.payment-callback-summary-divider {
+    height: 1px;
+    background: rgba(0, 0, 0, 0.05);
+    margin: 8px 0;
+}
+
+/* Transaction Section */
+.payment-callback-transaction-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-callback-transaction-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--payment-callback-radius-md);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.payment-callback-transaction-item.payment-callback-error {
+    background: linear-gradient(135deg, rgba(254, 242, 242, 0.8), rgba(254, 226, 226, 0.8));
+    border-color: rgba(239, 68, 68, 0.2);
+}
+
+.payment-callback-transaction-label {
+    font-size: 14px;
+    color: var(--payment-callback-text-secondary);
+}
+
+.payment-callback-transaction-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--payment-callback-text-primary);
+    max-width: 50%;
+    text-align: right;
+    word-break: break-all;
+}
+
+.payment-callback-transaction-item.payment-callback-error .payment-callback-transaction-value {
+    color: var(--payment-callback-error-color);
+}
+
+.payment-callback-transaction-id {
+    font-family: var(--payment-callback-font-mono);
+    font-size: 13px;
+}
+
+/* Action Buttons */
+.payment-callback-action-buttons {
+    padding: 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    /* background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.7)); */
+    /* backdrop-filter: blur(10px); */
+    position: sticky;
+    bottom: 0;
+    z-index: 10;
+}
+
+.payment-callback-primary-button,
+.payment-callback-secondary-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px 24px;
+    border: none;
+    border-radius: var(--payment-callback-radius-md);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.payment-callback-primary-button {
+    background: var(--payment-callback-primary-gradient);
+    color: white;
+    box-shadow: 0 4px 12px rgba(139, 69, 19, 0.2);
+}
+
+.payment-callback-primary-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.8) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-callback-primary-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(139, 69, 19, 0.3);
+}
+
+.payment-callback-primary-button:hover::before {
+    opacity: 0.3;
+}
+
+.payment-callback-primary-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(139, 69, 19, 0.2);
+}
+
+.payment-callback-primary-button.payment-callback-large {
+    padding: 18px 32px;
+    font-size: 16px;
+}
+
+.payment-callback-secondary-button {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(139, 69, 19, 0.2);
+    color: var(--payment-callback-primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-secondary-button::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: radial-gradient(circle at center, rgba(139, 69, 19, 0.2) 0%, transparent 70%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.payment-callback-secondary-button:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.payment-callback-secondary-button:hover::before {
+    opacity: 0.3;
+}
+
+.payment-callback-secondary-button:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-callback-button-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.payment-callback-secondary-actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+}
+
+/* Animations */
+@keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+      transform: scale(1);
+      opacity: 0.3;
+    }
+    50% {
+      transform: scale(1.1);
+      opacity: 0.1;
+    }
+}
+
+@keyframes shimmer {
+    0% {
+      background-position: 100% 0;
+      transform: translateX(-100%);
+    }
+    100% {
+      background-position: 0 0;
+      transform: translateX(100%);
+    }
+}
+
+@keyframes rotate {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .payment-callback-app-content {
+        max-width: 600px;
+        border-radius: var(--payment-callback-radius-lg);
+        margin: 20px auto;
+        box-shadow: 0 0 60px rgba(0, 0, 0, 0.15);
+    }
+
+    .payment-callback-app-header {
+        padding: 20px 24px;
+    }
+
+    .payment-callback-app-title {
+        font-size: 24px;
+    }
+
+    .payment-callback-progress-container {
+        margin: 30px 24px;
+        padding: 32px 24px;
+    }
+
+    .payment-callback-progress-track::before,
+    .payment-callback-progress-track::after {
+        top: 24px;
+    }
+
+    .payment-callback-step-circle {
+        width: 50px;
+        height: 50px;
+    }
+
+    .payment-callback-step-number {
+        font-size: 18px;
+    }
+
+    .payment-callback-step-label {
+        font-size: 14px;
+    }
+
+    .payment-callback-loading-screen,
+    .payment-callback-error-screen {
+        min-height: 70vh;
+    }
+
+    .payment-callback-status-card {
+        padding: 40px 32px;
+    }
+
+    .payment-callback-status-title {
+        font-size: 26px;
+    }
+
+    .payment-callback-status-subtitle {
+        font-size: 16px;
+    }
+
+    .payment-callback-status-icon-container {
+        width: 80px;
+        height: 80px;
+    }
+
+    .payment-callback-status-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .payment-callback-amount-label {
+        font-size: 16px;
+    }
+
+    .payment-callback-amount-value {
+        font-size: 28px;
+    }
+
+    .payment-callback-receipt-card {
+        margin-bottom: 40px;
+    }
+
+    .payment-callback-receipt-header {
+        padding: 32px;
+    }
+
+    .payment-callback-receipt-title {
+        font-size: 20px;
+    }
+
+    .payment-callback-receipt-subtitle {
+        font-size: 14px;
+    }
+
+    .payment-callback-details-grid {
+        gap: 24px;
+    }
+
+    .payment-callback-detail-label {
+        font-size: 14px;
+    }
+
+    .payment-callback-detail-value {
+        font-size: 16px;
+    }
+
+    .payment-callback-service-name {
+        font-size: 16px;
+    }
+
+    .payment-callback-service-type {
+        font-size: 14px;
+    }
+
+    .payment-callback-service-price,
+    .payment-callback-service-included {
+        font-size: 16px;
+    }
+
+    .payment-callback-summary-label {
+        font-size: 15px;
+    }
+
+    .payment-callback-summary-value {
+        font-size: 16px;
+    }
+
+    .payment-callback-transaction-label {
+        font-size: 15px;
+    }
+
+    .payment-callback-transaction-value {
+        font-size: 15px;
+    }
+
+    .payment-callback-primary-button,
+    .payment-callback-secondary-button {
+        padding: 16px 32px;
+        font-size: 16px;
+    }
+
+    .payment-callback-primary-button.payment-callback-large {
+        padding: 20px 40px;
+        font-size: 18px;
+    }
+}

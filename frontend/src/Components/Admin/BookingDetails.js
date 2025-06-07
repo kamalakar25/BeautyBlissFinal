@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Box, IconButton } from '@mui/material';
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
+import { Box, IconButton, Typography, Accordion, AccordionSummary, AccordionDetails, useMediaQuery } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
-import { styled } from '@mui/material/styles';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { styled, useTheme } from '@mui/material/styles';
 
-const BASE_URL = process.env.REACT_APP_API_URL;
+const BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-// Styled FilterToggleButton (aligned with ServiceProviderDetails)
+// Styled FilterToggleButton
 const FilterToggleButton = styled(IconButton)(({ theme }) => ({
   display: 'none',
   [theme.breakpoints.down('lg')]: {
@@ -16,6 +19,7 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
     border: '2px solid #fb646b',
     borderRadius: '50%',
     padding: '8px',
+    marginTop: '40px',
     transition: 'all 0.3s ease',
     '&:hover': {
       backgroundColor: '#fb646b',
@@ -25,6 +29,44 @@ const FilterToggleButton = styled(IconButton)(({ theme }) => ({
     },
   },
 }));
+
+// Styled Accordion
+const StyledAccordion = styled(Accordion)(({ theme }) => ({
+  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+  borderRadius: '10px',
+  border: '1px solid #e2e8f0',
+  marginBottom: '16px',
+  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: '0 6px 15px rgba(0, 0, 0, 0.15)',
+  },
+  '&:before': {
+    display: 'none',
+  },
+}));
+
+// Styled AccordionSummary
+const StyledAccordionSummary = styled(AccordionSummary)(({ theme }) => ({
+  background: '#fb646b',
+  color: '#ffffff',
+  borderRadius: '8px',
+  padding: '10px 16px',
+  '& .MuiAccordionSummary-content': {
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+  },
+  '&:hover': {
+    backgroundColor: '#e65a60',
+    boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+  },
+  '& .MuiAccordionSummary-expandIconWrapper': {
+    color: '#ffffff',
+  },
+}));
+
+
 
 const BookingDetails = () => {
   const [bookings, setBookings] = useState([]);
@@ -37,15 +79,36 @@ const BookingDetails = () => {
   const [error, setError] = useState('');
   const itemsPerPage = 5;
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('lg'));
+
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/api/users/all/bookings`);
         const data = Array.isArray(response.data) ? response.data : response.data.bookings || [];
-        setBookings(data);
-        setFilteredBookings(data);
+        if (data.length === 0) {
+          setError('No bookings found in the database.');
+        }
+        const normalizedBookings = data.flat().reverse().map((booking) => ({
+          _id: booking._id || 'N/A',
+          name: booking.name || 'N/A',
+          service: booking.service || 'N/A',
+          relatedServices: Array.isArray(booking.relatedServices) ? booking.relatedServices : [],
+          amount: booking.amount || 'N/A',
+          date: booking.date || null,
+          time: booking.time || 'N/A',
+        }));
+        setBookings(normalizedBookings);
+        setFilteredBookings(normalizedBookings);
       } catch (error) {
-        setError('Failed to load bookings. Please try again.');
+        setError(
+          error.response
+            ? `Failed to load bookings: ${error.response.data.message || error.message}`
+            : 'Failed to connect to the server. Please check your network or server status.'
+        );
+        setBookings([]);
+        setFilteredBookings([]);
       } finally {
         setLoading(false);
       }
@@ -54,19 +117,19 @@ const BookingDetails = () => {
   }, []);
 
   useEffect(() => {
-    let filtered = bookings;
+    let filtered = [...bookings];
 
     if (searchQuery.trim()) {
       const query = searchQuery.toLowerCase().trim();
-      filtered = filtered.filter((b) =>
+      filtered = filtered.filter((booking) =>
         [
-          b._id || '',
-          b.name || '',
-          b.service || '',
-          Array.isArray(b.relatedServices) ? b.relatedServices.join(', ') : '',
-          b.amount?.toString() || '',
-          formatDate(b.date) || '',
-          b.time || '',
+          booking._id,
+          booking.name,
+          booking.service,
+          booking.relatedServices.join(', '),
+          String(booking.amount),
+          formatDate(booking.date),
+          booking.time,
         ].some((field) => field.toLowerCase().includes(query))
       );
     }
@@ -119,17 +182,38 @@ const BookingDetails = () => {
     setShowFilters((prev) => !prev);
   };
 
-  const reversedBookings = [...filteredBookings].reverse();
-  const indexOfLastBooking = currentPage * itemsPerPage;
-  const indexOfFirstBooking = indexOfLastBooking - itemsPerPage;
-  const currentBookings = reversedBookings.slice(indexOfFirstBooking, indexOfLastBooking);
   const totalPages = Math.ceil(filteredBookings.length / itemsPerPage);
+  const currentBookings = filteredBookings.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   const paginate = (pageNumber) => {
     if (pageNumber >= 1 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
   };
+
+  // Calculate pagination range (max 5 pages)
+  const getPaginationRange = () => {
+    const rangeSize = 5;
+    const halfRange = Math.floor(rangeSize / 2);
+    let start = Math.max(1, currentPage - halfRange);
+    let end = Math.min(totalPages, start + rangeSize - 1);
+
+    // Adjust start if end is at totalPages
+    if (end === totalPages) {
+      start = Math.max(1, end - rangeSize + 1);
+    }
+
+    const pages = Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    const showLeftEllipsis = start > 1;
+    const showRightEllipsis = end < totalPages;
+
+    return { pages, showLeftEllipsis, showRightEllipsis };
+  };
+
+  const { pages, showLeftEllipsis, showRightEllipsis } = getPaginationRange();
 
   return (
     <Box
@@ -190,10 +274,23 @@ const BookingDetails = () => {
             Booking Details
           </Box>
           <Box
+            component="h5"
             sx={{
-              width: '100%',
+              fontSize: '1.1rem',
+              color: '#0e0f0f',
+              m: 0,
+              textAlign: 'center',
+              fontWeight: 'medium',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                color: '#fb646b',
+                transform: 'scale(1.05)',
+              },
             }}
           >
+            Total Bookings: {filteredBookings.length}
+          </Box>
+          <Box sx={{ width: '100%' }}>
             <Box
               sx={{
                 display: 'flex',
@@ -233,8 +330,7 @@ const BookingDetails = () => {
                     color: '#0e0f0f',
                     textAlign: 'center',
                     transition: 'all 0.3s ease',
-
-
+                    marginTop: '40px !important',
                     '&:focus': {
                       borderColor: '#fb646b',
                       boxShadow: '0 0 10px rgba(32, 21, 72, 0.3)',
@@ -246,7 +342,7 @@ const BookingDetails = () => {
                     },
                   }}
                 />
-                <FilterToggleButton onClick={handleToggleFilters} style={{ borderRadius: "20px" }}>
+                <FilterToggleButton onClick={handleToggleFilters} style={{ borderRadius: '20px' }}>
                   <FilterListIcon />
                 </FilterToggleButton>
               </Box>
@@ -265,7 +361,7 @@ const BookingDetails = () => {
                   },
                 }}
               >
-                Total Bookings: <strong>{filteredBookings.length}</strong>
+                Total Records: <strong>{filteredBookings.length}</strong>
               </Box>
               <Box
                 sx={{
@@ -382,29 +478,28 @@ const BookingDetails = () => {
                   disabled={!searchQuery && !bookingDateFilter}
                   sx={{
                     p: '10px 20px',
-                    borderRadius: "8px",
-                    border: "2px solid #fb646b",
-                    background: "#fb646b",
-                    fontSize: "0.95rem",
-                    fontWeight: "medium",
-                    color: "#fff",
-                    marginTop: "27px !important",
-
-
+                    borderRadius: '8px',
+                    border: '2px solid #fb646b',
+                    background: '#fb646b',
+                    fontSize: '0.95rem',
+                    fontWeight: 'medium',
+                    color: '#ffffff',
+                    marginTop: '27px !important',
                     cursor: !searchQuery && !bookingDateFilter ? 'not-allowed' : 'pointer',
                     mt: { xs: 0, sm: '20px' },
                     transition: 'all 0.3s ease',
-                    marginTop: "27px !important",
-
                     '&:hover': {
                       ...(searchQuery || bookingDateFilter
                         ? {
-                          background: 'linear-gradient(90deg, #fb646b, #fb646b)',
-                          color: '#ffffff',
-                          transform: 'scale(1.05)',
-                          boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
-                        }
+                            background: '#e65a60',
+                            color: '#ffffff',
+                            transform: 'scale(1.05)',
+                            boxShadow: '0 4px 12px rgba(32, 21, 72, 0.3)',
+                          }
                         : {}),
+                    },
+                    '&:disabled': {
+                      opacity: 0.5,
                     },
                   }}
                 >
@@ -433,242 +528,328 @@ const BookingDetails = () => {
           </Box>
         )}
 
-        <Box sx={{ overflowX: 'auto', width: '100%' }}>
-          <Box
-            component="table"
-            sx={{
-              width: '100%',
-              borderCollapse: 'collapse',
-              backgroundColor: 'transparent',
-              borderRadius: '10px',
-              overflow: 'hidden',
-              border: '1px solid #e2e8f0',
-              boxShadow: '0 4px 16px rgba(0, 0, 0, 0.1)',
-            }}
-          >
+        {isMobile ? (
+          <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {loading ? (
+              <Box
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderRadius: '10px',
+                  border: '1px solid #e2e8f0',
+                  p: 2,
+                  textAlign: 'center',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography variant="body1" sx={{ color: '#0e0f0f', fontWeight: 'medium', fontSize: '1rem' }}>
+                  Loading bookings...
+                </Typography>
+              </Box>
+            ) : currentBookings.length === 0 ? (
+              <Box
+                sx={{
+                  backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                  borderRadius: '10px',
+                  border: '1px solid #e2e8f0',
+                  p: 2,
+                  textAlign: 'center',
+                  boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+                }}
+              >
+                <Typography variant="body1" sx={{ color: '#0e0f0f', fontWeight: 'medium', fontSize: '1rem' }}>
+                  No bookings available.
+                </Typography>
+              </Box>
+            ) : (
+              currentBookings.map((booking, index) => (
+                <StyledAccordion key={booking._id || index}>
+                  <StyledAccordionSummary
+                    expandIcon={<ExpandMoreIcon />}
+                    aria-controls={`panel${index}-content`}
+                    id={`panel${index}-header`}
+                  >
+                    <Box sx={{ display: 'flex', flexDirection: 'column', maxWidth: '80%' }}>
+                      <Typography
+                        sx={{
+                          fontWeight: 'bold',
+                          fontSize: '0.95rem',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap',
+                        }}
+                      >
+                        {booking.name || 'N/A'}
+                      </Typography>
+                      <Typography sx={{ fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.8)' }}>
+                        {formatDate(booking.date)} {booking.time !== 'N/A' ? `& ${booking.time}` : ''}
+                      </Typography>
+                    </Box>
+                  </StyledAccordionSummary>
+                  <AccordionDetails sx={{ p: 2, backgroundColor: 'rgba(255, 255, 255, 0.95)' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Booking ID:</strong> {booking._id}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Name:</strong> {booking.name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Date & Time:</strong> {formatDate(booking.date)} {booking.time !== 'N/A' ? `& ${booking.time}` : ''}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Service:</strong> {booking.service}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Related Services:</strong>{' '}
+                        {booking.relatedServices.length === 0 ? 'N/A' : booking.relatedServices.join(', ')}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#0e0f0f', fontSize: '0.95rem' }}>
+                        <strong>Amount:</strong> {booking.amount}
+                      </Typography>
+                    </Box>
+                  </AccordionDetails>
+                </StyledAccordion>
+              ))
+            )}
+          </Box>
+        ) : (
+          <Box sx={{ overflowX: 'auto', width: '100%' }}>
             <Box
-              component="thead"
+              component="table"
               sx={{
-                background: 'linear-gradient(90deg, #fb646b, #fb646b)',
-                color: '#ffffff',
+                width: '100%',
+                borderCollapse: 'collapse',
+                backgroundColor: 'transparent',
+                borderRadius: '10px',
+                overflow: 'hidden',
+                border: '1px solid #e2e8f0',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
               }}
             >
-              <tr>
-                {['Sl.No.', 'Booking ID', 'Name', 'Booking Slot Date & Time', 'Service', 'Related Services', 'Amount'].map(
-                  (header, idx) => (
+              <Box
+                component="thead"
+                sx={{
+                  background: '#fb646b',
+                  color: '#ffffff',
+                }}
+              >
+                <tr>
+                  {['Sl.No.', 'Booking ID', 'Name', 'Booking Slot Date & Time', 'Service', 'Related Services', 'Amount'].map(
+                    (header, idx) => (
+                      <Box
+                        component="th"
+                        key={idx}
+                        sx={{
+                          p: '14px',
+                          textAlign: 'center',
+                          fontSize: '1rem',
+                          fontWeight: 'medium',
+                          border: '1px solid #e2e8f0',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#e65a60',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {header}
+                      </Box>
+                    )
+                  )}
+                </tr>
+              </Box>
+              <Box component="tbody">
+                {loading ? (
+                  <Box component="tr">
                     <Box
-                      component="th"
-                      key={idx}
+                      component="td"
+                      colSpan="7"
                       sx={{
-                        p: '14px',
                         textAlign: 'center',
+                        p: '20px',
+                        color: '#0e0f0f',
                         fontSize: '1rem',
                         fontWeight: 'medium',
                         border: '1px solid #e2e8f0',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(4px)',
                         transition: 'all 0.3s ease',
                         '&:hover': {
-                          background: '#fb646b',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
+                          backgroundColor: '#f1f5f9',
+                          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
                         },
                       }}
                     >
-                      {header}
+                      Loading bookings...
                     </Box>
-                  )
+                  </Box>
+                ) : currentBookings.length === 0 ? (
+                  <Box component="tr">
+                    <Box
+                      component="td"
+                      colSpan="7"
+                      sx={{
+                        textAlign: 'center',
+                        p: '20px',
+                        color: '#0e0f0f',
+                        fontSize: '1rem',
+                        fontWeight: 'medium',
+                        border: '1px solid #e2e8f0',
+                        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(4px)',
+                        transition: 'all 0.3s ease',
+                        '&:hover': {
+                          backgroundColor: '#f1f5f9',
+                          boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                        },
+                      }}
+                    >
+                      No bookings available.
+                    </Box>
+                  </Box>
+                ) : (
+                  currentBookings.map((booking, index) => (
+                    <Box component="tr" key={booking._id || index} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {(currentPage - 1) * itemsPerPage + index + 1}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {booking._id}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {booking.name}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {formatDate(booking.date)} {booking.time !== 'N/A' ? `& ${booking.time}` : ''}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {booking.service}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {booking.relatedServices.length === 0 ? 'N/A' : booking.relatedServices.join(', ')}
+                      </Box>
+                      <Box
+                        component="td"
+                        sx={{
+                          p: '14px',
+                          fontSize: '0.95rem',
+                          textAlign: 'center',
+                          border: '1px solid #e2e8f0',
+                          color: '#0e0f0f',
+                          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                          backdropFilter: 'blur(4px)',
+                          transition: 'all 0.3s ease',
+                          '&:hover': {
+                            backgroundColor: '#f1f5f9',
+                            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.2)',
+                          },
+                        }}
+                      >
+                        {booking.amount}
+                      </Box>
+                    </Box>
+                  ))
                 )}
-              </tr>
-            </Box>
-            <Box component="tbody">
-              {loading ? (
-                <Box component="tr">
-                  <Box
-                    component="td"
-                    colSpan="7"
-                    sx={{
-                      textAlign: 'center',
-                      p: '20px',
-                      color: '#0e0f0f',
-                      fontSize: '1rem',
-                      fontWeight: 'medium',
-                      border: '1px solid #e2e8f0',
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(4px)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        backgroundColor: '#ffffff',
-                        boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                      },
-                    }}
-                  >
-                    Loading bookings...
-                  </Box>
-                </Box>
-              ) : currentBookings.length === 0 ? (
-                <Box component="tr">
-                  <Box
-                    component="td"
-                    colSpan="7"
-                    sx={{
-                      textAlign: 'center',
-                      p: '20px',
-                      color: '#0e0f0f',
-                      fontSize: '1rem',
-                      fontWeight: 'medium',
-                      border: '1px solid #e2e8f0',
-                      backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                      backdropFilter: 'blur(4px)',
-                      transition: 'all 0.3s ease',
-                      '&:hover': {
-                        backgroundColor: '#ffffff',
-                        boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                      },
-                    }}
-                  >
-                    No bookings available.
-                  </Box>
-                </Box>
-              ) : (
-                currentBookings.map((booking, index) => (
-                  <Box component="tr" key={booking._id || index} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {indexOfFirstBooking + index + 1}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {booking._id || 'N/A'}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {booking.name || 'N/A'}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {formatDate(booking.date)} {booking.time ? `& ${booking.time}` : ''}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {booking.service || 'N/A'}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {booking.relatedServices == null || !Array.isArray(booking.relatedServices) || booking.relatedServices.length === 0 ? 'N/A' : booking.relatedServices.join(', ')}
-                    </Box>
-                    <Box
-                      component="td"
-                      sx={{
-                        p: '14px',
-                        fontSize: '0.95rem',
-                        textAlign: 'center',
-                        border: '1px solid #e2e8f0',
-                        color: '#0e0f0f',
-                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.3s ease',
-                        '&:hover': {
-                          backgroundColor: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(32, 21, 72, 0.2)',
-                        },
-                      }}
-                    >
-                      {booking.amount || 'N/A'}
-                    </Box>
-                  </Box>
-                ))
-              )}
+              </Box>
             </Box>
           </Box>
-        </Box>
+        )}
 
         {filteredBookings.length > itemsPerPage && (
           <Box
@@ -676,8 +857,9 @@ const BookingDetails = () => {
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
-              gap: 2,
+              gap: { xs: 1, sm: 2 },
               mt: 3,
+              flexWrap: 'nowrap',
             }}
           >
             <Box
@@ -685,41 +867,30 @@ const BookingDetails = () => {
               onClick={() => paginate(currentPage - 1)}
               disabled={currentPage === 1}
               sx={{
-                p: '10px 24px',
+                p: { xs: '8px', sm: '10px 24px' },
                 borderRadius: '30px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                background: '#fb646b',
                 color: '#ffffff',
-                fontSize: '0.9rem',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
                 fontWeight: '600',
                 cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                transition: 'all 0.4s ease',
-                boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
-                position: 'relative',
-                overflow: 'hidden',
-                letterSpacing: '0.5px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
                 '&:hover': {
                   ...(currentPage !== 1
                     ? {
-                      background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                      color: '#0e0f0f',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
-                      '&:after': {
-                        width: '100%',
-                      },
-                    }
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
                     : {}),
-                },
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  width: '0',
-                  height: '3px',
-                  background: '#ffffff',
-                  transition: 'width 0.4s ease',
                 },
                 '&:disabled': {
                   opacity: 0.5,
@@ -727,79 +898,102 @@ const BookingDetails = () => {
                 },
               }}
             >
-              Previous
+              {isMobile ? <ArrowBackIos sx={{ fontSize: '1rem' }} /> : 'Previous'}
             </Box>
             <Box
-              component="span"
               sx={{
-                fontSize: '1.1rem',
-                fontWeight: '600',
-                color: '#0e0f0f',
-                textShadow: '1px 1px 3px rgba(0,0,0,0.1)',
-                letterSpacing: '0.5px',
-                position: 'relative',
-                transition: 'transform 0.4s ease',
-                '&:hover': {
-                  transform: 'scale(1.1)',
-                  
-                },
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: '-4px',
-                  left: 0,
-                  width: '0',
-                  height: '2px',
-                  background: '#fb646b',
-                  transition: 'width 0.4s ease',
-                },
-                '&:hover:after': {
-                  width: '100%',
-                },
+                display: 'flex',
+                gap: { xs: 0.5, sm: 1 },
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                // Removed overflowX: 'auto' to prevent scrollbars
               }}
             >
-              Page {currentPage} of {totalPages}
+              {showLeftEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ...
+                </Box>
+              )}
+              {pages.map((page) => (
+                <Box
+                  key={page}
+                  component="button"
+                  onClick={() => paginate(page)}
+                  sx={{
+                    p: { xs: '6px', sm: '8px' },
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: page === currentPage ? '#fb646b' : 'transparent',
+                    color: page === currentPage ? '#ffffff' : '#0e0f0f',
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    minWidth: { xs: '30px', sm: '40px' },
+                    height: { xs: '30px', sm: '40px' },
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: page === currentPage ? '#e65a60' : '#f1f5f9',
+                      transform: 'scale(1.1)',
+                    },
+                  }}
+                >
+                  {page}
+                </Box>
+              ))}
+              {showRightEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ...
+                </Box>
+              )}
             </Box>
             <Box
               component="button"
               onClick={() => paginate(currentPage + 1)}
               disabled={currentPage === totalPages}
               sx={{
-                p: '10px 24px',
+                p: { xs: '8px', sm: '10px 24px' },
                 borderRadius: '30px',
                 border: 'none',
-                background: 'linear-gradient(135deg, #fb646b, #fb646b)',
+                background: '#fb646b',
                 color: '#ffffff',
-                fontSize: '0.9rem',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
                 fontWeight: '600',
                 cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                transition: 'all 0.4s ease',
-                boxShadow: '0 6px 15px rgba(0,0,0,0.2), 0 0 10px rgba(32, 21, 72, 0.2)',
-                position: 'relative',
-                overflow: 'hidden',
-                letterSpacing: '0.5px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
                 '&:hover': {
                   ...(currentPage !== totalPages
                     ? {
-                      background: 'linear-gradient(135deg, #ffffff, #ffffff)',
-                      color: '#0e0f0f',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 10px 25px rgba(0,0,0,0.25), 0 0 15px rgba(32, 21, 72, 0.4)',
-                      '&:after': {
-                        width: '100%',
-                      },
-                    }
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
                     : {}),
-                },
-                '&:after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: 0,
-                  left: 0,
-                  width: '0',
-                  height: '3px',
-                  background: '#ffffff',
-                  transition: 'width 0.4s ease',
                 },
                 '&:disabled': {
                   opacity: 0.5,
@@ -807,7 +1001,7 @@ const BookingDetails = () => {
                 },
               }}
             >
-              Next
+              {isMobile ? <ArrowForwardIos sx={{ fontSize: '1rem' }} /> : 'Next'}
             </Box>
           </Box>
         )}

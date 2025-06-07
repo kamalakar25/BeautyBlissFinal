@@ -622,394 +622,396 @@ const Pay = () => {
         }}
       >
         {/* Left Column: Progress Navigation, Booking Summary, and Payment Options */}
+        {/* Ticket Style Container */}
         <Box
           sx={{
-            flex: 1,
-            minWidth: { xs: "100%", sm: "50%" },
-            display: "flex",
-            flexDirection: "column",
-            gap: 3,
-            p: { xs: 2, sm: 4 },
-            boxSizing: "border-box",
+            maxWidth: "380px",
+            mx: "auto",
+            width: "90%",
+            background: "#ffffff",
+            borderRadius: "16px",
+            // border: "1px solid #f06292",
+            p: 2.5,
+            position: "relative",
+            overflow: "hidden",
+            "&:before, &:after": {
+              content: '""',
+              position: "absolute",
+              width: "24px",
+              height: "24px",
+              backgroundColor: "#fad9e3",
+              borderRadius: "50%",
+              border: "1px solid #f06292",
+              zIndex: 1,
+            },
+            "&:before": { top: "-12px", left: "20px" },
+            "&:after": { top: "-12px", right: "20px" },
+            "&:hover": {
+              transform: "translateY(-2px)",
+              transition: "transform 0.3s ease",
+            },
           }}
+          component={motion.div}
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
         >
-          {/* Progress Navigation (Horizontal, Aligned Left) */}
-          <Box sx={{ mb: 2, maxWidth: "400px", alignSelf: "flex-start" }}>
-            <Stepper
-              activeStep={1}
-              alternativeLabel
-              sx={{
-                "& .MuiStepLabel-label": {
-                  fontFamily: "'Montserrat', sans-serif",
-                  fontSize: { xs: "0.8rem", sm: "1rem" },
-                },
-              }}
-            >
-              {steps.map((label, index) => (
-                <Step key={label}>
-                  <StepLabel
-                    sx={{
-                      "& .MuiStepLabel-label": {
-                        color: index <= 1 ? "#f06292" : "#999",
-                        fontWeight: index <= 1 ? 600 : 400,
-                      },
-                      "& .MuiStepIcon-root": {
-                        color: index <= 1 ? "#f06292" : "#ccc",
-                        "&.Mui-completed": {
-                          color: "#f06292",
-                        },
-                        "&.Mui-active": {
-                          color: "#f06292",
-                        },
-                      },
-                      "& .MuiStepIcon-text": {
-                        fill: "#ffffff",
-                      },
-                    }}
-                  >
-                    {label}
-                  </StepLabel>
-                </Step>
-              ))}
-            </Stepper>
-          </Box>
+          {/* Stepper */}
+          <Stepper
+            activeStep={1}
+            alternativeLabel
+            sx={{
+              mb: 2,
+              "& .MuiStepLabel-label": {
+                fontFamily: "'Poppins', sans-serif",
+                fontSize: { xs: "0.65rem", sm: "0.85rem" },
+                color: "#4a2c6b",
+              },
+              "& .MuiStepIcon-root": {
+                color: "#f06292",
+                "&.Mui-completed": { color: "#f06292" },
+                "&.Mui-active": { color: "#f06292" },
+              },
+              "& .MuiStepIcon-text": { fill: "#ffffff" },
+            }}
+          >
+            {steps.map((label) => (
+              <Step key={label}>
+                <StepLabel>{label}</StepLabel>
+              </Step>
+            ))}
+          </Stepper>
 
           {/* Booking Summary */}
-          <Box>
+          <Box sx={{ mb: 2.5 }}>
             <Typography
-              variant="h6"
               sx={{
-                color: "#000000",
-                mb: 2,
+                fontSize: "1.1rem",
                 fontWeight: 600,
-                fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                color: "#4a2c6b",
+                mb: 1.5,
+                textAlign: "center",
               }}
             >
-              Booking Summary
+              Booking Details
             </Typography>
             <Box
               sx={{
-                display: "grid",
-                gridTemplateColumns: "1fr 2fr",
-                gap: 1,
-                p: 2,
-                borderRadius: 2,
+                background: "#f9e6eb",
+                borderRadius: "10px",
+                p: 1.5,
+                fontSize: "0.8rem",
+                color: "#4a2c6b",
               }}
             >
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Parlor:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                {parlor?.name || "N/A"}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+                <Typography sx={{ fontWeight: 500 }}>Parlor:</Typography>
+                <Typography>{parlor?.name || "N/A"}</Typography>
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Service:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                {service || "N/A"}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+                <Typography sx={{ fontWeight: 500 }}>Service:</Typography>
+                <Typography>{service || "N/A"}</Typography>
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Date:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                {date || "N/A"}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+                <Typography sx={{ fontWeight: 500 }}>Date:</Typography>
+                <Typography>{date || "N/A"}</Typography>
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Time:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                {time || "N/A"}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+                <Typography sx={{ fontWeight: 500 }}>Time:</Typography>
+                <Typography>{time || "N/A"}</Typography>
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Employee:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                {favoriteEmployee || "N/A"}
-              </Typography>
-
-              <Typography
-                sx={{
-                  color: "#000000",
-                  fontSize: "0.9rem",
-                  fontWeight: "bold",
-                }}
+                <Typography sx={{ fontWeight: 500 }}>Employee:</Typography>
+                <Typography>{favoriteEmployee || "N/A"}</Typography>
+              </Box>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 1 }}
               >
-                Total Amount:
-              </Typography>
-              <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                ₹{totalAmount || "0.00"}
-              </Typography>
-
+                <Typography sx={{ fontWeight: 500 }}>Total Amount:</Typography>
+                <Typography>₹{totalAmount || "0.00"}</Typography>
+              </Box>
               {applyCoupon && coupon && (
                 <>
-                  <Typography
+                  <Box
                     sx={{
-                      color: "#000000",
-                      fontSize: "0.9rem",
-                      fontWeight: "bold",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 1,
                     }}
                   >
-                    Coupon Applied:
-                  </Typography>
-                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                    {coupon.code} ({(coupon.discount * 100).toFixed(0)}% off)
-                  </Typography>
-
-                  <Typography
+                    <Typography sx={{ fontWeight: 500 }}>Coupon:</Typography>
+                    <Typography>
+                      {coupon.code} ({(coupon.discount * 100).toFixed(0)}% off)
+                    </Typography>
+                  </Box>
+                  <Box
                     sx={{
-                      color: "#000000",
-                      fontSize: "0.9rem",
-                      fontWeight: "bold",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 1,
                     }}
                   >
-                    Discount:
-                  </Typography>
-                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                    ₹{discountAmount.toFixed(2)}
-                  </Typography>
-
-                  <Typography
+                    <Typography sx={{ fontWeight: 500 }}>Discount:</Typography>
+                    <Typography>₹{discountAmount.toFixed(2)}</Typography>
+                  </Box>
+                  <Box
                     sx={{
-                      color: "#000000",
-                      fontSize: "0.9rem",
-                      fontWeight: "bold",
+                      display: "flex",
+                      justifyContent: "space-between",
+                      mb: 1,
                     }}
                   >
-                    Final Amount:
-                  </Typography>
-                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
-                    ₹{finalAmount.toFixed(2)}
-                  </Typography>
+                    <Typography sx={{ fontWeight: 500 }}>
+                      Final Amount:
+                    </Typography>
+                    <Typography>₹{finalAmount.toFixed(2)}</Typography>
+                  </Box>
                 </>
               )}
-
               {paymentAmountOption && (
-                <>
-                  <Typography
-                    sx={{
-                      color: "#000000",
-                      fontSize: "0.9rem",
-                      fontWeight: "bold",
-                    }}
-                  >
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 1,
+                  }}
+                >
+                  <Typography sx={{ fontWeight: 500 }}>
                     Payment Amount:
                   </Typography>
-                  <Typography sx={{ color: "#000000", fontSize: "0.9rem" }}>
+                  <Typography>
                     ₹{calculatePaymentAmount().toFixed(2)}
-                    {paymentAmountOption === "25%" &&
-                      " (25% Now + Cash on Delivery)"}
+                    {paymentAmountOption === "25%" && " (25% Now + COD)"}
                   </Typography>
-                </>
+                </Box>
               )}
             </Box>
           </Box>
 
-          {/* Select Payment Amount */}
+          {/* Payment Options */}
           <Box>
             <Typography
-              variant="h6"
               sx={{
-                color: "#000000",
-                mb: 2,
+                fontSize: "1.1rem",
                 fontWeight: 600,
-                fontSize: { xs: "1.2rem", sm: "1.5rem" },
+                color: "#4a2c6b",
+                mb: 1.5,
+                textAlign: "center",
               }}
             >
-              Select Payment Amount
+              Payment Options
             </Typography>
-            <Box sx={{ maxWidth: "400px" }}>
-              <RadioGroup
-                value={paymentAmountOption}
-                onChange={handlePaymentAmountChange}
-                disabled={loading}
-                sx={{ mb: 2 }}
-              >
-                <FormControlLabel
-                  style={{ color: "#000000" }}
-                  value="25%"
-                  control={<Radio />}
-                  label={`Pay 25% Now (₹${(finalAmount * 0.25).toFixed(
-                    2
-                  )}) + Cash on Delivery`}
-                  disabled={loading}
-                />
-                <FormControlLabel
-                  style={{ color: "#000000" }}
-                  value="full"
-                  control={<Radio />}
-                  label={`Pay Full Amount (₹${finalAmount})`}
-                  disabled={loading}
-                />
-              </RadioGroup>
-
-              <Box sx={{ mb: 2 }}>
-                <TextField
-                  fullWidth
-                  label="Coupon Code"
-                  name="couponCode"
-                  value={couponCode}
-                  onChange={handleCouponChange}
-                  sx={{
-                    maxWidth: "400px",
-                    "& .MuiOutlinedInput-root": {
-                      "&:hover fieldset": { borderColor: "#f06292" },
-                      "&.Mui-focused fieldset": { borderColor: "#f06292" },
-                      backgroundColor: "#ffffff",
-                    },
-                    "& .MuiInputLabel-root.Mui-focused": { color: "#f06292" },
-                    "& .MuiInputBase-input": {
-                      fontSize: "0.9rem",
-                      color: "#000000",
-                    },
-                  }}
-                  error={!!couponError}
-                  helperText={couponError}
-                  disabled={loading}
-                />
-              </Box>
-
-              {coupon && (
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="outlined"
-                    onClick={handleApplyCoupon}
+            <RadioGroup
+              value={paymentAmountOption}
+              onChange={handlePaymentAmountChange}
+              sx={{ mb: 2, px: 1 }}
+            >
+              <FormControlLabel
+                value="25%"
+                control={
+                  <Radio
                     sx={{
-                      color: "#000000",
-                      borderColor: "#000000",
-                      "&:hover": { borderColor: "#f06292", color: "#f06292" },
-                      width: "fit-content",
+                      color: "#f06292",
+                      "&.Mui-checked": { color: "#f06292" },
                     }}
-                    disabled={loading}
-                  >
-                    {applyCoupon
-                      ? "Remove Coupon"
-                      : `Apply Coupon (${coupon.code})`}
-                  </Button>
-                </Box>
-              )}
+                  />
+                }
+                label={`Pay 25% Now (₹${(finalAmount * 0.25).toFixed(
+                  2
+                )}) + COD`}
+                disabled={loading}
+                sx={{ color: "#4a2c6b", fontSize: "0.8rem" }}
+              />
+              <FormControlLabel
+                value="full"
+                control={
+                  <Radio
+                    sx={{
+                      color: "#f06292",
+                      "&.Mui-checked": { color: "#f06292" },
+                    }}
+                  />
+                }
+                label={`Pay Full Amount (₹${finalAmount.toFixed(2)})`}
+                disabled={loading}
+                sx={{ color: "#4a2c6b", fontSize: "0.8rem" }}
+              />
+            </RadioGroup>
 
-              {couponError.includes(
+            {/* Coupon Input */}
+            <TextField
+              fullWidth
+              label="Enter Coupon Code"
+              value={couponCode}
+              onChange={handleCouponChange}
+              sx={{
+                mb: 2,
+                background: "#ffffff",
+                borderRadius: "10px",
+                // border: "1px solid #f06292",
+                "& .MuiOutlinedInput-root": {
+                  "&:hover fieldset": { borderColor: "#f06292" },
+                  "&.Mui-focused fieldset": { borderColor: "#f06292" },
+                },
+                "& .MuiInputLabel-root.Mui-focused": { color: "#f06292" },
+                "& .MuiInputBase-input": {
+                  fontSize: "0.8rem",
+                  color: "#4a2c6b",
+                },
+              }}
+              error={!!couponError}
+              helperText={couponError}
+              disabled={loading}
+            />
+
+            {coupon && (
+              <Button
+                variant="outlined"
+                onClick={handleApplyCoupon}
+                sx={{
+                  mb: 2,
+                  borderRadius: "10px",
+                  color: "#4a2c6b",
+                  borderColor: "#f06292",
+                  "&:hover": {
+                    borderColor: "#ec407a",
+                    color: "#ec407a",
+                    background: "#f9e6eb",
+                  },
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "0.8rem",
+                  px: 3,
+                }}
+                disabled={loading}
+              >
+                {applyCoupon
+                  ? "Remove Coupon"
+                  : `Apply Coupon (${coupon.code})`}
+              </Button>
+            )}
+
+            {couponError.includes("Would you like to redeem a new coupon?") && (
+              <Button
+                variant="contained"
+                onClick={redeemCoupon}
+                sx={{
+                  mb: 2,
+                  borderRadius: "10px",
+                  background: "#f06292",
+                  color: "#ffffff",
+                  "&:hover": { background: "#ec407a" },
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "0.8rem",
+                  px: 3,
+                }}
+                disabled={loading}
+              >
+                Redeem New Coupon
+              </Button>
+            )}
+
+            {paymentAmountOption && (
+              <Typography
+                sx={{
+                  mb: 2,
+                  color: "#4a2c6b",
+                  fontSize: "0.75rem",
+                  textAlign: "center",
+                  cursor: "pointer",
+                  "&:hover": { color: "#f06292" },
+                }}
+                onClick={handleOpenModal}
+              >
+                I agree to the Terms & Conditions
+              </Typography>
+            )}
+
+            {error && (
+              <Alert
+                severity="error"
+                sx={{ mb: 2, borderRadius: "10px", fontSize: "0.75rem" }}
+              >
+                {error}
+              </Alert>
+            )}
+
+            {couponError &&
+              !couponError.includes(
                 "Would you like to redeem a new coupon?"
               ) && (
-                <Box sx={{ mb: 2 }}>
-                  <Button
-                    variant="contained"
-                    onClick={redeemCoupon}
-                    sx={{
-                      backgroundColor: "#f06292",
-                      color: "#ffffff",
-                      "&:hover": { backgroundColor: "#ec407a" },
-                      width: "fit-content",
-                    }}
-                    disabled={loading}
-                  >
-                    Redeem New Coupon
-                  </Button>
-                </Box>
-              )}
-
-              {paymentAmountOption && (
-                <Typography
-                  sx={{
-                    mb: 2,
-                    color: "#000000",
-                    fontSize: "0.9rem",
-                    cursor: "pointer",
-                    "&:hover": { color: "#f06292" },
-                  }}
-                  onClick={handleOpenModal}
+                <Alert
+                  severity="error"
+                  sx={{ mb: 2, borderRadius: "10px", fontSize: "0.75rem" }}
                 >
-                  By Clicking 'Confirm Payment' I agree to the company's term of
-                  services
-                </Typography>
-              )}
-
-              {error && (
-                <Alert severity="error" sx={{ mb: 2, maxWidth: "400px" }}>
-                  {error}
+                  {couponError}
                 </Alert>
               )}
 
-              {couponError &&
-                !couponError.includes(
-                  "Would you like to redeem a new coupon?"
-                ) && (
-                  <Alert severity="error" sx={{ mb: 2, maxWidth: "400px" }}>
-                    {couponError}
-                  </Alert>
-                )}
-
-              {showSuccess && (
-                <Alert severity="success" sx={{ mb: 2, maxWidth: "400px" }}>
-                  Payment option selected successfully!
-                </Alert>
-              )}
-
-              <Box
-                sx={{ display: "flex", gap: 2, justifyContent: "flex-start" }}
+            {showSuccess && (
+              <Alert
+                severity="success"
+                sx={{ mb: 2, borderRadius: "10px", fontSize: "0.75rem" }}
               >
-                <Button
-                  variant="outlined"
-                  onClick={() => navigate(-1)}
-                  sx={{
-                    color: "#000000",
-                    borderColor: "#000000",
-                    "&:hover": { borderColor: "#f06292", color: "#f06292" },
-                    padding: "8px 16px",
-                  }}
-                  disabled={loading}
-                >
-                  Back
-                </Button>
-                <Button
-                  variant="contained"
-                  onClick={handleConfirm}
-                  sx={{
-                    backgroundColor: "#f06292",
-                    color: "#ffffff",
-                    "&:hover": { backgroundColor: "#ec407a" },
-                    padding: "8px 16px",
-                  }}
-                  disabled={loading}
-                >
-                  {/* Confirm Payment: ₹{finalAmount.toFixed(2)} */}
-                  Confirm Payment
-                </Button>
-              </Box>
+                Payment option selected successfully!
+              </Alert>
+            )}
+
+            {/* Serrated/Torn Edge Divider */}
+            <Box
+              sx={{
+                borderTop: "2px dashed #ccc",
+                width: "100%",
+                my: 2,
+              }}
+            />
+            {/* Buttons */}
+            <Box sx={{ display: "flex", gap: 2, justifyContent: "center" }}>
+              <Button
+                variant="outlined"
+                onClick={() => navigate(-1)}
+                sx={{
+                  borderRadius: "10px",
+                  color: "#4a2c6b",
+                  borderColor: "#f06292",
+                  "&:hover": {
+                    borderColor: "#ec407a",
+                    color: "#ec407a",
+                    background: "#f9e6eb",
+                  },
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "0.8rem",
+                  px: 3,
+                }}
+                disabled={loading}
+              >
+                Back
+              </Button>
+              <Button
+                variant="contained"
+                onClick={handleConfirm}
+                sx={{
+                  borderRadius: "10px",
+                  background: "#f06292",
+                  color: "#ffffff",
+                  "&:hover": { background: "#ec407a" },
+                  fontFamily: "'Poppins', sans-serif",
+                  fontSize: "0.8rem",
+                  px: 3,
+                }}
+                disabled={loading}
+              >
+                Confirm Payment
+              </Button>
             </Box>
           </Box>
         </Box>
@@ -1030,7 +1032,7 @@ const Pay = () => {
             alt="Parlor Booking"
             style={{
               maxWidth: "100%",
-              height: "auto",
+              height: "70vh",
             }}
           />
         </Box>

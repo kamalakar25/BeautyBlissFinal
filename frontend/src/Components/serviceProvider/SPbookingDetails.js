@@ -1,6 +1,9 @@
 import axios from "axios";
+import ArrowBackIos from '@mui/icons-material/ArrowBackIos';
+import ArrowForwardIos from '@mui/icons-material/ArrowForwardIos';
 import React, { useEffect, useRef, useState } from "react";
 import "./SpBookingDetails.css";
+import {Box} from '@mui/material';
 
 const BASE_URL = process.env.REACT_APP_API_URL;
 
@@ -371,9 +374,10 @@ const SpBookingDetails = () => {
   const [error, setError] = useState("");
   const [complaintError, setComplaintError] = useState("");
   const [paymentError, setPaymentError] = useState("");
+  const [expandedBookingId, setExpandedBookingId] = useState(null); // New state for tracking expanded booking
   const itemsPerPage = 5;
 
-  // console.log("SpBookingDetails component rendered", bookings);
+
 
   useEffect(() => {
     const email = localStorage.getItem("email");
@@ -526,6 +530,10 @@ const SpBookingDetails = () => {
     setPaymentError("");
   };
 
+  const toggleExpandBooking = (bookingId) => {
+    setExpandedBookingId(expandedBookingId === bookingId ? null : bookingId);
+  };
+
   const isMobile = screenWidth <= 768;
   const isVerySmallScreen = screenWidth <= 400;
 
@@ -562,7 +570,7 @@ const SpBookingDetails = () => {
     }
 
     return (
-      <td
+      <span
         dangerouslySetInnerHTML={{
           __html: `${dateStr}${timeStr !== "N/A" ? `<br>${timeStr}` : ""}`,
         }}
@@ -570,9 +578,30 @@ const SpBookingDetails = () => {
     );
   };
 
+    // Calculate pagination range (max 5 pages)
+  const getPaginationRange = () => {
+    const rangeSize = 5;
+    const halfRange = Math.floor(rangeSize / 2);
+    let start = Math.max(1, currentPage - halfRange);
+    let end = Math.min(totalPages, start + rangeSize - 1);
+
+    // Adjust start if end is at totalPages
+    if (end === totalPages) {
+      start = Math.max(1, end - rangeSize + 1);
+    }
+
+    const pages = Array.from({ length: end - start + 1 }, (_, index) => start + index);
+    const showLeftEllipsis = start > 1;
+    const showRightEllipsis = end < totalPages;
+
+    return { pages, showLeftEllipsis, showRightEllipsis };
+  };
+
+  const { pages, showLeftEllipsis, showRightEllipsis } = getPaginationRange();
+
   return (
     <div className="sp-booking-details">
-      <h2 className="page-title">All Bookings</h2>
+      <h2 className="page-title" style={{ color: "#fb646b" }}>All Bookings</h2>
 
       <div className="search-container">
         <input
@@ -592,121 +621,142 @@ const SpBookingDetails = () => {
           <div className="mobile-bookings-list">
             {currentItems.length > 0 ? (
               currentItems.map((booking, index) => (
-                <div key={booking._id} className="booking-card">
-                  <p className="booking-field">
-                    <strong>S.No:</strong> {indexOfFirstItem + index + 1}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Booking ID:</strong> {booking._id}
-                  </p>
+                <div
+                  key={booking._id}
+                  className="booking-card"
+                  onClick={() => toggleExpandBooking(booking._id)}
+                  style={{ cursor: "pointer" }}
+                >
                   <p className="booking-field">
                     <strong>User Email:</strong>{" "}
                     {booking.customerEmail || "N/A"}
                   </p>
                   <p className="booking-field">
-                    <strong>Emergency Contact:</strong>{" "}
-                    {booking.customerEmergencyContact || "N/A"}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Allergies:</strong>{" "}
-                    {booking.customerAllergies || "N/A"}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Staffed:</strong>{" "}
-                    {booking.favoriteEmployee || "N/A"}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Service:</strong> {booking.service || "N/A"}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Date & Time:</strong>{" "}
+                    <strong>Date:</strong>{" "}
                     {formatDateTime(booking.date, booking.time)}
                   </p>
-                  <p className="booking-field">
-                    <strong>Receipt:</strong> ₹
-                    {(booking.amount || 0).toFixed(2)}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Discount:</strong> ₹
-                    {(booking.discountAmount || 0).toFixed(2)}
-                  </p>
-                  <p className="booking-field">
-                    <strong>Balance:</strong> ₹
-                    {(booking.remainingAmount || 0).toFixed(2)}
-                  </p>
-                  <div className="booking-actions">
-                    <p className="booking-field">
-                      <strong>Report:</strong>{" "}
-                      {booking.spComplaint ? (
-                        <button
-                          onClick={() => handleViewComplaint(booking._id)}
-                          className="action-btn view-btn"
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#fff"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
+                  {expandedBookingId === booking._id && (
+                    <>
+                      <p className="booking-field">
+                        <strong>S.No:</strong> {indexOfFirstItem + index + 1}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Booking ID:</strong> {booking._id}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Emergency Contact:</strong>{" "}
+                        {booking.customerEmergencyContact || "N/A"}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Allergies:</strong>{" "}
+                        {booking.customerAllergies || "N/A"}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Staffed:</strong>{" "}
+                        {booking.favoriteEmployee || "N/A"}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Service:</strong> {booking.service || "N/A"}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Receipt:</strong> ₹
+                        {(booking.amount || 0).toFixed(2)}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Discount:</strong> ₹
+                        {(booking.discountAmount || 0).toFixed(2)}
+                      </p>
+                      <p className="booking-field">
+                        <strong>Balance:</strong> ₹
+                        {(booking.remainingAmount || 0).toFixed(2)}
+                      </p>
+                      <div className="booking-actions">
+                        <p className="booking-field">
+                          <strong>Report:</strong>{" "}
+                          {booking.spComplaint ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent card toggle on button click
+                                handleViewComplaint(booking._id);
+                              }}
+                              className="action-btn view-btn"
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#fff"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                                <circle cx="12" cy="12" r="3" />
+                              </svg>
+                              View
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent card toggle on button click
+                                handleComplaintBooking(booking._id);
+                              }}
+                              className="action-btn complain-btn"
+                            >
+                              Complain
+                            </button>
+                          )}
+                        </p>
+                        <p className="booking-field">
+                          <strong>Claim:</strong>{" "}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent card toggle on button click
+                              handleCollectPayment(booking._id);
+                            }}
+                            disabled={booking.remainingAmount <= 0}
+                            className={`action-btn collect-btn ${
+                              booking.remainingAmount <= 0 ? "disabled" : ""
+                            }`}
                           >
-                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
-                            <circle cx="12" cy="12" r="3" />
-                          </svg>
-                          View
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleComplaintBooking(booking._id)}
-                          className="action-btn complain-btn"
-                        >
-                          Complain
-                        </button>
-                      )}
-                    </p>
-                    <p className="booking-field">
-                      <strong>Claim:</strong>{" "}
-                      <button
-                        onClick={() => handleCollectPayment(booking._id)}
-                        disabled={booking.remainingAmount <= 0}
-                        className={`action-btn collect-btn ${
-                          booking.remainingAmount <= 0 ? "disabled" : ""
-                        }`}
-                      >
-                        {booking.remainingAmount <= 0 ? "Paid" : "Collect"}
-                      </button>
-                    </p>
-                    <p className="booking-field">
-                      <strong>Confirm:</strong>{" "}
-                      {booking.confirmed === "Confirmed" ? (
-                        <span className="confirmed-text">Confirmed</span>
-                      ) : (
-                        <button
-                          onClick={() => handleConfirmBooking(booking._id)}
-                          disabled={booking.confirmed === "Confirmed"}
-                          className={`action-btn confirm-btn ${
-                            booking.confirmed === "Confirmed" ? "disabled" : ""
-                          }`}
-                        >
-                          <svg
-                            width="16"
-                            height="16"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="#fff"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          >
-                            <path d="M20 6L9 17l-5-5" />
-                          </svg>
-                          Verify
-                        </button>
-                      )}
-                    </p>
-                  </div>
+                            {booking.remainingAmount <= 0 ? "Paid" : "Collect"}
+                          </button>
+                        </p>
+                        <p className="booking-field">
+                          <strong>Confirm:</strong>{" "}
+                          {booking.confirmed === "Confirmed" ? (
+                            <span className="confirmed-text">Confirmed</span>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation(); // Prevent card toggle on button click
+                                handleConfirmBooking(booking._id);
+                              }}
+                              disabled={booking.confirmed === "Confirmed"}
+                              className={`action-btn confirm-btn ${
+                                booking.confirmed === "Confirmed" ? "disabled" : ""
+                              }`}
+                            >
+                              <svg
+                                width="16"
+                                height="16"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="#fff"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              >
+                                <path d="M20 6L9 17l-5-5" />
+                              </svg>
+                              Verify
+                            </button>
+                          )}
+                        </p>
+                      </div>
+                    </>
+                  )}
                 </div>
               ))
             ) : (
@@ -876,25 +926,159 @@ const SpBookingDetails = () => {
       </div>
 
       {filteredBookings.length > itemsPerPage && (
-        <div className="pagination">
-          <button
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="pagination-btn"
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: { xs: 1, sm: 2 },
+              mt: 3,
+              flexWrap: 'nowrap',
+            }}
           >
-            Previous
-          </button>
-          <span className="pagination-info">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="pagination-btn"
-          >
-            Next
-          </button>
-        </div>
+            <Box
+              component="button"
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              sx={{
+                p: { xs: '8px', sm: '10px 24px' },
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fb646b',
+                color: '#ffffff',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                fontWeight: '600',
+                cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
+                '&:hover': {
+                  ...(currentPage !== 1
+                    ? {
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
+                    : {}),
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
+                },
+              }}
+            >
+              {isMobile ? <ArrowBackIos sx={{ fontSize: '1rem' }} /> : 'Previous'}
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                gap: { xs: 0.5, sm: 1 },
+                alignItems: 'center',
+                flexWrap: 'nowrap',
+                // Removed overflowX: 'auto' to prevent scrollbars
+              }}
+            >
+              {showLeftEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ...
+                </Box>
+              )}
+              {pages.map((page) => (
+                <Box
+                  key={page}
+                  component="button"
+                  onClick={() => paginate(page)}
+                  sx={{
+                    p: { xs: '6px', sm: '8px' },
+                    borderRadius: '50%',
+                    border: 'none',
+                    background: page === currentPage ? '#fb646b' : 'transparent',
+                    color: page === currentPage ? '#ffffff' : '#0e0f0f',
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    minWidth: { xs: '30px', sm: '40px' },
+                    height: { xs: '30px', sm: '40px' },
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: page === currentPage ? '#e65a60' : '#f1f5f9',
+                      transform: 'scale(1.1)',
+                    },
+                  }}
+                >
+                  {page}
+                </Box>
+              ))}
+              {showRightEllipsis && (
+                <Box
+                  sx={{
+                    fontSize: { xs: '0.85rem', sm: '1rem' },
+                    color: '#0e0f0f',
+                    p: { xs: '6px', sm: '8px' },
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  ...
+                </Box>
+              )}
+            </Box>
+            <Box
+              component="button"
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              sx={{
+                p: { xs: '8px', sm: '10px 24px' },
+                borderRadius: '30px',
+                border: 'none',
+                background: '#fb646b',
+                color: '#ffffff',
+                fontSize: { xs: '0.85rem', sm: '0.9rem' },
+                fontWeight: '600',
+                cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                transition: 'all 0.3s ease',
+                boxShadow: '0 4px 10px rgba(0, 0, 0, 0.2)',
+                minWidth: { xs: '40px', sm: '100px' },
+                height: { xs: '40px', sm: 'auto' },
+                '&:hover': {
+                  ...(currentPage !== totalPages
+                    ? {
+                        background: '#ffffff',
+                        color: '#0e0f0f',
+                        transform: 'translateY(-2px)',
+                        boxShadow: '0 6px 15px rgba(0, 0, 0, 0.25)',
+                      }
+                    : {}),
+                },
+                '&:disabled': {
+                  opacity: 0.5,
+                  boxShadow: 'none',
+                },
+              }}
+            >
+              {isMobile ? <ArrowForwardIos sx={{ fontSize: '1rem' }} /> : 'Next'}
+            </Box>
+          </Box>
+  
       )}
 
       <ConfirmationModal
