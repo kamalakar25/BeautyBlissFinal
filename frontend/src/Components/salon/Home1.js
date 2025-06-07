@@ -304,13 +304,15 @@ const Home1 = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const faqsPerPage = 5;
 
+  // const [userRole, setUserRole] = useState("");
+
   const context = useContext(NotificationContext);
   const { notifications = 0, fetchNotificationCount = () => {} } =
     context || {};
 
   useEffect(() => {
     const role = localStorage.getItem('userRole');
-    setUserRole(role || '');
+    // setUserRole(role || '');
 
     if (role === 'User' || role === 'ServiceProvider') {
       fetchNotificationCount();
