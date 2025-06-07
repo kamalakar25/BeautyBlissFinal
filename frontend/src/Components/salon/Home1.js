@@ -239,18 +239,18 @@ const allCategories = [
     image: <img src={doctorImage} alt="Doctor" style={styles.categoryImage} />,
     route: "/skincare",
   },
-  {
-    name: "Spa",
-    image: <img src={spaImage} alt="Spa" style={styles.categoryImage} />,
-    route: "/beauty",
-  },
-  {
-    name: "Massage",
-    image: (
-      <img src={massageImage} alt="Massage" style={styles.categoryImage} />
-    ),
-    route: "/salon",
-  },
+  // {
+  //   name: "Spa",
+  //   image: <img src={spaImage} alt="Spa" style={styles.categoryImage} />,
+  //   route: "/beauty",
+  // },
+  // {
+  //   name: "Massage",
+  //   image: (
+  //     <img src={massageImage} alt="Massage" style={styles.categoryImage} />
+  //   ),
+  //   route: "/salon",
+  // },
 ];
 
 // Sample data for cards
@@ -646,7 +646,7 @@ const Home1 = () => {
           <input
             className="mt-3"
             type="text"
-            placeholder="Search services..."
+            placeholder="Search Categories..."
             value={searchQuery}
             onChange={handleSearch}
             style={{
@@ -1088,14 +1088,14 @@ const Home1 = () => {
                 viewport={{ once: false, amount: 0.3 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
                 style={{
-                  backgroundColor: "#fff",
+                  // backgroundColor: "#fff",
                   borderRadius: "15px",
                   textAlign: "center",
                   boxShadow: "0 6px 12px rgba(0, 0, 0, 0.15)",
                   overflow: "hidden",
                   width: "90%",
                   margin: "0 auto",
-                  height: "320px",
+                  // height: "320px",
                   maxWidth: "300px",
                   border: "2px solid #fb646b",
                 }}
