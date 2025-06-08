@@ -409,11 +409,11 @@ const Login = () => {
                 alt='Login illustration'
                 variants={imageVariants}
                 style={{
-                  width: '160px',
-                  height: '160px',
+                  width: '140px',
+                  height: '140px',
                   borderRadius: '20px',
                   objectFit: 'cover',
-                  marginBottom: '16px',
+                  marginBottom: '10px',
                 }}
               />
             </motion.div>

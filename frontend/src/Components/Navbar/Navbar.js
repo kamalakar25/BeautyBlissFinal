@@ -137,7 +137,7 @@ const Navbar = () => {
           </li>
           <li style={{ "--i": 5 }} className="logout-item">
             <Link to="/login" className={isActiveLink("/login")} onClick={handleLinkClick}>
-              <FontAwesomeIcon icon={faSignOutAlt} className="nav-icon" />
+              <FontAwesomeIcon icon={faUser} className="nav-icon" />
               <span className="nav-text">Login</span>
             </Link>
           </li>
