@@ -547,7 +547,7 @@ const SalonPage = () => {
                 display: { xs: "none", sm: "flex" },
                 flexWrap: "wrap",
                 justifyContent: "center",
-                gap: { xs: 10, sm: 8, md: 12, lg: 24, xl: 32 },
+                gap: { xs: 10, sm: 8, md: 12, lg: 28, xl: 32 },
                 mb: { sm: 4, md: 5, lg: 6, xl: 6 },
                 width: "100%",
                 marginTop: { sm: "1rem", md: "2rem", lg: "2.5rem", xl: "3rem" },

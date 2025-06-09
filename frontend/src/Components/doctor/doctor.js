@@ -253,7 +253,7 @@ const BookNowButton = () => {
             alignItems: "center",
             overflow: "hidden",
             boxSizing: "border-box",
-            border: `${getBorderWidth()} solid #f8e1e7`,
+            border: `${getBorderWidth()} solid transparent`,
             borderRadius: "20px",
           }}
         >
