@@ -135,7 +135,7 @@ const Navbar = () => {
               <span className="nav-text">Doctor</span>
             </Link>
           </li>
-          <li style={{ "--i": 5 }} className="logout-item">
+          <li style={{ "--i": 5 }} >
             <Link to="/login" className={isActiveLink("/login")} onClick={handleLinkClick}>
               <FontAwesomeIcon icon={faUser} className="nav-icon" />
               <span className="nav-text">Login</span>
